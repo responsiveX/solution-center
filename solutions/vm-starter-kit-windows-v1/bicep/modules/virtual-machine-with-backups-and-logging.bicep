@@ -18,6 +18,7 @@ param recoveryServicesVaultName string
 var recoveryVaultPolicyName = 'DefaultPolicy'
 
 param dataCollectionRuleName string
+param managedIdentityResourceId string
 
 resource nic 'Microsoft.Network/networkInterfaces@2022-07-01' = {
   name: '${vmName}-nic'
@@ -112,7 +113,7 @@ resource dependencyAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11-0
   }
 }
 
-resource azureMonitorAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {
+resource windowsAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {
   name: 'AzureMonitorWindowsAgent'
   parent: vm
   location: location
@@ -121,6 +122,15 @@ resource azureMonitorAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11
     type: 'AzureMonitorWindowsAgent'
     typeHandlerVersion: '1.0'
     autoUpgradeMinorVersion: true
+    enableAutomaticUpgrade: true
+    settings: {
+      authentication: {
+        managedIdentity: {
+          'identifier-name': 'mi_res_id'
+          'identifier-value': managedIdentityResourceId
+        }
+      }
+    }
   }
 }
 

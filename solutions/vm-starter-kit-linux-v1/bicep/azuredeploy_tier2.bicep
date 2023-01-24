@@ -2,27 +2,32 @@ targetScope = 'resourceGroup'
 
 param location string = resourceGroup().location
 
-param vNetName string = 'vnet-VmStarterKit'
+param bastionName string = 'BastionHost'
+param networkName string = 'VmStarterKit'
+
 param vmSubnetName string = 'VMs'
 
 param vmName string = 'vm-01'
-param vmSize string = 'Standard_B1s'
-param vmAdminUsername string = 'adminadmin'
+param vmSize string = 'Standard_D2s_v5'
+param adminUsername string = 'azureadmin'
 @secure()
-param vmAdminPassword string
+param sshPublicKey string = 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDkNiD0HIP68W2cW5hUBfgi7+7l+a9FWX+bSKmbRlEVXXwS+YBL/PfPM2+/InpSqZVCEthxyWQRUJj5zhr8glZQhoKMLA7PdCj4zQ1BhZMUBiEJRhQbjiHpnp+FpntZqIaSEPLhlK0lS0oS9gxZq1V0RUcNzCQmtRn5jnvTYmkBLakRk7sW+VJqHmwZy9C8tmdPRv/9mycG2zSAgEcZR2AB4PMKettfWjwmSgBZySHhlya55xd7YyDZHSJXMrrgneLyH+HdAWxTiODs5rA1YMi6VOfWk6mSF1ox0ssQPFIifXwxoPYTRjz2fBIWefZwqvb/ahyofnsnQFvoEFK+pTvOXTQ6hdMHUqo8AZO/YFcJjN0KsoGrYv2Zb6IzrZ7LLsfGTcMbOqaUk9uTbi5adlPRRf8lx2tRkMvQVInrjDKEmjWq6M4verXfR1gYA8xoTN1Hw/K2JT6v21bUaCFbeGqFkgJc6+INLS/BPGKeAQPHTNExo2dgwghWUwTS6yG6mek= generated-by-azure'
+param osdiskSizeGB int = 30
 
 param recoveryServicesVaultName string = 'rsv-VmBackupVault'
 
-module vNet 'modules/vnet-with-bastion.bicep' = {
+
+module vNetModule 'modules/vnet-with-bastion.bicep' = {
   name: 'vnet-with-bastion'
   params: {
     location: location
-    vNetName: vNetName
+    networkName: networkName
     vmSubnetName: vmSubnetName
+    bastionName: bastionName
   }
 }
 
-module monitoring 'modules/monitoring-infrastructure.bicep' = {
+module monitoringModule 'modules/monitoring-infrastructure.bicep' = {
   name: 'monitoring-infrastructure'
   params: {
     location: location
@@ -46,17 +51,15 @@ module vm 'modules/virtual-machine-with-backups-and-logging.bicep' = {
   params: {
     location: location
     vmName: vmName
-    vmAdminUsername: vmAdminUsername
-    vmAdminPassword: vmAdminPassword
+    adminUsername: adminUsername
+    sshPublicKey: sshPublicKey
     vmSize: vmSize
-    vNetName: vNetName
+    osdiskSizeGB: osdiskSizeGB
+    vNetName: vNetModule.outputs.vNetName
     vmSubnetName: vmSubnetName
-    vmAvailabilityZone: 1
-    bootLogStorageAccountName: monitoring.outputs.storageAccountName
+    bootLogStorageAccountName: monitoringModule.outputs.storageAccountName
     recoveryServicesVaultName: recoveryVault.name
-    dataCollectionRuleName: monitoring.outputs.dataCollectionRuleName
+    dataCollectionRuleName: monitoringModule.outputs.dataCollectionRuleName
+    managedIdentityResourceId: monitoringModule.outputs.managedIdentityResourceId
   }
-  dependsOn: [
-    vNet
-  ]
 }

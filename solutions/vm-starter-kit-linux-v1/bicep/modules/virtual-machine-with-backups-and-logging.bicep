@@ -2,16 +2,15 @@ targetScope = 'resourceGroup'
 
 param location string = resourceGroup().location
 
-param vNetName string = 'vnet-VmStarterKit'
+param vNetName string
+param vmSubnetName string
 
-
-param vmSubnetName string = 'VMs'
-
-param vmName string = 'vm-01'
-param vmSize string = 'Standard_B1s'
-param vmAdminUsername string = 'adminadmin'
+param vmName string
+param vmSize string
+param osdiskSizeGB int
+param adminUsername string
 @secure()
-param vmAdminPassword string
+param sshPublicKey string
 
 param bootLogStorageAccountName string
 param bootLogStorageAccountResourceGroup string = resourceGroup().name
@@ -20,6 +19,7 @@ param recoveryServicesVaultName string
 var recoveryVaultPolicyName = 'DefaultPolicy'
 
 param dataCollectionRuleName string
+param managedIdentityResourceId string
 
 resource nic 'Microsoft.Network/networkInterfaces@2022-07-01' = {
   name: '${vmName}-nic'
@@ -58,23 +58,37 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
     }
     osProfile: {
       computerName: vmName
-      adminUsername: vmAdminUsername
-      adminPassword: vmAdminPassword
+      adminUsername: adminUsername
+      linuxConfiguration: {
+        disablePasswordAuthentication: true
+        ssh: {
+          publicKeys: [
+            {
+              path: '/home/${adminUsername}/.ssh/authorized_keys'
+              keyData: sshPublicKey
+            }
+          ]
+        }
+         patchSettings: {
+           patchMode: 'AutomaticByPlatform'
+         }
+      }
     }
     storageProfile: {
       imageReference: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: '2022-datacenter'
+        publisher: 'Canonical'
+        offer: 'UbuntuServer'
+        sku: '18.04-LTS'
         version: 'latest'
       }
       osDisk: {
         name: '${vmName}-osdisk'
         managedDisk: {
-          storageAccountType: 'StandardSSD_LRS'
+          storageAccountType: 'Premium_LRS'
         }
         caching: 'ReadWrite'
         createOption: 'FromImage'
+        diskSizeGB: osdiskSizeGB
       }
     }
     networkProfile: {
@@ -99,7 +113,7 @@ resource dependencyAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11-0
   location: location
   properties: {
     publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
-    type: 'DependencyAgentWindows'
+    type: 'DependencyAgentLinux'
     typeHandlerVersion: '9.5'
     autoUpgradeMinorVersion: true
     settings: {
@@ -108,15 +122,24 @@ resource dependencyAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11-0
   }
 }
 
-resource azureMonitorAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {
-  name: 'AzureMonitorWindowsAgent'
+resource linuxAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {
+  name: 'AzureMonitorLinuxAgent'
   parent: vm
   location: location
   properties: {
     publisher: 'Microsoft.Azure.Monitor'
-    type: 'AzureMonitorWindowsAgent'
-    typeHandlerVersion: '1.0'
+    type: 'AzureMonitorLinuxAgent'
+    typeHandlerVersion: '1.21'
     autoUpgradeMinorVersion: true
+    enableAutomaticUpgrade: true
+    settings: {
+      authentication: {
+        managedIdentity: {
+          'identifier-name': 'mi_res_id'
+          'identifier-value': managedIdentityResourceId
+        }
+      }
+    }
   }
 }
 

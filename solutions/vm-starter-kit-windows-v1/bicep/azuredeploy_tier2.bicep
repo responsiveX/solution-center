@@ -25,7 +25,7 @@ module vNetModule 'modules/vnet-with-bastion.bicep' = {
   }
 }
 
-module monitoring 'modules/monitoring-infrastructure.bicep' = {
+module monitoringModule 'modules/monitoring-infrastructure.bicep' = {
   name: 'monitoring-infrastructure'
   params: {
     location: location
@@ -54,8 +54,9 @@ module vm 'modules/virtual-machine-with-backups-and-logging.bicep' = {
     vmSize: vmSize
     vNetName: vNetModule.outputs.vNetName
     vmSubnetName: vmSubnetName
-    bootLogStorageAccountName: monitoring.outputs.storageAccountName
+    bootLogStorageAccountName: monitoringModule.outputs.storageAccountName
     recoveryServicesVaultName: recoveryVault.name
-    dataCollectionRuleName: monitoring.outputs.dataCollectionRuleName
+    dataCollectionRuleName: monitoringModule.outputs.dataCollectionRuleName
+    managedIdentityResourceId: monitoringModule.outputs.managedIdentityResourceId
   }
 }

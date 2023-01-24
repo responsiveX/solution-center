@@ -111,5 +111,11 @@ resource vmInsights 'Microsoft.OperationsManagement/solutions@2015-11-01-preview
   }
 }
 
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
+  name: 'id-AzureMonitorAgentExtension'
+  location: location
+}
+
 output storageAccountName string = storageAccount.name
 output dataCollectionRuleName string = dataCollectionRule.name
+output managedIdentityResourceId string = managedIdentity.id

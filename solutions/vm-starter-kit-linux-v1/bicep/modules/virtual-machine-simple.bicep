@@ -2,16 +2,16 @@ targetScope = 'resourceGroup'
 
 param location string = resourceGroup().location
 
-param vNetName string = 'vnet-VmStarterKit'
+param vNetName string
+param vmSubnetName string 
 
-
-param vmSubnetName string = 'VMs'
-
-param vmName string = 'vm-01'
-param vmSize string = 'Standard_B1s'
-param vmAdminUsername string = 'adminadmin'
+param vmName string
+param vmSize string
+param osdiskSizeGB int
+param adminUsername string
 @secure()
-param vmAdminPassword string
+param sshPublicKey string
+
 
 resource nic 'Microsoft.Network/networkInterfaces@2022-07-01' = {
   name: '${vmName}-nic'
@@ -42,23 +42,37 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
     }
     osProfile: {
       computerName: vmName
-      adminUsername: vmAdminUsername
-      adminPassword: vmAdminPassword
+      adminUsername: adminUsername
+      linuxConfiguration: {
+        disablePasswordAuthentication: true
+        ssh: {
+          publicKeys: [
+            {
+              path: '/home/${adminUsername}/.ssh/authorized_keys'
+              keyData: sshPublicKey
+            }
+          ]
+        }
+         patchSettings: {
+           patchMode: 'AutomaticByPlatform'
+         }
+      }
     }
     storageProfile: {
       imageReference: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: '2022-datacenter'
+        publisher: 'Canonical'
+        offer: 'UbuntuServer'
+        sku: '18.04-LTS'
         version: 'latest'
       }
       osDisk: {
         name: '${vmName}-osdisk'
         managedDisk: {
-          storageAccountType: 'StandardSSD_LRS'
+          storageAccountType: 'Premium_LRS'
         }
         caching: 'ReadWrite'
         createOption: 'FromImage'
+        diskSizeGB: osdiskSizeGB
       }
     }
     networkProfile: {

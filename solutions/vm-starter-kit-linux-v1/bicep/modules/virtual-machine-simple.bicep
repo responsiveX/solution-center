@@ -19,7 +19,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2022-07-01' = {
   properties: {
     ipConfigurations: [
       {
-        name: 'ipconfig'
+        name: 'ipconfig1'
         properties: {
           primary: true
           privateIPAllocationMethod: 'Dynamic'

@@ -2,17 +2,14 @@ targetScope = 'resourceGroup'
 
 param location string = resourceGroup().location
 
-param vNetName string = 'vnet-VmStarterKit'
+param vNetName string
+param vmSubnetName string 
 
-
-param vmSubnetName string = 'VMs'
-
-param vmName string = 'vm-01'
-param vmSize string = 'Standard_B1s'
-param vmAvailabilityZone int
-param vmAdminUsername string = 'adminadmin'
+param vmName string
+param vmSize string
+param adminUsername string
 @secure()
-param vmAdminPassword string
+param adminPassword string
 
 param bootLogStorageAccountName string
 param bootLogStorageAccountResourceGroup string = resourceGroup().name
@@ -21,8 +18,6 @@ param recoveryServicesVaultName string
 var recoveryVaultPolicyName = 'DefaultPolicy'
 
 param dataCollectionRuleName string
-
-param loadBalancerBackendPoolId string = ''
 
 resource nic 'Microsoft.Network/networkInterfaces@2022-07-01' = {
   name: '${vmName}-nic'
@@ -37,11 +32,6 @@ resource nic 'Microsoft.Network/networkInterfaces@2022-07-01' = {
           subnet: {
             id: resourceId('Microsoft.Network/virtualNetworks/subnets', vNetName, vmSubnetName)
           }
-          loadBalancerBackendAddressPools: length(loadBalancerBackendPoolId) == 0 ? [] : [
-            {
-              id: loadBalancerBackendPoolId
-            }
-          ]
         }
       }
     ]
@@ -66,20 +56,26 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
     }
     osProfile: {
       computerName: vmName
-      adminUsername: vmAdminUsername
-      adminPassword: vmAdminPassword
+      adminUsername: adminUsername
+      adminPassword: adminPassword
+      windowsConfiguration: {
+        patchSettings: {
+          patchMode: 'AutomaticByPlatform'
+          enableHotpatching: true
+        }
+      }
     }
     storageProfile: {
       imageReference: {
         publisher: 'MicrosoftWindowsServer'
         offer: 'WindowsServer'
-        sku: '2022-datacenter'
+        sku: '2022-datacenter-azure-edition-core'
         version: 'latest'
       }
       osDisk: {
         name: '${vmName}-osdisk'
         managedDisk: {
-          storageAccountType: 'StandardSSD_LRS'
+          storageAccountType: 'Premium_LRS'
         }
         caching: 'ReadWrite'
         createOption: 'FromImage'
@@ -99,9 +95,6 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
       }
     }
   }
-  zones: [
-    string(vmAvailabilityZone)
-  ]
 }
 
 resource dependencyAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {

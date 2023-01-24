@@ -9,7 +9,6 @@ param vmSubnetName string = 'VMs'
 
 param vmName string = 'vm-01'
 param vmSize string = 'Standard_B1s'
-param vmAvailabilityZone int
 param vmAdminUsername string = 'adminadmin'
 @secure()
 param vmAdminPassword string
@@ -21,8 +20,6 @@ param recoveryServicesVaultName string
 var recoveryVaultPolicyName = 'DefaultPolicy'
 
 param dataCollectionRuleName string
-
-param loadBalancerBackendPoolId string = ''
 
 resource nic 'Microsoft.Network/networkInterfaces@2022-07-01' = {
   name: '${vmName}-nic'
@@ -37,11 +34,6 @@ resource nic 'Microsoft.Network/networkInterfaces@2022-07-01' = {
           subnet: {
             id: resourceId('Microsoft.Network/virtualNetworks/subnets', vNetName, vmSubnetName)
           }
-          loadBalancerBackendAddressPools: length(loadBalancerBackendPoolId) == 0 ? [] : [
-            {
-              id: loadBalancerBackendPoolId
-            }
-          ]
         }
       }
     ]
@@ -99,9 +91,6 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
       }
     }
   }
-  zones: [
-    string(vmAvailabilityZone)
-  ]
 }
 
 resource dependencyAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {

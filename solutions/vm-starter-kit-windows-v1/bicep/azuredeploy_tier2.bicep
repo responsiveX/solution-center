@@ -2,23 +2,26 @@ targetScope = 'resourceGroup'
 
 param location string = resourceGroup().location
 
-param vNetName string = 'vnet-VmStarterKit'
+param bastionName string = 'BastionHost'
+
+param networkName string = 'VmStarterKit'
 param vmSubnetName string = 'VMs'
 
 param vmName string = 'vm-01'
-param vmSize string = 'Standard_B1s'
-param vmAdminUsername string = 'adminadmin'
+param vmSize string = 'Standard_D2s_v5'
+param adminUsername string = 'azureadmin'
 @secure()
-param vmAdminPassword string
+param adminPassword string = 'P@ssword4242'
 
 param recoveryServicesVaultName string = 'rsv-VmBackupVault'
 
-module vNet 'modules/vnet-with-bastion.bicep' = {
+module vNetModule 'modules/vnet-with-bastion.bicep' = {
   name: 'vnet-with-bastion'
   params: {
     location: location
-    vNetName: vNetName
+    networkName: networkName
     vmSubnetName: vmSubnetName
+    bastionName: bastionName
   }
 }
 
@@ -46,17 +49,13 @@ module vm 'modules/virtual-machine-with-backups-and-logging.bicep' = {
   params: {
     location: location
     vmName: vmName
-    vmAdminUsername: vmAdminUsername
-    vmAdminPassword: vmAdminPassword
+    adminUsername: adminUsername
+    adminPassword: adminPassword
     vmSize: vmSize
-    vNetName: vNetName
+    vNetName: vNetModule.outputs.vNetName
     vmSubnetName: vmSubnetName
-    vmAvailabilityZone: 1
     bootLogStorageAccountName: monitoring.outputs.storageAccountName
     recoveryServicesVaultName: recoveryVault.name
     dataCollectionRuleName: monitoring.outputs.dataCollectionRuleName
   }
-  dependsOn: [
-    vNet
-  ]
 }

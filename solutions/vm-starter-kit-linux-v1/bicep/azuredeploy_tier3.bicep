@@ -4,7 +4,6 @@ param location string = resourceGroup().location
 
 param bastionName string = 'BastionHost'
 param networkName string = 'VmStarterKit'
-
 param vmSubnetName string = 'VMs'
 
 param vmNamePrefix string = 'VM'
@@ -160,7 +159,7 @@ resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
         networkApiVersion: '2020-11-01'
         networkInterfaceConfigurations: [
           {
-            name: 'bobs-your-uncle'
+            name: 'nic'
             properties: {
               primary: true
               ipConfigurations: [
@@ -257,38 +256,3 @@ resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
   }
 }
 
-// module vms 'modules/virtual-machine-with-backups-and-logging.bicep' = [for (vmName, vmIndex) in vmNames: {
-//   name: 'virtual-machine-${vmName}'
-//   params: {
-//     location: location
-//     vmName: vmName
-//     adminUsername: adminUsername
-//     sshPublicKey: sshPublicKey
-//     vmSize: vmSize
-//     osdiskSizeGB: osdiskSizeGB
-//     vNetName: vNetModule.outputs.vNetName
-//     vmSubnetName: vmSubnetName
-//     bootLogStorageAccountName: monitoringModule.outputs.storageAccountName
-//     recoveryServicesVaultName: recoveryVault.name
-//     dataCollectionRuleName: monitoringModule.outputs.dataCollectionRuleName
-//     managedIdentityResourceId: monitoringModule.outputs.managedIdentityResourceId
-//     loadBalancerBackendPoolId: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', loadBalancer.name, loadBalancerBackendPoolName)
-//   }
-// }]
-
-// resource iis 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = [for vmName in vmNames: {
-//   name: '${vmName}/InstallWebServer'
-//   location: location
-//   properties: {
-//     publisher: 'Microsoft.Compute'
-//     type: 'CustomScriptExtension'
-//     typeHandlerVersion: '1.7'
-//     autoUpgradeMinorVersion: true
-//     settings: {
-//       commandToExecute: 'powershell.exe Install-WindowsFeature -name Web-Server -IncludeManagementTools && powershell.exe remove-item \'C:\\inetpub\\wwwroot\\iisstart.htm\' && powershell.exe Add-Content -Path \'C:\\inetpub\\wwwroot\\iisstart.htm\' -Value $(\'Hello World from \' + $env:computername)'
-//     }
-//   }
-//   dependsOn: [
-//     vms
-//   ]
-// }]

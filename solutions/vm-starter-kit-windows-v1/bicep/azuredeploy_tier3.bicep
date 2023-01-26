@@ -157,7 +157,7 @@ resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
         networkApiVersion: '2020-11-01'
         networkInterfaceConfigurations: [
           {
-            name: 'bobs-your-uncle'
+            name: 'nic'
             properties: {
               primary: true
               ipConfigurations: [

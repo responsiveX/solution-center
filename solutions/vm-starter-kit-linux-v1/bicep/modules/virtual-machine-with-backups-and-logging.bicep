@@ -69,9 +69,9 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
             }
           ]
         }
-         patchSettings: {
-           patchMode: 'AutomaticByPlatform'
-         }
+        patchSettings: {
+          patchMode: 'AutomaticByPlatform'
+        }
       }
     }
     storageProfile: {

@@ -8,7 +8,7 @@ param vmSubnetName string = 'VMs'
 
 param bastionName string = 'BastionHost'
 
-// param openPort80 bool = false
+param openPort80 bool = false
 
 var vNetName = 'vnet-${networkName}'
 
@@ -25,23 +25,23 @@ var bastionSubnetName = 'AzureBastionSubnet'
 resource nsg 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
   name: nsgName
   location: location
-  // properties: {
-  //   securityRules: openPort80 == false ? [] : [
-  //     {
-  //       name: 'AllowHttpInbound'
-  //       properties: {
-  //         protocol: '*'
-  //         sourcePortRange: '*'
-  //         destinationPortRange: '80'
-  //         sourceAddressPrefix: 'Internet'
-  //         destinationAddressPrefix: '*'
-  //         access: 'Allow'
-  //         priority: 100
-  //         direction: 'Inbound'
-  //       }
-  //     }
-  //   ]
-  // }
+  properties: {
+    securityRules: openPort80 == false ? [] : [
+      {
+        name: 'AllowHttpInbound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRange: '80'
+          sourceAddressPrefix: 'Internet'
+          destinationAddressPrefix: '*'
+          access: 'Allow'
+          priority: 100
+          direction: 'Inbound'
+        }
+      }
+    ]
+  }
 }
 
 resource vNet 'Microsoft.Network/virtualNetworks@2022-07-01' = {

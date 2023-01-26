@@ -2,17 +2,15 @@ targetScope = 'resourceGroup'
 
 param location string = resourceGroup().location
 
-param vNetName string = 'vnet-VmStarterKit'
+param bastionName string = 'BastionHost'
+param networkName string = 'VmStarterKit'
 param vmSubnetName string = 'VMs'
 
-param vmNames array = [
-  'vm-01'
-  'vm-02'
-]
-param vmSize string = 'Standard_B2s'
-param vmAdminUsername string = 'adminadmin'
+param vmNamePrefix string = 'VM'
+param vmSize string = 'Standard_D2s_v5'
+param adminUsername string = 'azureadmin'
 @secure()
-param vmAdminPassword string
+param adminPassword string = 'P@ssword4242'
 
 param recoveryServicesVaultName string = 'rsv-VmBackupVault'
 
@@ -22,17 +20,20 @@ var loadBalancerFrontEndName = 'LoadBalancerFrontEnd'
 var loadBalancerBackendPoolName = 'LoadBalancerBackEndPool'
 var loadBalancerProbeName = 'loadBalancerHealthProbe'
 
-module vNet 'modules/vnet-with-bastion.bicep' = {
+var vmScaleSetName = 'vmss-VmStarterKit'
+
+module vNetModule 'modules/vnet-with-bastion.bicep' = {
   name: 'vnet-with-bastion'
   params: {
     location: location
-    vNetName: vNetName
+    networkName: networkName
     vmSubnetName: vmSubnetName
+    bastionName: bastionName
     openPort80: true
   }
 }
 
-module monitoring 'modules/monitoring-infrastructure.bicep' = {
+module monitoringModule 'modules/monitoring-infrastructure.bicep' = {
   name: 'monitoring-infrastructure'
   params: {
     location: location
@@ -123,40 +124,142 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2021-08-01' = {
   }
 }
 
-module vms 'modules/virtual-machine-with-backups-and-logging.bicep' = [for (vmName, vmIndex) in vmNames: {
-  name: 'virtual-machine-${vmName}'
-  params: {
-    location: location
-    vmName: vmName
-    vmAdminUsername: vmAdminUsername
-    vmAdminPassword: vmAdminPassword
-    vmSize: vmSize
-    vNetName: vNetName
-    vmSubnetName: vmSubnetName
-    vmAvailabilityZone: ((vmIndex) % 3) + 1
-    bootLogStorageAccountName: monitoring.outputs.storageAccountName
-    recoveryServicesVaultName: recoveryVault.name
-    dataCollectionRuleName: monitoring.outputs.dataCollectionRuleName
-    loadBalancerBackendPoolId: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', loadBalancer.name, loadBalancerBackendPoolName)
-  }
-  dependsOn: [
-    vNet
-  ]
-}]
-
-resource iis 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = [for vmName in vmNames: {
-  name: '${vmName}/InstallWebServer'
+resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
+  name: vmScaleSetName
   location: location
+  sku: {
+    name: vmSize
+    tier: 'Standard'
+    capacity: 3
+  }
   properties: {
-    publisher: 'Microsoft.Compute'
-    type: 'CustomScriptExtension'
-    typeHandlerVersion: '1.7'
-    autoUpgradeMinorVersion: true
-    settings: {
-      commandToExecute: 'powershell.exe Install-WindowsFeature -name Web-Server -IncludeManagementTools && powershell.exe remove-item \'C:\\inetpub\\wwwroot\\iisstart.htm\' && powershell.exe Add-Content -Path \'C:\\inetpub\\wwwroot\\iisstart.htm\' -Value $(\'Hello World from \' + $env:computername)'
+    singlePlacementGroup: false
+    orchestrationMode: 'Flexible'
+    platformFaultDomainCount: 1
+    virtualMachineProfile: {
+      storageProfile: {
+        imageReference: {
+          publisher: 'MicrosoftWindowsServer'
+          offer: 'WindowsServer'
+          sku: '2022-datacenter-azure-edition-core'
+          version: 'latest'
+        }
+        osDisk: {
+          //name: '${vmName}-osdisk'
+          managedDisk: {
+            storageAccountType: 'Premium_LRS'
+          }
+          caching: 'ReadWrite'
+          createOption: 'FromImage'
+        }
+      }
+      networkProfile: {
+        networkApiVersion: '2020-11-01'
+        networkInterfaceConfigurations: [
+          {
+            name: 'bobs-your-uncle'
+            properties: {
+              primary: true
+              ipConfigurations: [
+                {
+                  name: 'ipconfig1'
+                  properties: {
+                    subnet: {
+                      id: resourceId('Microsoft.Network/virtualNetworks/subnets', vNetModule.outputs.vNetName, vmSubnetName)
+                    }
+                    loadBalancerBackendAddressPools: [
+                      {
+                        id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', loadBalancer.name, loadBalancerBackendPoolName)
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+      osProfile: {
+        computerNamePrefix: vmNamePrefix
+        adminUsername: adminUsername
+        adminPassword: adminPassword
+        windowsConfiguration: {
+          provisionVMAgent: true
+          patchSettings: {
+            patchMode: 'AutomaticByPlatform'
+            enableHotpatching: true
+          }
+          enableAutomaticUpdates: true
+        }
+      }
+      diagnosticsProfile: {
+        bootDiagnostics: {
+          enabled: true
+          storageUri: monitoringModule.outputs.storageUri
+        }
+      }
+      extensionProfile: {
+        extensions: [
+          {
+            name: 'HealthExtension'
+            properties: {
+              publisher: 'Microsoft.ManagedServices'
+              type: 'ApplicationHealthWindows'
+              typeHandlerVersion: '1.0'
+              autoUpgradeMinorVersion: true
+              settings: {
+                protocol: 'http'
+                port: 80
+                requestPath: 'http://127.0.0.1'
+                intervalInSeconds: 5
+                numberOfProbes: 1
+              }
+            }
+          }
+          {
+            name: 'DependencyAgentWindows'
+            properties: {
+              publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
+              type: 'DependencyAgentWindows'
+              typeHandlerVersion: '9.5'
+              autoUpgradeMinorVersion: true
+              settings: {
+                enableAMA: true
+              }
+            }
+          }
+          {
+            name: 'AzureMonitorLinuxAgent'
+            properties: {
+              publisher: 'Microsoft.Azure.Monitor'
+              type: 'AzureMonitorWindowsAgent'
+              typeHandlerVersion: '1.0'
+              autoUpgradeMinorVersion: true
+              enableAutomaticUpgrade: true
+              settings: {
+                authentication: {
+                  managedIdentity: {
+                    'identifier-name': 'mi_res_id'
+                    'identifier-value': monitoringModule.outputs.managedIdentityResourceId
+                  }
+                }
+              }
+            }
+          }
+          {
+            name: 'InstallWebServer'
+            properties: {
+              publisher: 'Microsoft.Compute'
+              type: 'CustomScriptExtension'
+              typeHandlerVersion: '1.7'
+              autoUpgradeMinorVersion: true
+              settings: {
+                commandToExecute: 'powershell.exe Install-WindowsFeature -name Web-Server -IncludeManagementTools && powershell.exe remove-item \'C:\\inetpub\\wwwroot\\iisstart.htm\' && powershell.exe Add-Content -Path \'C:\\inetpub\\wwwroot\\iisstart.htm\' -Value $(\'Hello World from \' + $env:computername)'
+              }
+            }
+          }
+        ]
+      }
     }
   }
-  dependsOn: [
-    vms
-  ]
-}]
+}

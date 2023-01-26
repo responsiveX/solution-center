@@ -117,5 +117,6 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-
 }
 
 output storageAccountName string = storageAccount.name
+output storageUri string = storageAccount.properties.primaryEndpoints.blob
 output dataCollectionRuleName string = dataCollectionRule.name
 output managedIdentityResourceId string = managedIdentity.id

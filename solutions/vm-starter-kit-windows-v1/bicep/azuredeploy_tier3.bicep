@@ -18,7 +18,8 @@ param loadBalancerName string = 'lbe-LoadBalancer'
 param loadBalancerIpAddressName string = 'pip-LoadBalancer'
 var loadBalancerFrontEndName = 'LoadBalancerFrontEnd'
 var loadBalancerBackendPoolName = 'LoadBalancerBackEndPool'
-var loadBalancerProbeName = 'loadBalancerHealthProbe'
+var loadBalancerProbeName80 = 'loadBalancerHealthProbePort80'
+var loadBalancerProbeName443 = 'loadBalancerHealthProbePort443'
 
 var vmScaleSetName = 'vmss-VmStarterKit'
 
@@ -29,7 +30,7 @@ module vNetModule 'modules/vnet-with-bastion.bicep' = {
     networkName: networkName
     vmSubnetName: vmSubnetName
     bastionName: bastionName
-    openPort80: true
+    openWebPorts: true
   }
 }
 
@@ -88,7 +89,7 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2021-08-01' = {
     ]
     loadBalancingRules: [
       {
-        name: 'Rule-HTTP'
+        name: 'HTTP'
         properties: {
           frontendIPConfiguration: {
             id: resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', loadBalancerName, loadBalancerFrontEndName)
@@ -99,25 +100,71 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2021-08-01' = {
           frontendPort: 80
           backendPort: 80
           enableFloatingIP: false
-          idleTimeoutInMinutes: 15
+          idleTimeoutInMinutes: 5
           protocol: 'Tcp'
-          enableTcpReset: true
-          loadDistribution: 'Default'
           disableOutboundSnat: true
           probe: {
-            id: resourceId('Microsoft.Network/loadBalancers/probes', loadBalancerName, loadBalancerProbeName)
+            id: resourceId('Microsoft.Network/loadBalancers/probes', loadBalancerName, loadBalancerProbeName80)
+          }
+        }
+      }
+      {
+        name: 'HTTPS'
+        properties: {
+          frontendIPConfiguration: {
+            id: resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', loadBalancerName, loadBalancerFrontEndName)
+          }
+          backendAddressPool: {
+            id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', loadBalancerName, loadBalancerBackendPoolName)
+          }
+          frontendPort: 443
+          backendPort: 443
+          enableFloatingIP: false
+          idleTimeoutInMinutes: 5
+          protocol: 'Tcp'
+          disableOutboundSnat: true
+          probe: {
+            id: resourceId('Microsoft.Network/loadBalancers/probes', loadBalancerName, loadBalancerProbeName443)
           }
         }
       }
     ]
     probes: [
       {
-        name: loadBalancerProbeName
+        name: loadBalancerProbeName80
         properties: {
           protocol: 'Tcp'
           port: 80
           intervalInSeconds: 5
-          numberOfProbes: 2
+          numberOfProbes: 3
+        }
+      }
+      {
+        name: loadBalancerProbeName443
+        properties: {
+          protocol: 'Tcp'
+          port: 443
+          intervalInSeconds: 5
+          numberOfProbes: 3
+        }
+      }
+    ]
+    outboundRules: [
+      {
+        name: 'AllowOutboundTraffic'
+        properties: {
+          backendAddressPool: {
+            id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', loadBalancerName, loadBalancerBackendPoolName)
+          }
+          frontendIPConfigurations: [
+            {
+              id: resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', loadBalancerName, loadBalancerFrontEndName)
+            }
+          ]
+          protocol: 'All'
+          enableTcpReset: false
+          idleTimeoutInMinutes: 5
+          allocatedOutboundPorts: 128
         }
       }
     ]
@@ -145,7 +192,6 @@ resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
           version: 'latest'
         }
         osDisk: {
-          //name: '${vmName}-osdisk'
           managedDisk: {
             storageAccountType: 'Premium_LRS'
           }
@@ -201,6 +247,18 @@ resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
       extensionProfile: {
         extensions: [
           {
+            name: 'InstallIIS'
+            properties: {
+              publisher: 'Microsoft.Compute'
+              type: 'CustomScriptExtension'
+              typeHandlerVersion: '1.7'
+              autoUpgradeMinorVersion: true
+              settings: {
+                commandToExecute: 'powershell.exe Install-WindowsFeature -name Web-Server -IncludeManagementTools && powershell.exe remove-item \'C:\\inetpub\\wwwroot\\iisstart.htm\' && powershell.exe Add-Content -Path \'C:\\inetpub\\wwwroot\\iisstart.htm\' -Value $(\'Hello World from \' + $env:computername)'
+              }
+            }
+          }
+          {
             name: 'HealthExtension'
             properties: {
               publisher: 'Microsoft.ManagedServices'
@@ -243,18 +301,6 @@ resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
                     'identifier-value': monitoringModule.outputs.managedIdentityResourceId
                   }
                 }
-              }
-            }
-          }
-          {
-            name: 'InstallWebServer'
-            properties: {
-              publisher: 'Microsoft.Compute'
-              type: 'CustomScriptExtension'
-              typeHandlerVersion: '1.7'
-              autoUpgradeMinorVersion: true
-              settings: {
-                commandToExecute: 'powershell.exe Install-WindowsFeature -name Web-Server -IncludeManagementTools && powershell.exe remove-item \'C:\\inetpub\\wwwroot\\iisstart.htm\' && powershell.exe Add-Content -Path \'C:\\inetpub\\wwwroot\\iisstart.htm\' -Value $(\'Hello World from \' + $env:computername)'
               }
             }
           }

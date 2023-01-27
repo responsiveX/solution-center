@@ -19,7 +19,8 @@ param loadBalancerName string = 'lbe-LoadBalancer'
 param loadBalancerIpAddressName string = 'pip-LoadBalancer'
 var loadBalancerFrontEndName = 'LoadBalancerFrontEnd'
 var loadBalancerBackendPoolName = 'LoadBalancerBackEndPool'
-var loadBalancerProbeName = 'loadBalancerHealthProbe'
+var loadBalancerProbeName80 = 'loadBalancerHealthProbePort80'
+var loadBalancerProbeName443 = 'loadBalancerHealthProbePort443'
 
 var vmScaleSetName = 'vmss-VmStarterKit'
 
@@ -30,7 +31,7 @@ module vNetModule 'modules/vnet-with-bastion.bicep' = {
     networkName: networkName
     vmSubnetName: vmSubnetName
     bastionName: bastionName
-    openPort80: true
+    openWebPorts: true
   }
 }
 
@@ -89,7 +90,7 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2021-08-01' = {
     ]
     loadBalancingRules: [
       {
-        name: 'Rule-HTTP'
+        name: 'HTTP'
         properties: {
           frontendIPConfiguration: {
             id: resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', loadBalancerName, loadBalancerFrontEndName)
@@ -100,25 +101,71 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2021-08-01' = {
           frontendPort: 80
           backendPort: 80
           enableFloatingIP: false
-          idleTimeoutInMinutes: 15
+          idleTimeoutInMinutes: 5
           protocol: 'Tcp'
-          enableTcpReset: true
-          loadDistribution: 'Default'
           disableOutboundSnat: true
           probe: {
-            id: resourceId('Microsoft.Network/loadBalancers/probes', loadBalancerName, loadBalancerProbeName)
+            id: resourceId('Microsoft.Network/loadBalancers/probes', loadBalancerName, loadBalancerProbeName80)
+          }
+        }
+      }
+      {
+        name: 'HTTPS'
+        properties: {
+          frontendIPConfiguration: {
+            id: resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', loadBalancerName, loadBalancerFrontEndName)
+          }
+          backendAddressPool: {
+            id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', loadBalancerName, loadBalancerBackendPoolName)
+          }
+          frontendPort: 443
+          backendPort: 443
+          enableFloatingIP: false
+          idleTimeoutInMinutes: 5
+          protocol: 'Tcp'
+          disableOutboundSnat: true
+          probe: {
+            id: resourceId('Microsoft.Network/loadBalancers/probes', loadBalancerName, loadBalancerProbeName443)
           }
         }
       }
     ]
     probes: [
       {
-        name: loadBalancerProbeName
+        name: loadBalancerProbeName80
         properties: {
           protocol: 'Tcp'
           port: 80
           intervalInSeconds: 5
-          numberOfProbes: 2
+          numberOfProbes: 3
+        }
+      }
+      {
+        name: loadBalancerProbeName443
+        properties: {
+          protocol: 'Tcp'
+          port: 443
+          intervalInSeconds: 5
+          numberOfProbes: 3
+        }
+      }
+    ]
+    outboundRules: [
+      {
+        name: 'AllowOutboundTraffic'
+        properties: {
+          backendAddressPool: {
+            id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', loadBalancerName, loadBalancerBackendPoolName)
+          }
+          frontendIPConfigurations: [
+            {
+              id: resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', loadBalancerName, loadBalancerFrontEndName)
+            }
+          ]
+          protocol: 'All'
+          enableTcpReset: false
+          idleTimeoutInMinutes: 5
+          allocatedOutboundPorts: 128
         }
       }
     ]
@@ -146,7 +193,6 @@ resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
           version: 'latest'
         }
         osDisk: {
-          //name: '${vmName}-osdisk'
           managedDisk: {
             storageAccountType: 'Premium_LRS'
           }
@@ -195,9 +241,9 @@ resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
             ]
           }
           provisionVMAgent: true
-          // patchSettings: {
-          //   patchMode: 'AutomaticByPlatform'
-          // }
+          patchSettings: {
+            patchMode: 'AutomaticByPlatform'
+          }
         }
       }
       diagnosticsProfile: {
@@ -209,8 +255,42 @@ resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
       extensionProfile: {
         extensions: [
           {
+            name: 'InstallNginx'
+            properties:{
+              publisher: 'Microsoft.Azure.Extensions'
+              type:'CustomScript'
+              typeHandlerVersion: '2.1'
+              autoUpgradeMinorVersion: true
+              protectedSettings:{
+                commandToExecute: 'sudo apt-get update && sudo apt-get install nginx -y && sudo sed -i "s/Welcome to nginx/Welcome to nginx from ${vmNamePrefix}/g" /var/www/html/index.nginx-debian.html'
+              }
+            }
+          }
+          {
+            name: 'HealthExtension'
+            properties: {
+              provisionAfterExtensions: [
+                'InstallNginx'
+              ]
+              publisher: 'Microsoft.ManagedServices'
+              type: 'ApplicationHealthLinux'
+              typeHandlerVersion: '1.0'
+              autoUpgradeMinorVersion: true
+              settings: {
+                protocol: 'http'
+                port: 80
+                requestPath: 'http://127.0.0.1'
+                intervalInSeconds: 5
+                numberOfProbes: 1
+              }
+            }
+          }
+          {
             name: 'DependencyAgentWindows'
             properties: {
+              provisionAfterExtensions: [
+                'InstallNginx'
+              ]
               publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
               type: 'DependencyAgentLinux'
               typeHandlerVersion: '9.5'
@@ -223,6 +303,9 @@ resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
           {
             name: 'AzureMonitorLinuxAgent'
             properties: {
+              provisionAfterExtensions: [
+                'InstallNginx'
+              ]
               publisher: 'Microsoft.Azure.Monitor'
               type: 'AzureMonitorLinuxAgent'
               typeHandlerVersion: '1.21'
@@ -235,18 +318,6 @@ resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
                     'identifier-value': monitoringModule.outputs.managedIdentityResourceId
                   }
                 }
-              }
-            }
-          }
-          {
-            name: 'config-app'
-            properties:{
-              publisher: 'Microsoft.Azure.Extensions'
-              type:'CustomScript'
-              typeHandlerVersion: '2.1'
-              autoUpgradeMinorVersion: true
-              protectedSettings:{
-                commandToExecute: 'apt-get update && apt-get install nginx -y && sed -i "s/Welcome to nginx/Welcome to nginx from ${vmNamePrefix}/g" /var/www/html/index.nginx-debian.html'
               }
             }
           }

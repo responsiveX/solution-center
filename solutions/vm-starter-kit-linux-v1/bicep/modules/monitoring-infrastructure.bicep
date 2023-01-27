@@ -111,12 +111,18 @@ resource vmInsights 'Microsoft.OperationsManagement/solutions@2015-11-01-preview
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
-  name: 'id-AzureMonitorAgentExtension'
+resource vmManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
+  name: 'id-StarterKitVMs'
+  location: location
+}
+
+resource amaManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
+  name: 'id-AzureMonitorAgent'
   location: location
 }
 
 output storageAccountName string = storageAccount.name
 output storageUri string = storageAccount.properties.primaryEndpoints.blob
 output dataCollectionRuleName string = dataCollectionRule.name
-output managedIdentityResourceId string = managedIdentity.id
+output vmManagedIdentityResourceId string = vmManagedIdentity.id
+output amaManagedIdentityResourceId string = amaManagedIdentity.id

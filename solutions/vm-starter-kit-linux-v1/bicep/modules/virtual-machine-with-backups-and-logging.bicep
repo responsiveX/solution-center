@@ -19,7 +19,8 @@ param recoveryServicesVaultName string
 var recoveryVaultPolicyName = 'DefaultPolicy'
 
 param dataCollectionRuleName string
-param managedIdentityResourceId string
+param vmManagedIdentityResourceId string
+param amaManagedIdentityResourceId string
 
 resource nic 'Microsoft.Network/networkInterfaces@2022-07-01' = {
   name: '${vmName}-nic'
@@ -50,7 +51,10 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
   name: vmName
   location: location
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${vmManagedIdentityResourceId}': {}
+    }
   }
   properties: {
     hardwareProfile: {
@@ -136,7 +140,7 @@ resource linuxAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = 
       authentication: {
         managedIdentity: {
           'identifier-name': 'mi_res_id'
-          'identifier-value': managedIdentityResourceId
+          'identifier-value': amaManagedIdentityResourceId
         }
       }
     }

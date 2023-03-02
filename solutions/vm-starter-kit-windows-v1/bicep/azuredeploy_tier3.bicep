@@ -13,6 +13,7 @@ param adminUsername string = 'azureadmin'
 param adminPassword string = 'P@ssword4242'
 
 param recoveryServicesVaultName string = 'rsv-VmBackupVault'
+var recoveryVaultPolicyName = 'DefaultPolicy'
 
 param loadBalancerName string = 'lbe-LoadBalancer'
 param loadBalancerIpAddressName string = 'pip-LoadBalancer'
@@ -51,6 +52,11 @@ resource recoveryVault 'Microsoft.RecoveryServices/vaults@2022-10-01' = {
   properties: {
     publicNetworkAccess: 'Disabled'
   }
+}
+
+resource recoveryVaultPolicy 'Microsoft.RecoveryServices/vaults/backupPolicies@2022-04-01' existing = {
+  name: recoveryVaultPolicyName
+  parent: recoveryVault
 }
 
 resource loadBalancerPublicIp 'Microsoft.Network/publicIPAddresses@2022-07-01' = {
@@ -171,141 +177,32 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2021-08-01' = {
   }
 }
 
-resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
-  name: vmScaleSetName
-  location: location
-  sku: {
-    name: vmSize
-    tier: 'Standard'
-    capacity: 3
+module policiesModule 'modules/backup-and-monitoring-policies.bicep' = {
+  name: 'backup-and-monitoring-policies'
+  params: {
+    location: location
+    recoveryVaultPolicyId: recoveryVaultPolicy.id
   }
-  properties: {
-    singlePlacementGroup: false
-    orchestrationMode: 'Flexible'
-    platformFaultDomainCount: 1
-    virtualMachineProfile: {
-      storageProfile: {
-        imageReference: {
-          publisher: 'MicrosoftWindowsServer'
-          offer: 'WindowsServer'
-          sku: '2022-datacenter-azure-edition-core'
-          version: 'latest'
-        }
-        osDisk: {
-          managedDisk: {
-            storageAccountType: 'Premium_LRS'
-          }
-          caching: 'ReadWrite'
-          createOption: 'FromImage'
-        }
-      }
-      networkProfile: {
-        networkApiVersion: '2020-11-01'
-        networkInterfaceConfigurations: [
-          {
-            name: 'nic'
-            properties: {
-              primary: true
-              ipConfigurations: [
-                {
-                  name: 'ipconfig1'
-                  properties: {
-                    subnet: {
-                      id: resourceId('Microsoft.Network/virtualNetworks/subnets', vNetModule.outputs.vNetName, vmSubnetName)
-                    }
-                    loadBalancerBackendAddressPools: [
-                      {
-                        id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', loadBalancer.name, loadBalancerBackendPoolName)
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          }
-        ]
-      }
-      osProfile: {
-        computerNamePrefix: vmNamePrefix
-        adminUsername: adminUsername
-        adminPassword: adminPassword
-        windowsConfiguration: {
-          provisionVMAgent: true
-          patchSettings: {
-            patchMode: 'AutomaticByPlatform'
-            enableHotpatching: true
-          }
-          enableAutomaticUpdates: true
-        }
-      }
-      diagnosticsProfile: {
-        bootDiagnostics: {
-          enabled: true
-          storageUri: monitoringModule.outputs.storageUri
-        }
-      }
-      extensionProfile: {
-        extensions: [
-          {
-            name: 'InstallIIS'
-            properties: {
-              publisher: 'Microsoft.Compute'
-              type: 'CustomScriptExtension'
-              typeHandlerVersion: '1.7'
-              autoUpgradeMinorVersion: true
-              settings: {
-                commandToExecute: 'powershell.exe Install-WindowsFeature -name Web-Server -IncludeManagementTools && powershell.exe remove-item \'C:\\inetpub\\wwwroot\\iisstart.htm\' && powershell.exe Add-Content -Path \'C:\\inetpub\\wwwroot\\iisstart.htm\' -Value $(\'Hello World from \' + $env:computername)'
-              }
-            }
-          }
-          {
-            name: 'HealthExtension'
-            properties: {
-              publisher: 'Microsoft.ManagedServices'
-              type: 'ApplicationHealthWindows'
-              typeHandlerVersion: '1.0'
-              autoUpgradeMinorVersion: true
-              settings: {
-                protocol: 'http'
-                port: 80
-                requestPath: 'http://127.0.0.1'
-                intervalInSeconds: 5
-                numberOfProbes: 1
-              }
-            }
-          }
-          {
-            name: 'DependencyAgentWindows'
-            properties: {
-              publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
-              type: 'DependencyAgentWindows'
-              typeHandlerVersion: '9.5'
-              autoUpgradeMinorVersion: true
-              settings: {
-                enableAMA: true
-              }
-            }
-          }
-          {
-            name: 'AzureMonitorLinuxAgent'
-            properties: {
-              publisher: 'Microsoft.Azure.Monitor'
-              type: 'AzureMonitorWindowsAgent'
-              typeHandlerVersion: '1.0'
-              autoUpgradeMinorVersion: true
-              enableAutomaticUpgrade: true
-              settings: {
-                authentication: {
-                  managedIdentity: {
-                    'identifier-name': 'mi_res_id'
-                    'identifier-value': monitoringModule.outputs.managedIdentityResourceId
-                  }
-                }
-              }
-            }
-          }
-        ]
-      }
-    }
+}
+
+module vmScaleSetModule 'modules/virtual-machine-scale-set.bicep' = {
+  name: 'vm-scale-set'
+  params: {
+    location: location
+    vmScaleSetName: vmScaleSetName
+    vNetName: vNetModule.outputs.vNetName
+    vmSubnetName: vmSubnetName
+    loggingStorageUri: monitoringModule.outputs.storageUri
+    vmNamePrefix: vmNamePrefix
+    vmSize: vmSize
+    adminUsername: adminUsername
+    adminPassword: adminPassword
+    loadBalancerName: loadBalancer.name
+    loadBalancerBackendPoolName: loadBalancerBackendPoolName
+    vmManagedIdentityResourceId: monitoringModule.outputs.vmManagedIdentityResourceId
+    amaManagedIdentityResourceId: monitoringModule.outputs.amaManagedIdentityResourceId
   }
+  dependsOn: [
+    policiesModule
+  ]
 }

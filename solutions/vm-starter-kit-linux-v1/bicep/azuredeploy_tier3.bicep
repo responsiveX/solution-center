@@ -14,6 +14,7 @@ param sshPublicKey string = 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDkNiD0HIP68W2
 param osdiskSizeGB int = 30
 
 param recoveryServicesVaultName string = 'rsv-VmBackupVault'
+var recoveryVaultPolicyName = 'DefaultPolicy'
 
 param loadBalancerName string = 'lbe-LoadBalancer'
 param loadBalancerIpAddressName string = 'pip-LoadBalancer'
@@ -52,6 +53,11 @@ resource recoveryVault 'Microsoft.RecoveryServices/vaults@2022-10-01' = {
   properties: {
     publicNetworkAccess: 'Disabled'
   }
+}
+
+resource recoveryVaultPolicy 'Microsoft.RecoveryServices/vaults/backupPolicies@2022-04-01' existing = {
+  name: recoveryVaultPolicyName
+  parent: recoveryVault
 }
 
 resource loadBalancerPublicIp 'Microsoft.Network/publicIPAddresses@2022-07-01' = {
@@ -172,158 +178,33 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2021-08-01' = {
   }
 }
 
-resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
-  name: vmScaleSetName
-  location: location
-  sku: {
-    name: vmSize
-    tier: 'Standard'
-    capacity: 3
-  }
-  properties: {
-    singlePlacementGroup: false
-    orchestrationMode: 'Flexible'
-    platformFaultDomainCount: 1
-    virtualMachineProfile: {
-      storageProfile: {
-        imageReference: {
-          publisher: 'Canonical'
-          offer: 'UbuntuServer'
-          sku: '18.04-LTS'
-          version: 'latest'
-        }
-        osDisk: {
-          managedDisk: {
-            storageAccountType: 'Premium_LRS'
-          }
-          caching: 'ReadWrite'
-          createOption: 'FromImage'
-          diskSizeGB: osdiskSizeGB
-        }
-      }
-      networkProfile: {
-        networkApiVersion: '2020-11-01'
-        networkInterfaceConfigurations: [
-          {
-            name: 'nic'
-            properties: {
-              primary: true
-              ipConfigurations: [
-                {
-                  name: 'ipconfig1'
-                  properties: {
-                    subnet: {
-                      id: resourceId('Microsoft.Network/virtualNetworks/subnets', vNetModule.outputs.vNetName, vmSubnetName)
-                    }
-                    loadBalancerBackendAddressPools: [
-                      {
-                        id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', loadBalancer.name, loadBalancerBackendPoolName)
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          }
-        ]
-      }
-      osProfile: {
-        computerNamePrefix: vmNamePrefix
-        adminUsername: adminUsername
-        linuxConfiguration: {
-          disablePasswordAuthentication: true
-          ssh: {
-            publicKeys: [
-              {
-                path: '/home/${adminUsername}/.ssh/authorized_keys'
-                keyData: sshPublicKey
-              }
-            ]
-          }
-          provisionVMAgent: true
-          patchSettings: {
-            patchMode: 'AutomaticByPlatform'
-          }
-        }
-      }
-      diagnosticsProfile: {
-        bootDiagnostics: {
-          enabled: true
-          storageUri: monitoringModule.outputs.storageUri
-        }
-      }
-      extensionProfile: {
-        extensions: [
-          {
-            name: 'InstallNginx'
-            properties:{
-              publisher: 'Microsoft.Azure.Extensions'
-              type:'CustomScript'
-              typeHandlerVersion: '2.1'
-              autoUpgradeMinorVersion: true
-              protectedSettings:{
-                commandToExecute: 'sudo apt-get update && sudo apt-get install nginx -y && sudo sed -i "s/Welcome to nginx/Welcome to nginx from ${vmNamePrefix}/g" /var/www/html/index.nginx-debian.html'
-              }
-            }
-          }
-          {
-            name: 'HealthExtension'
-            properties: {
-              provisionAfterExtensions: [
-                'InstallNginx'
-              ]
-              publisher: 'Microsoft.ManagedServices'
-              type: 'ApplicationHealthLinux'
-              typeHandlerVersion: '1.0'
-              autoUpgradeMinorVersion: true
-              settings: {
-                protocol: 'http'
-                port: 80
-                requestPath: 'http://127.0.0.1'
-                intervalInSeconds: 5
-                numberOfProbes: 1
-              }
-            }
-          }
-          {
-            name: 'DependencyAgentWindows'
-            properties: {
-              provisionAfterExtensions: [
-                'InstallNginx'
-              ]
-              publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
-              type: 'DependencyAgentLinux'
-              typeHandlerVersion: '9.5'
-              autoUpgradeMinorVersion: true
-              settings: {
-                enableAMA: true
-              }
-            }
-          }
-          {
-            name: 'AzureMonitorLinuxAgent'
-            properties: {
-              provisionAfterExtensions: [
-                'InstallNginx'
-              ]
-              publisher: 'Microsoft.Azure.Monitor'
-              type: 'AzureMonitorLinuxAgent'
-              typeHandlerVersion: '1.21'
-              autoUpgradeMinorVersion: true
-              enableAutomaticUpgrade: true
-              settings: {
-                authentication: {
-                  managedIdentity: {
-                    'identifier-name': 'mi_res_id'
-                    'identifier-value': monitoringModule.outputs.managedIdentityResourceId
-                  }
-                }
-              }
-            }
-          }
-        ]
-      }
-    }
+module policiesModule 'modules/backup-and-monitoring-policies.bicep' = {
+  name: 'backup-and-monitoring-policies'
+  params: {
+    location: location
+    recoveryVaultPolicyId: recoveryVaultPolicy.id
   }
 }
 
+module vmScaleSetModule 'modules/virtual-machine-scale-set.bicep' = {
+  name: 'vm-scale-set'
+  params: {
+    location: location
+    vmScaleSetName: vmScaleSetName
+    vNetName: vNetModule.outputs.vNetName
+    vmSubnetName: vmSubnetName
+    loggingStorageUri: monitoringModule.outputs.storageUri
+    vmNamePrefix: vmNamePrefix
+    vmSize: vmSize
+    adminUsername: adminUsername
+    sshPublicKey: sshPublicKey
+    osdiskSizeGB: osdiskSizeGB
+    loadBalancerName: loadBalancer.name
+    loadBalancerBackendPoolName: loadBalancerBackendPoolName
+    vmManagedIdentityResourceId: monitoringModule.outputs.vmManagedIdentityResourceId
+    amaManagedIdentityResourceId: monitoringModule.outputs.amaManagedIdentityResourceId
+  }
+  dependsOn: [
+    policiesModule
+  ]
+}

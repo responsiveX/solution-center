@@ -19,7 +19,7 @@
         {
             "id": "base",
             "title": "Get  Connected",
-            "subTitle": "Deploys a VM and Bastion Service",
+            "subTitle": "Deploys a Virtual Machine and Bastion Service",
             "cost": {
                 "value": 150,
                 "currency": "USD",
@@ -74,7 +74,7 @@
         {
             "id": "base2",
             "title": "Backup & Monitoring",
-            "subTitle": "Details on what gets deployed",
+            "subTitle": "Deploys a Virtual Machine, Bastion Service, and turns on Backup & Monitoring",
             "cost": {
                 "value": 150,
                 "currency": "USD",
@@ -103,15 +103,15 @@
             ],
             "associatedResources": [
                 {
+                    "resourceType": "Microsoft.Compute/virtualMachines",
+                    "type": "AzureResource"
+                },
+                {
                     "resourceType": "Microsoft.Network/virtualNetworks",
                     "type": "AzureResource"
                 },
                 {
-                    "resourceType": "Microsoft.Network/azureFirewalls",
-                    "type": "AzureResource"
-                },
-                {
-                    "resourceType": "Microsoft.Network/firewallPolicies",
+                    "resourceType": "Microsoft.Network/networkSecurityGroups",
                     "type": "AzureResource"
                 },
                 {
@@ -122,7 +122,11 @@
                         "iconType": "FrameworkIcon",
                         "iconNumber": 41
                     }
-                }
+                },
+                {
+                    "resourceType": "Microsoft.RecoveryServices/vaults",
+                    "type": "AzureResource"
+                },
             ]
         },
         {

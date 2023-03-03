@@ -41,9 +41,8 @@
                 {
                     "pivotName": "hubNetwork",
                     "content": [
-                        "Highlight on this feature",
-                        "Highlight on this feature",
-                        "Highlight on this feature"
+                        "Virtual Machine",
+                        "Bastion Service"
                     ]
                 }
             ],

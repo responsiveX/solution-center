@@ -126,7 +126,7 @@
                 {
                     "resourceType": "Microsoft.RecoveryServices/vaults",
                     "type": "AzureResource"
-                },
+                }
             ]
         },
         {

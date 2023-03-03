@@ -19,7 +19,7 @@
         {
             "id": "base",
             "title": "Get  Connected",
-            "subTitle": "Details on what gets deployed",
+            "subTitle": "Deploys a VM and Bastion Service",
             "cost": {
                 "value": 150,
                 "currency": "USD",
@@ -49,15 +49,15 @@
             ],
             "associatedResources": [
                 {
+                    "resourceType": "Microsoft.Compute/virtualMachines",
+                    "type": "AzureResource"
+                },
+                {
                     "resourceType": "Microsoft.Network/virtualNetworks",
                     "type": "AzureResource"
                 },
                 {
-                    "resourceType": "Microsoft.Network/azureFirewalls",
-                    "type": "AzureResource"
-                },
-                {
-                    "resourceType": "Microsoft.Network/firewallPolicies",
+                    "resourceType": "Microsoft.Network/networkSecurityGroups",
                     "type": "AzureResource"
                 },
                 {

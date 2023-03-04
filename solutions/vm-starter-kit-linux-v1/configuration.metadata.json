@@ -18,8 +18,8 @@
     "configurations": [
         {
             "id": "base",
-            "title": "Get  Connected",
-            "subTitle": "A starter solution to get connected to a Virtual Machine.",
+            "title": "Get Connected",
+            "subTitle": "Details on what gets deployed",
             "cost": {
                 "value": 150,
                 "currency": "USD",
@@ -31,62 +31,7 @@
                 "score": 1,
                 "tooltip": "Example tooltip describing cost to maintain, customizable."
             },
-            "templateFileName": "example-template.json",
-            "supportsManualConfiguration": true,
-            "manualConfigurationBlade": {
-                "bladeName": "CreateVmBlade",
-                "extension": "Microsoft_Azure_Compute"
-            },
-            "pivotValues": [
-                {
-                    "pivotName": "vmssCompute",
-                    "content": [
-                        "Small autoscale web front VM sku 2 D1v2 (1 vCPU, 3.5 GB RAM) Scales to a max of 10 nodes",
-                        "256 GiB SSD per node",
-                        "Requires only 2 VM cores",
-                        "Works with free trial subscriptions"
-                    ]
-                }
-            ],
-            "associatedResources": [
-                {
-                    "resourceType": "Microsoft.Compute/virtualMachines",
-                    "type": "AzureResource"
-                },
-                {
-                    "resourceType": "Microsoft.Network/virtualNetworks",
-                    "type": "AzureResource"
-                },
-                {
-                    "resourceType": "Microsoft.Network/networkSecurityGroups",
-                    "type": "AzureResource"
-                },
-                {
-                    "resourceType": "",
-                    "displayName": "Azure Monitor",
-                    "type": "Custom",
-                    "icon": {
-                        "iconType": "FrameworkIcon",
-                        "iconNumber": 41
-                    }
-                }
-            ]
-        },
-        {
-            "id": "base2",
-            "title": "Backup & Monitoring",
-            "subTitle": "Deploys a Virtual Machine, Bastion Service, and turns on Backup & Monitoring",
-            "cost": {
-                "value": 150,
-                "currency": "USD",
-                "type": "absolute",
-                "cadence": "monthly",
-                "tooltip": "Example tooltip describing the pricing, customizable."
-            },
-            "maintenance": {
-                "score": 2,
-                "tooltip": "Example tooltip describing cost to maintain, customizable."
-            },
+            "templateFileName": "azuredeploy_tier1.bicep",
             "supportsManualConfiguration": true,
             "manualConfigurationBlade": {
                 "bladeName": "CreateVmBlade",
@@ -104,15 +49,15 @@
             ],
             "associatedResources": [
                 {
-                    "resourceType": "Microsoft.Compute/virtualMachines",
-                    "type": "AzureResource"
-                },
-                {
                     "resourceType": "Microsoft.Network/virtualNetworks",
                     "type": "AzureResource"
                 },
                 {
-                    "resourceType": "Microsoft.Network/networkSecurityGroups",
+                    "resourceType": "Microsoft.Network/azureFirewalls",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.Network/firewallPolicies",
                     "type": "AzureResource"
                 },
                 {
@@ -123,10 +68,61 @@
                         "iconType": "FrameworkIcon",
                         "iconNumber": 41
                     }
+                }
+            ]
+        },
+        {
+            "id": "base2",
+            "title": "Backup & Monitoring",
+            "subTitle": "Details on what gets deployed",
+            "cost": {
+                "value": 150,
+                "currency": "USD",
+                "type": "absolute",
+                "cadence": "monthly",
+                "tooltip": "Example tooltip describing the pricing, customizable."
+            },
+            "maintenance": {
+                "score": 2,
+                "tooltip": "Example tooltip describing cost to maintain, customizable."
+            },
+            "templateFileName": "azuredeploy_tier2.bicep",
+            "supportsManualConfiguration": true,
+            "manualConfigurationBlade": {
+                "bladeName": "CreateVmBlade",
+                "extension": "Microsoft_Azure_Compute"
+            },
+            "pivotValues": [
+                {
+                    "pivotName": "hubNetwork",
+                    "content": [
+                        "Highlight on this feature",
+                        "Highlight on this feature",
+                        "Highlight on this feature"
+                    ]
+                }
+            ],
+            "associatedResources": [
+                {
+                    "resourceType": "Microsoft.Network/virtualNetworks",
+                    "type": "AzureResource"
                 },
                 {
-                    "resourceType": "Microsoft.RecoveryServices/vaults",
+                    "resourceType": "Microsoft.Network/azureFirewalls",
                     "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.Network/firewallPolicies",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "",
+                    "displayName": "Azure Monitor",
+                    "type": "Custom",
+                    "icon": {
+                        "iconType": "FrameworkIcon",
+                        "iconNumber": 41
+                    }
                 }
             ]
         },
@@ -145,6 +141,7 @@
                 "score": 2,
                 "tooltip": "Example tooltip describing cost to maintain, customizable."
             },
+            "templateFileName": "azuredeploy_tier3.bicep",
             "supportsManualConfiguration": true,
             "manualConfigurationBlade": {
                 "bladeName": "CreateVmBlade",

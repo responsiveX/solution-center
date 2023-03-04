@@ -19,7 +19,7 @@
         {
             "id": "base",
             "title": "Get  Connected",
-            "subTitle": "Deploys a Virtual Machine and Bastion Service",
+            "subTitle": "A starter solution to get connected to a Virtual Machine.",
             "cost": {
                 "value": 150,
                 "currency": "USD",
@@ -28,7 +28,7 @@
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
             "maintenance": {
-                "score": 2,
+                "score": 1,
                 "tooltip": "Example tooltip describing cost to maintain, customizable."
             },
             "templateFileName": "example-template.json",
@@ -39,10 +39,12 @@
             },
             "pivotValues": [
                 {
-                    "pivotName": "hubNetwork",
+                    "pivotName": "virtualMachine",
                     "content": [
-                        "Virtual Machine",
-                        "Bastion Service"
+                        "Small autoscale web front VM sku 2 D1v2 (1 vCPU, 3.5 GB RAM) Scales to a max of 10 nodes",
+                        "256 GiB SSD per node",
+                        "Requires only 2 VM cores",
+                        "Works with free trial subscriptions"
                     ]
                 }
             ],
@@ -92,11 +94,12 @@
             },
             "pivotValues": [
                 {
-                    "pivotName": "hubNetwork",
+                    "pivotName": "vmssCompute",
                     "content": [
-                        "Highlight on this feature",
-                        "Highlight on this feature",
-                        "Highlight on this feature"
+                        "Small autoscale web front VM sku 2 D1v2 (1 vCPU, 3.5 GB RAM) Scales to a max of 10 nodes",
+                        "256 GiB SSD per node",
+                        "Requires only 2 VM cores",
+                        "Works with free trial subscriptions"
                     ]
                 }
             ],
@@ -150,11 +153,12 @@
             },
             "pivotValues": [
                 {
-                    "pivotName": "hubNetwork",
+                    "pivotName": "vmssCompute",
                     "content": [
-                        "Highlight on this feature",
-                        "Highlight on this feature",
-                        "Highlight on this feature"
+                        "Small autoscale web front VM sku 2 D1v2 (1 vCPU, 3.5 GB RAM) Scales to a max of 10 nodes",
+                        "256 GiB SSD per node",
+                        "Requires only 2 VM cores",
+                        "Works with free trial subscriptions"
                     ]
                 }
             ],

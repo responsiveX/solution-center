@@ -39,7 +39,7 @@
             },
             "pivotValues": [
                 {
-                    "pivotName": "virtualMachine",
+                    "pivotName": "vmssCompute",
                     "content": [
                         "Small autoscale web front VM sku 2 D1v2 (1 vCPU, 3.5 GB RAM) Scales to a max of 10 nodes",
                         "256 GiB SSD per node",
@@ -94,12 +94,11 @@
             },
             "pivotValues": [
                 {
-                    "pivotName": "vmssCompute",
+                    "pivotName": "hubNetwork",
                     "content": [
-                        "Small autoscale web front VM sku 2 D1v2 (1 vCPU, 3.5 GB RAM) Scales to a max of 10 nodes",
-                        "256 GiB SSD per node",
-                        "Requires only 2 VM cores",
-                        "Works with free trial subscriptions"
+                        "Highlight on this feature",
+                        "Highlight on this feature",
+                        "Highlight on this feature"
                     ]
                 }
             ],
@@ -153,12 +152,11 @@
             },
             "pivotValues": [
                 {
-                    "pivotName": "vmssCompute",
+                    "pivotName": "hubNetwork",
                     "content": [
-                        "Small autoscale web front VM sku 2 D1v2 (1 vCPU, 3.5 GB RAM) Scales to a max of 10 nodes",
-                        "256 GiB SSD per node",
-                        "Requires only 2 VM cores",
-                        "Works with free trial subscriptions"
+                        "Highlight on this feature",
+                        "Highlight on this feature",
+                        "Highlight on this feature"
                     ]
                 }
             ],

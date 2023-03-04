@@ -27,6 +27,19 @@ resource backupPolicy 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
         value: recoveryVaultPolicyId
       }
     }
+    resourceSelectors: [
+      {
+        name: 'Resources to be monitored'
+         selectors: [
+            {
+              kind: 'resourceType'
+              in: [
+                'Microsoft.Compute/virtualMachines'
+              ]
+            }
+         ]
+      }
+   ]
   }
 }
 
@@ -39,5 +52,18 @@ resource monitoringPolicy 'Microsoft.Authorization/policyAssignments@2022-06-01'
   }
   properties: {
     policyDefinitionId: monitoringPolicyDefinitionId
+    resourceSelectors: [
+       {
+         name: 'Resources to be monitored'
+          selectors: [
+             {
+               kind: 'resourceType'
+               in: [
+                 'Microsoft.Compute/virtualMachines'
+               ]
+             }
+          ]
+       }
+    ]
   }
 }

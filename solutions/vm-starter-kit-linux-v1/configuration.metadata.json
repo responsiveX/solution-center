@@ -5,14 +5,9 @@
     "associatedResources": [],
     "pivots": [
         {
-            "name": "hubNetwork",
-            "type": "Custom",
-            "displayName": "Custom icon on left side",
-            "azureResourceType": "Microsoft.Network/virtualNetworks",
-            "icon": {
-                "iconNumber": 245,
-                "iconType": "FrameworkIcon"
-            }
+            "name": "vmssCompute",
+            "type": "AzureResource",
+            "azureResourceType": "Microsoft.Compute/virtualMachineScaleSets"
         }
     ],
     "configurations": [

@@ -18,6 +18,16 @@
             "name": "virtualMachine",
             "type": "AzureResource",
             "azureResourceType": "Microsoft.Compute/virtualMachines"
+        },
+        {
+            "name": "Bastion Host",
+            "type": "AzureResource",
+            "azureResourceType": "Microsoft.Network/bastionHosts"
+        },
+        {
+            "name": "virtualMachineScaleSet",
+            "type": "AzureResource",
+            "azureResourceType": "Microsoft.Compute/virtualMachineScaleSets"
         }
     ],
     "configurations": [

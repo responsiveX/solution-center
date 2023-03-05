@@ -60,6 +60,27 @@
                         "Highlight on this feature",
                         "Highlight on this feature"
                     ]
+                },
+                {
+                    "pivotName": "virtualMachine",
+                    "content": [
+                        "Standard D2s v5 VM",
+                        "126 GiB Premium SSD"
+                    ]
+                },
+                {
+                    "pivotName": "Bastion Host",
+                    "content": [
+                        "Basic tier enabling RDP/SSH connectivity to",
+                        "virtual machines without exposing public IP's.",
+                        "Highlight on this feature"
+                    ]
+                },
+                {
+                    "pivotName": "virtualMachineScaleSet",
+                    "content": [
+                        "N/A"
+                    ]
                 }
             ],
             "associatedResources": [

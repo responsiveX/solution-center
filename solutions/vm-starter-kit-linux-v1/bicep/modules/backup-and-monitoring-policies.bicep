@@ -59,7 +59,7 @@ resource monitoringPolicy 'Microsoft.Authorization/policyAssignments@2022-06-01'
              {
                kind: 'resourceType'
                in: [
-                 'Microsoft.Compute/virtualMachines'
+                 'Microsoft.Compute/virtualMachineScaleSets'
                ]
              }
           ]

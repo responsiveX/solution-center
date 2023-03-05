@@ -34,7 +34,7 @@
         {
             "id": "base",
             "title": "Get Connected",
-            "subTitle": "Details on what gets deployed",
+            "subTitle": "A starter solution to get setup quick",
             "cost": {
                 "value": 150,
                 "currency": "USD",
@@ -65,7 +65,7 @@
                     "pivotName": "virtualMachine",
                     "content": [
                         "Standard D2s v5 VM",
-                        "126 GiB Premium SSD"
+                        "127 GiB Premium SSD"
                     ]
                 },
                 {
@@ -117,7 +117,7 @@
         {
             "id": "base2",
             "title": "Backup & Monitoring",
-            "subTitle": "Details on what gets deployed",
+            "subTitle": "Builds on connecting to a Virtual Machine with Backup and Monitoring.",
             "cost": {
                 "value": 150,
                 "currency": "USD",
@@ -142,6 +142,27 @@
                         "Highlight on this feature",
                         "Highlight on this feature",
                         "Highlight on this feature"
+                    ]
+                },
+                {
+                    "pivotName": "virtualMachine",
+                    "content": [
+                        "Standard D2s v5 VM",
+                        "127 GiB Premium SSD"
+                    ]
+                },
+                {
+                    "pivotName": "Bastion Host",
+                    "content": [
+                        "Basic tier enabling RDP/SSH connectivity to",
+                        "virtual machines without exposing public IP's.",
+                        "Highlight on this feature"
+                    ]
+                },
+                {
+                    "pivotName": "virtualMachineScaleSet",
+                    "content": [
+                        "N/A"
                     ]
                 }
             ],
@@ -212,7 +233,7 @@
         {
             "id": "base3",
             "title": "Availability & Scale",
-            "subTitle": "Details on what gets deployed",
+            "subTitle": "Expands a connected solution with availability and scale for a robust solution. ",
             "cost": {
                 "value": 150,
                 "currency": "USD",
@@ -221,7 +242,7 @@
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
             "maintenance": {
-                "score": 2,
+                "score": 3,
                 "tooltip": "Example tooltip describing cost to maintain, customizable."
             },
             "templateFileName": "azuredeploy_tier3.bicep",
@@ -237,6 +258,27 @@
                         "Highlight on this feature",
                         "Highlight on this feature",
                         "Highlight on this feature"
+                    ]
+                },
+                {
+                    "pivotName": "virtualMachine",
+                    "content": [
+                        "Standard D2s v5 VM",
+                        "127 GiB Premium SSD"
+                    ]
+                },
+                {
+                    "pivotName": "Bastion Host",
+                    "content": [
+                        "Basic tier enabling RDP/SSH connectivity to",
+                        "virtual machines without exposing public IP's.",
+                        "Highlight on this feature"
+                    ]
+                },
+                {
+                    "pivotName": "virtualMachineScaleSet",
+                    "content": [
+                        "N/A"
                     ]
                 }
             ],

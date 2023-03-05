@@ -147,15 +147,39 @@
             ],
             "associatedResources": [
                 {
+                    "resourceType": "Microsoft.Compute/virtualMachines",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.Network/networkSecurityGroups",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.Network/bastionHosts",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.Network/publicIPAddresses",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.Network/networkInterfaces",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.Compute/disks",
+                    "type": "AzureResource"
+                },
+                {
                     "resourceType": "Microsoft.Network/virtualNetworks",
                     "type": "AzureResource"
                 },
                 {
-                    "resourceType": "Microsoft.Network/azureFirewalls",
+                    "resourceType": "Microsoft.RecoveryServices/vaults",
                     "type": "AzureResource"
                 },
                 {
-                    "resourceType": "Microsoft.Network/firewallPolicies",
+                    "resourceType": "Microsoft.Storage/storageAccounts",
                     "type": "AzureResource"
                 },
                 {

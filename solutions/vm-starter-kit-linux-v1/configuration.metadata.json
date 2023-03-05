@@ -183,6 +183,22 @@
                     "type": "AzureResource"
                 },
                 {
+                    "resourceType": "Microsoft.OperationsManagement/solutions",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.OperationalInsights/workspaces",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.Insights/dataCollectionRules",
+                    "type": "AzureResource"
+                },
+                {
                     "resourceType": "",
                     "displayName": "Azure Monitor",
                     "type": "Custom",
@@ -226,15 +242,63 @@
             ],
             "associatedResources": [
                 {
+                    "resourceType": "Microsoft.Compute/virtualMachines",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.Network/networkSecurityGroups",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.Network/bastionHosts",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.Network/publicIPAddresses",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.Network/networkInterfaces",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.Compute/disks",
+                    "type": "AzureResource"
+                },
+                {
                     "resourceType": "Microsoft.Network/virtualNetworks",
                     "type": "AzureResource"
                 },
                 {
-                    "resourceType": "Microsoft.Network/azureFirewalls",
+                    "resourceType": "Microsoft.Network/loadBalancers",
                     "type": "AzureResource"
                 },
                 {
-                    "resourceType": "Microsoft.Network/firewallPolicies",
+                    "resourceType": "Microsoft.Compute/virtualMachineScaleSets",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.RecoveryServices/vaults",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.Storage/storageAccounts",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.OperationsManagement/solutions",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.OperationalInsights/workspaces",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities",
+                    "type": "AzureResource"
+                },
+                {
+                    "resourceType": "Microsoft.Insights/dataCollectionRules",
                     "type": "AzureResource"
                 },
                 {

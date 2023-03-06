@@ -27,6 +27,7 @@
         },
         {
             "name": "AzureMonitor",
+            "displayName": "Azure Monitor",
             "type": "Custom",
             "icon": {
                 "iconType": "FrameworkIcon",

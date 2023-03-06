@@ -203,14 +203,15 @@ module vmScaleSetModule 'modules/virtual-machine-scale-set.bicep' = {
     vmManagedIdentityResourceId: monitoringModule.outputs.vmManagedIdentityResourceId
     amaManagedIdentityResourceId: monitoringModule.outputs.amaManagedIdentityResourceId
   }
-  dependsOn: [
-    policiesModule
-  ]
+  // dependsOn: [
+  //   policiesModule
+  // ]
 }
 
 module policyRemediationModule 'modules/policy-remediation.bicep' = {
   name: 'policy-remediation'
   params: {
+    location: location
     backupPolicyAssignmentId: policiesModule.outputs.backupPolicyAssignmentId
     backupPolicyDefinitionId: policiesModule.outputs.backupPolicyDefinitionId
     monitoringPolicyAssignmentId: policiesModule.outputs.monitoringPolicyAssignmentId

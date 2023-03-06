@@ -178,13 +178,14 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2021-08-01' = {
   }
 }
 
-// module policiesModule 'modules/backup-and-monitoring-policies.bicep' = {
-//   name: 'backup-and-monitoring-policies'
-//   params: {
-//     location: location
-//     recoveryVaultPolicyId: recoveryVaultPolicy.id
-//   }
-// }
+module policiesModule 'modules/backup-and-monitoring-policies.bicep' = {
+  name: 'backup-and-monitoring-policies'
+  params: {
+    location: location
+    recoveryVaultPolicyId: recoveryVaultPolicy.id
+    logAnalyticsResourceId: monitoringModule.outputs.logAnalyticsWorkspaceId
+  }
+}
 
 module vmScaleSetModule 'modules/virtual-machine-scale-set.bicep' = {
   name: 'vm-scale-set'
@@ -207,4 +208,18 @@ module vmScaleSetModule 'modules/virtual-machine-scale-set.bicep' = {
   // dependsOn: [
   //   policiesModule
   // ]
+}
+
+module policyRemediationModule 'modules/policy-remediation.bicep' = {
+  name: 'policy-remediation'
+  params: {
+    location: location
+    backupPolicyAssignmentId: policiesModule.outputs.backupPolicyAssignmentId
+    backupPolicyDefinitionId: policiesModule.outputs.backupPolicyDefinitionId
+    monitoringPolicyAssignmentId: policiesModule.outputs.monitoringPolicyAssignmentId
+    monitoringPolicyDefinitionId: policiesModule.outputs.monitoringPolicyDefinitionId
+  }
+  dependsOn: [
+    vmScaleSetModule
+  ]
 }

@@ -34,9 +34,9 @@
         {
             "id": "base",
             "title": "Get Connected",
-            "subTitle": "A starter solution to get setup quick",
+            "subTitle": "A starter solution to get setup quick plus remote management",
             "cost": {
-                "value": 150,
+                "value": 316,
                 "currency": "USD",
                 "type": "absolute",
                 "cadence": "monthly",
@@ -119,7 +119,7 @@
             "title": "Backup & Monitoring",
             "subTitle": "Builds on connecting to a Virtual Machine with Backup and Monitoring.",
             "cost": {
-                "value": 150,
+                "value": 412.00,
                 "currency": "USD",
                 "type": "absolute",
                 "cadence": "monthly",
@@ -235,7 +235,7 @@
             "title": "Availability & Scale",
             "subTitle": "Expands a connected solution with availability and scale for a robust solution. ",
             "cost": {
-                "value": 150,
+                "value": 1212.00,
                 "currency": "USD",
                 "type": "absolute",
                 "cadence": "monthly",
@@ -278,7 +278,8 @@
                 {
                     "pivotName": "virtualMachineScaleSet",
                     "content": [
-                        "N/A"
+                        "Autoscaling Standard_D2s_v5 VMSS",
+                        "30 GiB Premium SSD LRS"
                     ]
                 }
             ],

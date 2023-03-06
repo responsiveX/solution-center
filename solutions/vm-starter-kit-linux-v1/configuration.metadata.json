@@ -37,7 +37,7 @@
                 "cadence": "monthly",
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
-            "templateFileName": "azuredeploy_tier1.bicep",
+            "templateFileName": "azuredeploy_tier1.json",
             "supportsManualConfiguration": true,
             "manualConfigurationBlade": {
                 "bladeName": "CreateVmBlade",
@@ -113,7 +113,7 @@
                 "cadence": "monthly",
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
-            "templateFileName": "azuredeploy_tier2.bicep",
+            "templateFileName": "azuredeploy_tier2.json",
             "supportsManualConfiguration": true,
             "manualConfigurationBlade": {
                 "bladeName": "CreateVmBlade",
@@ -224,7 +224,7 @@
                 "cadence": "monthly",
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
-           "templateFileName": "azuredeploy_tier3.bicep",
+           "templateFileName": "azuredeploy_tier3.json",
             "supportsManualConfiguration": true,
             "manualConfigurationBlade": {
                 "bladeName": "CreateVmBlade",

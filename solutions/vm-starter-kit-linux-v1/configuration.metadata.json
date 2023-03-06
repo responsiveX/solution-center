@@ -1,6 +1,6 @@
 {
     "$schema": "../../definitions/configuration.metadata.schema.json",
-    "overviewContent": "A description of the solution.",
+    "overviewContent": "A way to evaluate Azure Virtual Machines by simplifying the deployment of Azure VMs configured with capabilities like remote management, monitoring, backup, availability, and scalability.",
     "documentationFileName": "starter-template-doc.md",
     "associatedResources": [],
     "pivots": [
@@ -59,8 +59,7 @@
                     "pivotName": "Bastion Service",
                     "content": [
                         "Basic tier enabling RDP/SSH connectivity to",
-                        "virtual machines without exposing public IP's.",
-                        "Highlight on this feature"
+                        "virtual machines without exposing public IP's."
                     ]
                 },
                 {
@@ -142,8 +141,7 @@
                     "pivotName": "Bastion Service",
                     "content": [
                         "Basic tier enabling RDP/SSH connectivity to",
-                        "virtual machines without exposing public IP's.",
-                        "Highlight on this feature"
+                        "virtual machines without exposing public IP's."
                     ]
                 },
                 {
@@ -237,7 +235,7 @@
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
             "maintenance": {
-                "score": 3,
+                "score": 2,
                 "tooltip": "Example tooltip describing cost to maintain, customizable."
             },
             "templateFileName": "azuredeploy_tier3.bicep",
@@ -258,8 +256,7 @@
                     "pivotName": "Bastion Service",
                     "content": [
                         "Basic tier enabling RDP/SSH connectivity to",
-                        "virtual machines without exposing public IP's.",
-                        "Highlight on this feature"
+                        "virtual machines without exposing public IP's."
                     ]
                 },
                 {

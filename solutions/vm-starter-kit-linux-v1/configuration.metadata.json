@@ -38,11 +38,6 @@
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
             "templateFileName": "azuredeploy_tier1.json",
-            "supportsManualConfiguration": true,
-            "manualConfigurationBlade": {
-                "bladeName": "CreateVmBlade",
-                "extension": "Microsoft_Azure_Compute"
-            },
             "pivotValues": [
                 {
                     "pivotName": "virtualMachine",

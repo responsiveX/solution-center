@@ -27,7 +27,7 @@
         },
         {
             "resourceType": "",
-            "displayName": "Azure Monitor",
+            "displayName": "This is a test",
             "type": "Custom",
             "icon": {
                 "iconType": "FrameworkIcon",

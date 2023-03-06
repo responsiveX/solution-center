@@ -10,6 +10,11 @@
             "azureResourceType": "Microsoft.Compute/virtualMachines"
         },
         {
+            "name": "virtualMachineScaleSet",
+            "type": "AzureResource",
+            "azureResourceType": "Microsoft.Compute/virtualMachineScaleSets"
+        },
+        {
             "name": "Bastion Service",
             "type": "AzureResource",
             "azureResourceType": "Microsoft.Network/bastionHosts"
@@ -18,11 +23,6 @@
             "name": "Recovery Services Vault",
             "type": "AzureResource",
             "azureResourceType": "Microsoft.RecoveryServices/vaults"
-        },
-        {
-            "name": "virtualMachineScaleSet",
-            "type": "AzureResource",
-            "azureResourceType": "Microsoft.Compute/virtualMachineScaleSets"
         }
     ],
     "configurations": [
@@ -31,7 +31,7 @@
             "title": "Get Connected",
             "subTitle": "A starter solution to get setup quick plus remote management",
             "cost": {
-                "value": 316,
+                "value": 249,
                 "currency": "USD",
                 "type": "absolute",
                 "cadence": "monthly",
@@ -48,7 +48,13 @@
                     "pivotName": "virtualMachine",
                     "content": [
                         "Standard D2s v5 VM",
-                        "127 GiB Premium SSD"
+                        "30 GiB Premium SSD"
+                    ]
+                },
+                {
+                    "pivotName": "virtualMachineScaleSet",
+                    "content": [
+                        "N/A"
                     ]
                 },
                 {
@@ -62,12 +68,6 @@
                     "pivotName": "Recovery Services Vault",
                     "content": [
                        "N/A"
-                    ]
-                },
-                {
-                    "pivotName": "virtualMachineScaleSet",
-                    "content": [
-                        "N/A"
                     ]
                 }
             ],
@@ -107,7 +107,7 @@
             "title": "Backup & Monitoring",
             "subTitle": "Builds on connecting to a Virtual Machine with Backup and Monitoring.",
             "cost": {
-                "value": 412,
+                "value": 351,
                 "currency": "USD",
                 "type": "absolute",
                 "cadence": "monthly",
@@ -124,7 +124,13 @@
                     "pivotName": "virtualMachine",
                     "content": [
                         "Standard D2s v5 VM",
-                        "127 GiB Premium SSD"
+                        "30 GiB Premium SSD"
+                    ]
+                },
+                {
+                    "pivotName": "virtualMachineScaleSet",
+                    "content": [
+                        "N/A"
                     ]
                 },
                 {
@@ -140,12 +146,6 @@
                         "Secure backup data",
                         "Role-Based Access Control",
                         "Soft Delete functionality"
-                    ]
-                },
-                {
-                    "pivotName": "virtualMachineScaleSet",
-                    "content": [
-                        "N/A"
                     ]
                 }
             ],
@@ -218,7 +218,7 @@
             "title": "Availability & Scale",
             "subTitle": "Expands a connected solution with availability and scale for a robust solution. ",
             "cost": {
-                "value": 1212,
+                "value": 1011,
                 "currency": "USD",
                 "type": "absolute",
                 "cadence": "monthly",
@@ -234,8 +234,16 @@
                 {
                     "pivotName": "virtualMachine",
                     "content": [
-                        "Standard D2s v5 VM",
-                        "127 GiB Premium SSD"
+                        "",
+                      "N/A",
+                      ""
+                    ]
+                },
+                {
+                    "pivotName": "virtualMachineScaleSet",
+                    "content": [
+                        "3 Standard_D2s_v5 VMSS nodes",
+                        "30 GiB Premium SSD LRS"
                     ]
                 },
                 {
@@ -251,13 +259,6 @@
                         "Secure backup data",
                         "Role-Based Access Control",
                         "Soft Delete functionality"
-                    ]
-                },
-                {
-                    "pivotName": "virtualMachineScaleSet",
-                    "content": [
-                        "Autoscaling Standard_D2s_v5 VMSS",
-                        "30 GiB Premium SSD LRS"
                     ]
                 }
             ],

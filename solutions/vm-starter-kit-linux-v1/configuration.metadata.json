@@ -6,22 +6,22 @@
     "associatedResources": [],
     "pivots": [
         {
-            "name": "Virtual Machines",
+            "name": "VirtualMachines",
             "type": "AzureResource",
             "azureResourceType": "Microsoft.Compute/virtualMachines"
         },
         {
-            "name": "Virtual Machine Scale Sets",
+            "name": "VMSS",
             "type": "AzureResource",
             "azureResourceType": "Microsoft.Compute/virtualMachineScaleSets"
         },
         {
-            "name": "Bastion Service",
+            "name": "BastionService",
             "type": "AzureResource",
             "azureResourceType": "Microsoft.Network/bastionHosts"
         },
         {
-            "name": "Azure Backup",
+            "name": "AzureBackup",
             "type": "AzureResource",
             "azureResourceType": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems"
         }
@@ -41,7 +41,7 @@
             "templateFileName": "azuredeploy_tier1.json",
             "pivotValues": [
                 {
-                    "pivotName": "virtualMachine",
+                    "pivotName": "VirtualMachines",
                     "content": [
                         "Standard D2s v5 VM",
                         "30 GiB Premium SSD"
@@ -54,14 +54,14 @@
                     ]
                 },
                 {
-                    "pivotName": "Bastion Service",
+                    "pivotName": "BastionService",
                     "content": [
                         "Basic tier enabling RDP/SSH connectivity to",
                         "virtual machines without exposing public IP's."
                     ]
                 },
                 {
-                    "pivotName": "Azure Backup",
+                    "pivotName": "AzureBackup",
                     "content": [
                        "N/A"
                     ]
@@ -116,27 +116,27 @@
             },
             "pivotValues": [
                {
-                    "pivotName": "virtualMachine",
+                    "pivotName": "VirtualMachines",
                     "content": [
                         "Standard D2s v5 VM",
                         "30 GiB Premium SSD"
                     ]
                 },
                 {
-                    "pivotName": "virtualMachineScaleSet",
+                    "pivotName": "VMSS",
                     "content": [
                         "N/A"
                     ]
                 },
                 {
-                    "pivotName": "Bastion Service",
+                    "pivotName": "BastionService",
                     "content": [
                         "Basic tier enabling RDP/SSH connectivity to",
                         "virtual machines without exposing public IP's."
                     ]
                 },
                 {
-                    "pivotName": "Azure Backup",
+                    "pivotName": "AzureBackup",
                     "content": [
                         "Secure backup data",
                         "Role-Based Access Control",
@@ -226,7 +226,7 @@
             },
             "pivotValues": [
                 {
-                    "pivotName": "virtualMachine",
+                    "pivotName": "VirtualMachines",
                     "content": [
                         "",
                       "N/A",
@@ -234,21 +234,21 @@
                     ]
                 },
                 {
-                    "pivotName": "virtualMachineScaleSet",
+                    "pivotName": "VMSS",
                     "content": [
                         "3 Standard_D2s_v5 VMSS nodes",
                         "30 GiB Premium SSD LRS"
                     ]
                 },
                 {
-                    "pivotName": "Bastion Service",
+                    "pivotName": "BastionService",
                     "content": [
                         "Allows you to connect securely to a Virtual Machine.",
                         "Without exposing any ports or public ip addresses."
                     ]
                 },
                 {
-                    "pivotName": "Azure Backup",
+                    "pivotName": "AzureBackup",
                     "content": [
                         "Secure backup data",
                         "Role-Based Access Control",

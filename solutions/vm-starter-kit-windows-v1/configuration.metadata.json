@@ -2,27 +2,28 @@
     "$schema": "../../definitions/configuration.metadata.schema.json",
     "overviewContent": "A way to evaluate Azure Virtual Machines by simplifying the deployment of Azure VMs configured with capabilities like remote management, monitoring, backup, availability, and scalability.",
     "documentationFileName": "vm-starter-kit-windows-doc.md",
+    "supportsManualConfiguration": false,
     "associatedResources": [],
     "pivots": [
         {
-            "name": "virtualMachine",
+            "name": "VirtualMachines",
             "type": "AzureResource",
             "azureResourceType": "Microsoft.Compute/virtualMachines"
         },
         {
-            "name": "Bastion Service",
+            "name": "VMSS",
+            "type": "AzureResource",
+            "azureResourceType": "Microsoft.Compute/virtualMachineScaleSets"
+        },
+        {
+            "name": "BastionService",
             "type": "AzureResource",
             "azureResourceType": "Microsoft.Network/bastionHosts"
         },
         {
-            "name": "Recovery Services Vault",
+            "name": "AzureBackup",
             "type": "AzureResource",
-            "azureResourceType": "Microsoft.RecoveryServices/vaults"
-        },
-        {
-            "name": "virtualMachineScaleSet",
-            "type": "AzureResource",
-            "azureResourceType": "Microsoft.Compute/virtualMachineScaleSets"
+            "azureResourceType": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems"
         }
     ],
     "configurations": [
@@ -37,37 +38,32 @@
                 "cadence": "monthly",
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
-            "templateFileName": "azuredeploy_tier1.bicep",
-            "supportsManualConfiguration": true,
-            "manualConfigurationBlade": {
-                "bladeName": "CreateVmBlade",
-                "extension": "Microsoft_Azure_Compute"
-            },
+            "templateFileName": "azuredeploy_tier1.json",
             "pivotValues": [
                 {
-                    "pivotName": "virtualMachine",
+                    "pivotName": "VirtualMachines",
                     "content": [
                         "Standard D2s v5 VM",
-                        "127 GiB Premium SSD"
-                    ]
-                },
-                {
-                    "pivotName": "Bastion Service",
-                    "content": [
-                        "Basic tier enabling RDP/SSH connectivity to",
-                        "virtual machines without exposing public IP's."
-                    ]
-                },
-                {
-                    "pivotName": "Recovery Services Vault",
-                    "content": [
-                       "N/A"
+                        "30 GiB Premium SSD"
                     ]
                 },
                 {
                     "pivotName": "virtualMachineScaleSet",
                     "content": [
                         "N/A"
+                    ]
+                },
+                {
+                    "pivotName": "BastionService",
+                    "content": [
+                        "Basic tier enabling RDP/SSH connectivity to",
+                        "virtual machines without exposing public IP's."
+                    ]
+                },
+                {
+                    "pivotName": "AzureBackup",
+                    "content": [
+                       "N/A"
                     ]
                 }
             ],
@@ -113,39 +109,38 @@
                 "cadence": "monthly",
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
-            "templateFileName": "azuredeploy_tier2.bicep",
-            "supportsManualConfiguration": true,
+            "templateFileName": "azuredeploy_tier2.json",
             "manualConfigurationBlade": {
                 "bladeName": "CreateVmBlade",
                 "extension": "Microsoft_Azure_Compute"
             },
             "pivotValues": [
                {
-                    "pivotName": "virtualMachine",
+                    "pivotName": "VirtualMachines",
                     "content": [
                         "Standard D2s v5 VM",
-                        "127 GiB Premium SSD"
+                        "30 GiB Premium SSD"
                     ]
                 },
                 {
-                    "pivotName": "Bastion Service",
+                    "pivotName": "VMSS",
+                    "content": [
+                        "N/A"
+                    ]
+                },
+                {
+                    "pivotName": "BastionService",
                     "content": [
                         "Basic tier enabling RDP/SSH connectivity to",
                         "virtual machines without exposing public IP's."
                     ]
                 },
                 {
-                    "pivotName": "Recovery Services Vault",
+                    "pivotName": "AzureBackup",
                     "content": [
                         "Secure backup data",
                         "Role-Based Access Control",
                         "Soft Delete functionality"
-                    ]
-                },
-                {
-                    "pivotName": "virtualMachineScaleSet",
-                    "content": [
-                        "N/A"
                     ]
                 }
             ],
@@ -224,40 +219,40 @@
                 "cadence": "monthly",
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
-           "templateFileName": "azuredeploy_tier3.bicep",
-            "supportsManualConfiguration": true,
+           "templateFileName": "azuredeploy_tier3.json",
             "manualConfigurationBlade": {
                 "bladeName": "CreateVmBlade",
                 "extension": "Microsoft_Azure_Compute"
             },
             "pivotValues": [
                 {
-                    "pivotName": "virtualMachine",
+                    "pivotName": "VirtualMachines",
                     "content": [
-                        "Standard D2s v5 VM",
-                        "127 GiB Premium SSD"
+                        "",
+                      "N/A",
+                      ""
                     ]
                 },
                 {
-                    "pivotName": "Bastion Service",
+                    "pivotName": "VMSS",
                     "content": [
-                        "Basic tier enabling RDP/SSH connectivity to",
-                        "virtual machines without exposing public IP's."
+                        "3 Standard_D2s_v5 VMSS nodes",
+                        "30 GiB Premium SSD LRS"
                     ]
                 },
                 {
-                    "pivotName": "Recovery Services Vault",
+                    "pivotName": "BastionService",
+                    "content": [
+                        "Allows you to connect securely to a Virtual Machine.",
+                        "Without exposing any ports or public ip addresses."
+                    ]
+                },
+                {
+                    "pivotName": "AzureBackup",
                     "content": [
                         "Secure backup data",
                         "Role-Based Access Control",
                         "Soft Delete functionality"
-                    ]
-                },
-                {
-                    "pivotName": "virtualMachineScaleSet",
-                    "content": [
-                        "Autoscaling Standard_D2s_v5 VMSS",
-                        "30 GiB Premium SSD LRS"
                     ]
                 }
             ],

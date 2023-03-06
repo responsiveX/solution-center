@@ -24,15 +24,6 @@
             "name": "Azure Backup",
             "type": "AzureResource",
             "azureResourceType": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems"
-        },
-        {
-            "resourceType": "",
-            "displayName": "This is a test",
-            "type": "Custom",
-            "icon": {
-                "iconType": "FrameworkIcon",
-                "iconNumber": 41
-            }
         }
     ],
     "configurations": [
@@ -71,12 +62,6 @@
                 },
                 {
                     "pivotName": "Azure Backup",
-                    "content": [
-                       "N/A"
-                    ]
-                },
-                {
-                    "pivotName": "Recovery Services Vault",
                     "content": [
                        "N/A"
                     ]
@@ -152,12 +137,6 @@
                 },
                 {
                     "pivotName": "Azure Backup",
-                    "content": [
-                       "N/A"
-                    ]
-                },
-                {
-                    "pivotName": "Recovery Services Vault",
                     "content": [
                         "Secure backup data",
                         "Role-Based Access Control",
@@ -264,18 +243,12 @@
                 {
                     "pivotName": "Bastion Service",
                     "content": [
-                        "Basic tier enabling RDP/SSH connectivity to",
-                        "virtual machines without exposing public IP's."
+                        "Allows you to connect securely to a Virtual Machine.",
+                        "Without exposing any ports or public ip addresses."
                     ]
                 },
                 {
                     "pivotName": "Azure Backup",
-                    "content": [
-                       "N/A"
-                    ]
-                },
-                {
-                    "pivotName": "Recovery Services Vault",
                     "content": [
                         "Secure backup data",
                         "Role-Based Access Control",

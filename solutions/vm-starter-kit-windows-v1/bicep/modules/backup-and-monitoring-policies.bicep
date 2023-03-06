@@ -54,6 +54,7 @@ resource vmContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@20
   properties: {
     principalId: backupPolicyAssignment.identity.principalId
     roleDefinitionId: virtualMachineContributorRole.id
+    principalType: 'ServicePrincipal'
   }
 }
 
@@ -66,6 +67,7 @@ resource backupContributorRoleAssignment 'Microsoft.Authorization/roleAssignment
   properties: {
     principalId: backupPolicyAssignment.identity.principalId
     roleDefinitionId: backupContributorRole.id
+    principalType: 'ServicePrincipal'
   }
 }
 
@@ -114,6 +116,7 @@ resource monitoringContributorRoleAssignment 'Microsoft.Authorization/roleAssign
   properties: {
     principalId: monitoringPolicyAssignment.identity.principalId
     roleDefinitionId: monitoringContributorRole.id
+    principalType: 'ServicePrincipal'
   }
 }
 
@@ -126,6 +129,7 @@ resource logAnalyticsContributorRoleAssignment 'Microsoft.Authorization/roleAssi
   properties: {
     principalId: monitoringPolicyAssignment.identity.principalId
     roleDefinitionId: logAnalyticsContributorRole.id
+    principalType: 'ServicePrincipal'
   }
 }
 

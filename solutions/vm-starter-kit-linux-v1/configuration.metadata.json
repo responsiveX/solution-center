@@ -1,7 +1,7 @@
 {
     "$schema": "../../definitions/configuration.metadata.schema.json",
     "overviewContent": "A way to evaluate Azure Virtual Machines by simplifying the deployment of Azure VMs configured with capabilities like remote management, monitoring, backup, availability, and scalability.",
-    "documentationFileName": "starter-template-doc.md",
+    "documentationFileName": "vm-starter-kit-linux-doc.md",
     "associatedResources": [],
     "pivots": [
         {

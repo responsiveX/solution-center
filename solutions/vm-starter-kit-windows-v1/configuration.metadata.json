@@ -1,7 +1,7 @@
 {
     "$schema": "../../definitions/configuration.metadata.schema.json",
     "overviewContent": "A description of the solution.",
-    "documentationFileName": "starter-template-doc.md",
+    "documentationFileName": "vm-starter-kit-windows-doc.md",
     "associatedResources": [],
     "pivots": [
         {

@@ -26,9 +26,13 @@
             "azureResourceType": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems"
         },
         {
-            "name": "",
-            "type": "AzureResource",
-            "azureResourceType": "Microsoft.RecoveryServices/vaults"
+            "resourceType": "",
+            "displayName": "Azure Monitor",
+            "type": "Custom",
+            "icon": {
+                "iconType": "FrameworkIcon",
+                "iconNumber": 41
+            }
         }
     ],
     "configurations": [

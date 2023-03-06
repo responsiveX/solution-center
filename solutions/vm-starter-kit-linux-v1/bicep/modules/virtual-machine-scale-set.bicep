@@ -41,7 +41,7 @@ resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
     orchestrationMode: 'Flexible'
     platformFaultDomainCount: 1
     // upgradePolicy: {
-    //   mode:'Automatic'
+    //   mode: 'Rolling'
     // }
     virtualMachineProfile: {
       storageProfile: {
@@ -121,7 +121,7 @@ resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
               typeHandlerVersion: '2.1'
               autoUpgradeMinorVersion: true
               protectedSettings:{
-                commandToExecute: 'sudo apt-get update && sudo apt-get install nginx -y && sudo sed -i "s/Welcome to nginx/Welcome to nginx from ${vmNamePrefix}/g" /var/www/html/index.nginx-debian.html'
+                commandToExecute: 'sudo apt-get update && sudo apt-get install nginx -y && sudo sed -i "s/Welcome to nginx/Welcome to nginx from VM Starter Kit/g" /var/www/html/index.nginx-debian.html'
               }
             }
           }

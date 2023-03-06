@@ -182,6 +182,7 @@ module policiesModule 'modules/backup-and-monitoring-policies.bicep' = {
   params: {
     location: location
     recoveryVaultPolicyId: recoveryVaultPolicy.id
+    logAnalyticsResourceId: monitoringModule.outputs.logAnalyticsWorkspaceId
   }
 }
 
@@ -204,5 +205,18 @@ module vmScaleSetModule 'modules/virtual-machine-scale-set.bicep' = {
   }
   dependsOn: [
     policiesModule
+  ]
+}
+
+module policyRemediationModule 'modules/policy-remediation.bicep' = {
+  name: 'policy-remediation'
+  params: {
+    backupPolicyAssignmentId: policiesModule.outputs.backupPolicyAssignmentId
+    backupPolicyDefinitionId: policiesModule.outputs.backupPolicyDefinitionId
+    monitoringPolicyAssignmentId: policiesModule.outputs.monitoringPolicyAssignmentId
+    monitoringPolicyDefinitionId: policiesModule.outputs.monitoringPolicyDefinitionId
+  }
+  dependsOn: [
+    vmScaleSetModule
   ]
 }

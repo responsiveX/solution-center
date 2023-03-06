@@ -8,7 +8,7 @@ param backupPolicyName string = 'Backup VMs'
 param backupPolicyDefinitionId string = '/providers/Microsoft.Authorization/policyDefinitions/09ce66bc-1220-4153-8104-e3f51c936913'
 
 param monitoringPolicyName string = 'Monitor VMs'
-param monitoringPolicyDefinitionId string = '/providers/Microsoft.Authorization/policyDefinitions/56a3e4f8-649b-4fac-887e-5564d11e8d3a'
+param monitoringPolicyDefinitionId string = '/providers/Microsoft.Authorization/policyDefinitions/59c3d93f-900b-4827-a8bd-562e7b956e7c'
 
 resource backupPolicy 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
   name: backupPolicyName
@@ -52,18 +52,23 @@ resource monitoringPolicy 'Microsoft.Authorization/policyAssignments@2022-06-01'
   }
   properties: {
     policyDefinitionId: monitoringPolicyDefinitionId
+    parameters: {
+      bringYourOwnUserAssignedManagedIdentity: {
+        value: true
+      }
+    }
     resourceSelectors: [
-       {
-         name: 'Resources to be monitored'
-          selectors: [
-             {
-               kind: 'resourceType'
-               in: [
-                 'Microsoft.Compute/virtualMachineScaleSets'
-               ]
-             }
-          ]
-       }
+      {
+        name: 'Resources to be monitored'
+        selectors: [
+            {
+              kind: 'resourceType'
+              in: [
+                'Microsoft.Compute/virtualMachineScaleSets'
+              ]
+            }
+        ]
+      }
     ]
   }
 }

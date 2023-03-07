@@ -54,6 +54,8 @@
         },
         "outputs": {
             "parameters": {
+                "adminUsername": "[steps('basics').adminUsername.adminUsername]",
+                "adminPassword": "[steps('basics').adminPassword.adminPassword]"
             },
             "kind": "ResourceGroup",
             "location": "[steps('basics').resourceScope.location.name]",

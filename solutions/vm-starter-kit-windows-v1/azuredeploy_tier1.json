@@ -4,7 +4,11 @@
   "parameters": {
     "location": {
       "type": "string",
-      "defaultValue": "[resourceGroup().location]"
+      "defaultValue": "[resourceGroup().location]",
+      "allowedValues": [
+        "CentralUS",
+        "EastUS"
+      ]
     },
     "bastionName": {
       "type": "string",

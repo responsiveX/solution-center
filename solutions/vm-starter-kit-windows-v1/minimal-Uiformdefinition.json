@@ -14,8 +14,8 @@
                             "type": "Microsoft.Common.ResourceScope",
                             "location": {
                                 "allowedValues": [
-                                "centralus",
-                                "eastus"
+                                "CentralUS",
+                                "EastUS"
                                 ],
                                 "resourceTypes": [
                                     "microsoft.resources/resourcegroups"

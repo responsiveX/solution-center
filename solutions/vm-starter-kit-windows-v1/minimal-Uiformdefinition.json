@@ -13,6 +13,10 @@
                             "name": "resourceScope",
                             "type": "Microsoft.Common.ResourceScope",
                             "location": {
+                                "allowedValues": [
+                                "centralus",
+                                "eastus"
+                                ],
                                 "resourceTypes": [
                                     "microsoft.resources/resourcegroups"
                                 ]

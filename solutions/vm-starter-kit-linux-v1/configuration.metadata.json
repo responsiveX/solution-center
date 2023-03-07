@@ -21,9 +21,13 @@
             "azureResourceType": "Microsoft.Network/bastionHosts"
         },
         {
-            "name": "AzureBackup",
-            "type": "AzureResource",
-            "azureResourceType": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems"
+            "type": "Custom",
+            "displayName": "Azure Backup",
+            "icon": {
+                "iconType": "CustomIcon",
+                "iconFileName": "AzureBackupVault.svg"
+            },
+            "name": "AzureBackup"
         },
         {
             "name": "AzureMonitor",

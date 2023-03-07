@@ -21,9 +21,9 @@
                         {
                             "name": "adminUserName",
                             "type": "Microsoft.Compute.UserNameTextBox",
-                            "label": "adminUserNameLabel",
+                            "label": "Admin UserName",
                             "defaultValue": "",
-                            "toolTip": "User name goes here",
+                            "toolTip": "User name to use on the Virtual Machine.",
                             "constraints": {
                                 "required": true
                             },

@@ -165,7 +165,8 @@
                 {
                     "pivotName": "AzureMonitor",
                     "content": [
-                       "N/A"
+                        "VM Insights",
+                        "Logs and Metrics"
                     ]
                 }
             ],
@@ -283,7 +284,9 @@
                 {
                     "pivotName": "AzureMonitor",
                     "content": [
-                       "N/A"
+                       "Data Collection Rules",
+                       "VM Insights",
+                       "Logs and Metrics"
                     ]
                 }
             ],

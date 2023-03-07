@@ -230,6 +230,15 @@
                         "iconType": "FrameworkIcon",
                         "iconNumber": 41
                     }
+                },
+                {
+                    "resourceType": "",
+                    "type": "Custom",
+                    "displayName": "Azure Backup",
+                    "icon": {
+                        "iconType": "CustomIcon",
+                        "iconFileName": "AzureBackupVault.svg"
+                    }
                 }
             ]
         },
@@ -355,6 +364,15 @@
                     "icon": {
                         "iconType": "FrameworkIcon",
                         "iconNumber": 41
+                    }
+                },
+                {
+                    "resourceType": "",
+                    "type": "Custom",
+                    "displayName": "Azure Backup",
+                    "icon": {
+                        "iconType": "CustomIcon",
+                        "iconFileName": "AzureBackupVault.svg"
                     }
                 }
             ]

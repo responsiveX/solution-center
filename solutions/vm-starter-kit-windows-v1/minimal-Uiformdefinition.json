@@ -22,9 +22,11 @@
                             "name": "adminPassword",
                             "type": "Microsoft.Compute.CredentialsCombo",
                             "label": {
-                                "password": "Admin Password"
+                                "authenticationType": "Authentication Type",
+                                "password": "Admin Password Or Key"
                             },
                             "toolTip": {
+                                "authenticationType": "Type of authentication to use on the Virtual Machine.",
                                 "password": "Type of authentication to use on the Virtual Machine."
                             },
                             "constraints": {

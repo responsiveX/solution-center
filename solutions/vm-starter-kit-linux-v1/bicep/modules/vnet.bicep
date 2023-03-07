@@ -6,8 +6,6 @@ param networkName string = 'VmStarterKit'
 
 param vmSubnetName string = 'VMs'
 
-param bastionName string = 'BastionHost'
-
 param openWebPorts bool = false
 
 var vNetName = 'vnet-${networkName}'
@@ -15,9 +13,6 @@ var vNetName = 'vnet-${networkName}'
 var vNetAddressPrefix = '10.1.0.0/16'
 var bastionSubnetAddressPrefix = '10.1.0.0/24'
 var vmSubnetAddressPrefix = '10.1.1.0/24'
-
-var bastionHostName = 'bas-${bastionName}'
-var bastionIpAddressName = 'pip-${bastionName}'
 
 var nsgName = 'nsg-subnet-${vmSubnetName}'
 var bastionSubnetName = 'AzureBastionSubnet'
@@ -88,41 +83,5 @@ resource vNet 'Microsoft.Network/virtualNetworks@2022-07-01' = {
   }
 }
 
-resource bastionHostPublicIp 'Microsoft.Network/publicIPAddresses@2022-07-01' = {
-  name: bastionIpAddressName
-  location: location
-  sku: {
-    name: 'Standard'
-  }
-  properties: {
-    publicIPAddressVersion: 'IPv4'
-    publicIPAllocationMethod: 'Static'
-    idleTimeoutInMinutes: 4
-  }
-}
-
-resource bastionHost 'Microsoft.Network/bastionHosts@2022-07-01' = {
-  name: bastionHostName
-  location: location
-  sku: {
-    name: 'Basic'
-  }
-  properties: {
-    ipConfigurations: [
-      {
-        name: 'ipconfig01'
-        properties: {
-          privateIPAllocationMethod: 'Dynamic'
-          publicIPAddress: {
-            id: bastionHostPublicIp.id
-          }
-          subnet: {
-            id: resourceId('Microsoft.Network/virtualNetworks/subnets', vNet.name, bastionSubnetName)
-          }
-        }
-      }
-    ]
-  }
-}
-
 output vNetName string = vNet.name
+output bastionSubnetName string = bastionSubnetName

@@ -38,7 +38,12 @@
                 "cadence": "monthly",
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
+            "maintenance": {
+                "score": 1,
+                "tooltip": "The expected maintenance overhead associated with managing this configuration."
+            },
             "templateFileName": "azuredeploy_tier1.json",
+            "uiDefinitionFileName": "minimal-Uiformdefinition.json",
             "pivotValues": [
                 {
                     "pivotName": "VirtualMachines",
@@ -109,11 +114,11 @@
                 "cadence": "monthly",
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
-            "templateFileName": "azuredeploy_tier2.json",
-            "manualConfigurationBlade": {
-                "bladeName": "CreateVmBlade",
-                "extension": "Microsoft_Azure_Compute"
+            "maintenance": {
+                "score": 1,
+                "tooltip": "The expected maintenance overhead associated with managing this configuration."
             },
+            "templateFileName": "azuredeploy_tier2.json",
             "pivotValues": [
                {
                     "pivotName": "VirtualMachines",
@@ -219,11 +224,11 @@
                 "cadence": "monthly",
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
-           "templateFileName": "azuredeploy_tier3.json",
-            "manualConfigurationBlade": {
-                "bladeName": "CreateVmBlade",
-                "extension": "Microsoft_Azure_Compute"
+            "maintenance": {
+                "score": 1,
+                "tooltip": "The expected maintenance overhead associated with managing this configuration."
             },
+            "templateFileName": "azuredeploy_tier3.json",
             "pivotValues": [
                 {
                     "pivotName": "VirtualMachines",

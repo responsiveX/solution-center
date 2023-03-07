@@ -171,6 +171,7 @@
                 {
                     "pivotName": "AzureMonitor",
                     "content": [
+                        "Azure Monitor Agent",
                         "VM Insights",
                         "Logs and Metrics"
                     ]
@@ -270,7 +271,8 @@
                     "pivotName": "VMSS",
                     "content": [
                         "3 Standard_D2s_v5 VMSS nodes",
-                        "30 GiB Premium SSD LRS"
+                        "30 GiB Premium SSD LRS",
+                        "Flexible orchestration mode"
                     ]
                 },
                 {
@@ -291,7 +293,7 @@
                 {
                     "pivotName": "AzureMonitor",
                     "content": [
-                       "Data Collection Rules",
+                       "Azure Monitor Agent",
                        "VM Insights",
                        "Logs and Metrics"
                     ]

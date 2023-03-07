@@ -1,0 +1,33 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2021-09-09/uiFormDefinition.schema.json",
+    "view": {
+        "kind": "Form",
+        "properties": {
+            "title": "VM Starter Kit",
+            "steps": [
+                {
+                    "name": "basics",
+                    "label": "Basics",
+                    "elements": [
+                        {
+                            "name": "resourceScope",
+                            "type": "Microsoft.Common.ResourceScope",
+                            "location": {
+                                "resourceTypes": [
+                                    "microsoft.resources/resourcegroups"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "outputs": {
+            "parameters": {
+            },
+            "kind": "ResourceGroup",
+            "location": "[steps('basics').resourceScope.location.name]",
+            "resourceGroupId": "[steps('basics').resourceScope.resourceGroup.id]"
+        }
+    }
+}

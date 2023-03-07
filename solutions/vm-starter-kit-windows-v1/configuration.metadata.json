@@ -21,26 +21,35 @@
             "azureResourceType": "Microsoft.Network/bastionHosts"
         },
         {
-            "name": "AzureBackup",
-            "type": "AzureResource",
-            "azureResourceType": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems"
+            "type": "Custom",
+            "displayName": "Azure Backup",
+            "icon": {
+                "iconType": "CustomIcon",
+                "iconFileName": "AzureBackupVault.svg"
+            },
+            "name": "AzureBackup"
+        },
+        {
+            "name": "AzureMonitor",
+            "displayName": "Azure Monitor",
+            "type": "Custom",
+            "icon": {
+                "iconType": "FrameworkIcon",
+                "iconNumber": 41
+            }
         }
     ],
     "configurations": [
         {
             "id": "base",
             "title": "Get Connected",
-            "subTitle": "A starter solution to get setup quick plus remote management",
+            "subTitle": "A starter solution to get setup quickly plus remote management",
             "cost": {
                 "value": 316,
                 "currency": "USD",
                 "type": "absolute",
                 "cadence": "monthly",
                 "tooltip": "Example tooltip describing the pricing, customizable."
-            },
-            "maintenance": {
-                "score": 1,
-                "tooltip": "The expected maintenance overhead associated with managing this configuration."
             },
             "templateFileName": "azuredeploy_tier1.json",
             "uiDefinitionFileName": "minimal-Uiformdefinition.json",
@@ -53,7 +62,7 @@
                     ]
                 },
                 {
-                    "pivotName": "virtualMachineScaleSet",
+                    "pivotName": "VMSS",
                     "content": [
                         "N/A"
                     ]
@@ -67,6 +76,12 @@
                 },
                 {
                     "pivotName": "AzureBackup",
+                    "content": [
+                       "N/A"
+                    ]
+                },
+                {
+                    "pivotName": "AzureMonitor",
                     "content": [
                        "N/A"
                     ]
@@ -114,11 +129,8 @@
                 "cadence": "monthly",
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
-            "maintenance": {
-                "score": 1,
-                "tooltip": "The expected maintenance overhead associated with managing this configuration."
-            },
             "templateFileName": "azuredeploy_tier2.json",
+            "uiDefinitionFileName": "minimal-Uiformdefinition.json",
             "pivotValues": [
                {
                     "pivotName": "VirtualMachines",
@@ -143,9 +155,17 @@
                 {
                     "pivotName": "AzureBackup",
                     "content": [
-                        "Secure backup data",
+                        "Securely backup data",
                         "Role-Based Access Control",
                         "Soft Delete functionality"
+                    ]
+                },
+                {
+                    "pivotName": "AzureMonitor",
+                    "content": [
+                        "Azure Monitor Agent",
+                        "VM Insights",
+                        "Logs and Metrics"
                     ]
                 }
             ],
@@ -224,11 +244,8 @@
                 "cadence": "monthly",
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
-            "maintenance": {
-                "score": 1,
-                "tooltip": "The expected maintenance overhead associated with managing this configuration."
-            },
             "templateFileName": "azuredeploy_tier3.json",
+            "uiDefinitionFileName": "minimal-Uiformdefinition.json",
             "pivotValues": [
                 {
                     "pivotName": "VirtualMachines",
@@ -242,22 +259,31 @@
                     "pivotName": "VMSS",
                     "content": [
                         "3 Standard_D2s_v5 VMSS nodes",
-                        "30 GiB Premium SSD LRS"
+                        "30 GiB Premium SSD LRS",
+                        "Flexible orchestration mode"
                     ]
                 },
                 {
                     "pivotName": "BastionService",
                     "content": [
-                        "Allows you to connect securely to a Virtual Machine.",
-                        "Without exposing any ports or public ip addresses."
+                        "Basic tier enabling RDP/SSH connectivity to",
+                        "virtual machines without exposing public IP's."
                     ]
                 },
                 {
                     "pivotName": "AzureBackup",
                     "content": [
-                        "Secure backup data",
+                        "Securely backup data",
                         "Role-Based Access Control",
                         "Soft Delete functionality"
+                    ]
+                },
+                {
+                    "pivotName": "AzureMonitor",
+                    "content": [
+                       "Azure Monitor Agent",
+                       "VM Insights",
+                       "Logs and Metrics"
                     ]
                 }
             ],

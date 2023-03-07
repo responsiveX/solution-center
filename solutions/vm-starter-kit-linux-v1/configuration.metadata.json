@@ -52,6 +52,7 @@
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
             "templateFileName": "azuredeploy_tier1.json",
+            "uiDefinitionFileName": "minimal-Uiformdefinition.json",
             "pivotValues": [
                 {
                     "pivotName": "VirtualMachines",

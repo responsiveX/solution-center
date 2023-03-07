@@ -23,7 +23,7 @@
                             "type": "Microsoft.Compute.UserNameTextBox",
                             "label": "Admin UserName",
                             "defaultValue": "",
-                            "toolTip": "User name to use on the Virtual Machine.",
+                            "toolTip": "User name to use on the Virtual Machine. ",
                             "constraints": {
                                 "required": true
                             },

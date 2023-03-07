@@ -26,7 +26,7 @@
                             },
                             "osPlatform": "Windows",
                             "label":{
-                                "$ref": "this is a test"
+                                "property": "this is a test"
                             }
                         },
                         {

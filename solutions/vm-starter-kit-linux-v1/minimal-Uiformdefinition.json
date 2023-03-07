@@ -31,10 +31,6 @@
                                 "password": "Type of authentication to use on the Virtual Machine.",
                                 "sshPublicKey": "Ssh Public Key"
                             },
-                            "defaultValue": {
-                                "sshPublicKey": "",
-                                "authenticationType": ""
-                            },
                             "constraints": {
                                 "required": true
                             },

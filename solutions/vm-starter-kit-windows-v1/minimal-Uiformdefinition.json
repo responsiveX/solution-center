@@ -23,6 +23,10 @@
                             "type": "Microsoft.Compute.UserNameTextBox",
                             "constraints": {
                                 "required": true
+                            },
+                            "osPlatform": "Windows",
+                            "label":{
+                                "$ref": "this is a test"
                             }
                         },
                         {
@@ -32,7 +36,6 @@
                                 "password": "Admin Password"
                             },
                             "toolTip": {
-                                "authenticationType": "Type of authentication to use on the Virtual Machine.",
                                 "password": "Type of authentication to use on the Virtual Machine."
                             },
                             "constraints": {

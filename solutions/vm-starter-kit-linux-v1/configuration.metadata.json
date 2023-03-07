@@ -51,6 +51,10 @@
                 "cadence": "monthly",
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
+            "maintenance": {
+                "score": 1,
+                "tooltip": "The expected maintenance overhead associated with managing this configuration."
+            },
             "templateFileName": "azuredeploy_tier1.json",
             "uiDefinitionFileName": "minimal-Uiformdefinition.json",
             "pivotValues": [
@@ -128,6 +132,10 @@
                 "type": "absolute",
                 "cadence": "monthly",
                 "tooltip": "Example tooltip describing the pricing, customizable."
+            },
+            "maintenance": {
+                "score": 1,
+                "tooltip": "The expected maintenance overhead associated with managing this configuration."
             },
             "templateFileName": "azuredeploy_tier2.json",
             "uiDefinitionFileName": "minimal-Uiformdefinition.json",
@@ -242,6 +250,10 @@
                 "type": "absolute",
                 "cadence": "monthly",
                 "tooltip": "Example tooltip describing the pricing, customizable."
+            },
+            "maintenance": {
+                "score": 1,
+                "tooltip": "The expected maintenance overhead associated with managing this configuration."
             },
             "templateFileName": "azuredeploy_tier3.json",
             "uiDefinitionFileName": "minimal-Uiformdefinition.json",

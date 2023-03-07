@@ -15,13 +15,22 @@ param sshPublicKey string = 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDkNiD0HIP68W2
 param osdiskSizeGB int = 30
 
 
-module vNetModule 'modules/vnet-with-bastion.bicep' = {
+module vNetModule 'modules/vnet.bicep' = {
   name: 'vnet-with-bastion'
   params: {
     location: location
     networkName: networkName
     vmSubnetName: vmSubnetName
+  }
+}
+
+module bastionModule 'modules/bastion.bicep' = {
+  name: 'bastion'
+  params: {
+    location: location
     bastionName: bastionName
+    vNetName: vNetModule.outputs.vNetName
+    bastionSubnetName: vNetModule.outputs.bastionSubnetName
   }
 }
 

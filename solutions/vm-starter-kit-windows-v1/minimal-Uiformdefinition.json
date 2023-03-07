@@ -21,9 +21,6 @@
                         {
                             "name": "adminUsername",
                             "type": "Microsoft.Compute.UserNameTextBox",
-                            "label": {
-                                "password": "Admin User"
-                            },
                             "constraints": {
                                 "required": true
                             }

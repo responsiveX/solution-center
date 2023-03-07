@@ -58,7 +58,7 @@
                     "pivotName": "VirtualMachines",
                     "content": [
                         "Standard D2s v5 VM",
-                        "30 GiB Premium SSD"
+                        "127 GiB Premium SSD"
                     ]
                 },
                 {
@@ -136,7 +136,7 @@
                     "pivotName": "VirtualMachines",
                     "content": [
                         "Standard D2s v5 VM",
-                        "30 GiB Premium SSD"
+                        "127 GiB Premium SSD"
                     ]
                 },
                 {
@@ -259,7 +259,7 @@
                     "pivotName": "VMSS",
                     "content": [
                         "3 Standard_D2s_v5 VMSS nodes",
-                        "30 GiB Premium SSD LRS",
+                        "127 GiB Premium SSD LRS",
                         "Flexible orchestration mode"
                     ]
                 },

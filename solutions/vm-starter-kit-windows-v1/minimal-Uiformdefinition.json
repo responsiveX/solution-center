@@ -19,6 +19,18 @@
                             }
                         },
                         {
+                            "name": "adminUserName",
+                            "type": "Microsoft.Compute.UserNameTextBox",
+                            "label": "adminUserNameLabel",
+                            "defaultValue": "",
+                            "toolTip": "User name goes here",
+                            "constraints": {
+                                "required": true
+                            },
+                            "osPlatform": "Windows",
+                            "visible": true
+                        },
+                        {
                             "name": "adminPassword",
                             "type": "Microsoft.Compute.CredentialsCombo",
                             "label": {
@@ -45,6 +57,7 @@
         },
         "outputs": {
             "parameters": {
+                "adminUserName": "[steps('basics').adminUserName.adminUserName]",
                 "adminPassword": "[steps('basics').adminPassword.adminPassword]"
             },
             "kind": "ResourceGroup",

@@ -130,10 +130,7 @@
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
             "templateFileName": "azuredeploy_tier2.json",
-            "manualConfigurationBlade": {
-                "bladeName": "CreateVmBlade",
-                "extension": "Microsoft_Azure_Compute"
-            },
+            "uiDefinitionFileName": "minimal-Uiformdefinition.json",
             "pivotValues": [
                {
                     "pivotName": "VirtualMachines",
@@ -246,11 +243,8 @@
                 "cadence": "monthly",
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
-           "templateFileName": "azuredeploy_tier3.json",
-            "manualConfigurationBlade": {
-                "bladeName": "CreateVmBlade",
-                "extension": "Microsoft_Azure_Compute"
-            },
+            "templateFileName": "azuredeploy_tier3.json",
+            "uiDefinitionFileName": "minimal-Uiformdefinition.json",
             "pivotValues": [
                 {
                     "pivotName": "VirtualMachines",

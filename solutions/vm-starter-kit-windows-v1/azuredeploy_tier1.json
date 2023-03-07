@@ -27,7 +27,8 @@
       "defaultValue": "Standard_D2s_v5"
     },
     "adminUsername": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "adminadmin"
     },
     "adminPassword": {
       "type": "secureString"

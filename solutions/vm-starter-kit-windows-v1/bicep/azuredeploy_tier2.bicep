@@ -15,13 +15,22 @@ param adminPassword string = 'P@ssword4242'
 
 param recoveryServicesVaultName string = 'rsv-VmBackupVault'
 
-module vNetModule 'modules/vnet-with-bastion.bicep' = {
-  name: 'vnet-with-bastion'
+module vNetModule 'modules/vnet.bicep' = {
+  name: 'vnet'
   params: {
     location: location
     networkName: networkName
     vmSubnetName: vmSubnetName
+  }
+}
+
+module bastionModule 'modules/bastion.bicep' = {
+  name: 'bastion'
+  params: {
+    location: location
     bastionName: bastionName
+    vNetName: vNetModule.outputs.vNetName
+    bastionSubnetName: vNetModule.outputs.bastionSubnetName
   }
 }
 

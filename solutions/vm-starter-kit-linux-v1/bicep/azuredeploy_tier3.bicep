@@ -215,9 +215,6 @@ module vmScaleSetModule 'modules/virtual-machine-scale-set.bicep' = {
     vmManagedIdentityResourceId: monitoringModule.outputs.vmManagedIdentityResourceId
     amaManagedIdentityResourceId: monitoringModule.outputs.amaManagedIdentityResourceId
   }
-  // dependsOn: [
-  //   policiesModule
-  // ]
 }
 
 module policyRemediationModule 'modules/policy-remediation.bicep' = {

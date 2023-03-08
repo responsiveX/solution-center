@@ -4,11 +4,7 @@
   "parameters": {
     "location": {
       "type": "string",
-      "defaultValue": "[resourceGroup().location]",
-      "allowedValues": [
-        "CentralUS",
-        "EastUS"
-      ]
+      "defaultValue": "[resourceGroup().location]"
     },
     "bastionName": {
       "type": "string",
@@ -42,7 +38,7 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-10-01",
-      "name": "vnet-with-bastion",
+      "name": "vnet",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -57,9 +53,6 @@
           },
           "vmSubnetName": {
             "value": "[parameters('vmSubnetName')]"
-          },
-          "bastionName": {
-            "value": "[parameters('bastionName')]"
           }
         },
         "template": {
@@ -78,10 +71,6 @@
               "type": "string",
               "defaultValue": "VMs"
             },
-            "bastionName": {
-              "type": "string",
-              "defaultValue": "BastionHost"
-            },
             "openWebPorts": {
               "type": "bool",
               "defaultValue": false
@@ -93,8 +82,6 @@
             "vNetAddressPrefix": "10.1.0.0/16",
             "bastionSubnetAddressPrefix": "10.1.0.0/24",
             "vmSubnetAddressPrefix": "10.1.1.0/24",
-            "bastionHostName": "[format('bas-{0}', parameters('bastionName'))]",
-            "bastionIpAddressName": "[format('pip-{0}', parameters('bastionName'))]",
             "nsgName": "[format('nsg-subnet-{0}', parameters('vmSubnetName'))]",
             "bastionSubnetName": "AzureBastionSubnet"
           },
@@ -142,7 +129,68 @@
               "dependsOn": [
                 "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
               ]
+            }
+          ],
+          "outputs": {
+            "vNetName": {
+              "type": "string",
+              "value": "[variables('vNetName')]"
             },
+            "bastionSubnetName": {
+              "type": "string",
+              "value": "[variables('bastionSubnetName')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
+      "name": "bastion",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "bastionName": {
+            "value": "[parameters('bastionName')]"
+          },
+          "vNetName": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnet'), '2019-10-01').outputs.vNetName.value]"
+          },
+          "bastionSubnetName": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnet'), '2019-10-01').outputs.bastionSubnetName.value]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]"
+            },
+            "bastionName": {
+              "type": "string"
+            },
+            "vNetName": {
+              "type": "string"
+            },
+            "bastionSubnetName": {
+              "type": "string"
+            }
+          },
+          "functions": [],
+          "variables": {
+            "bastionHostName": "[format('bas-{0}', parameters('bastionName'))]",
+            "bastionIpAddressName": "[format('pip-{0}', parameters('bastionName'))]"
+          },
+          "resources": [
             {
               "type": "Microsoft.Network/publicIPAddresses",
               "apiVersion": "2022-07-01",
@@ -175,26 +223,22 @@
                         "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('bastionIpAddressName'))]"
                       },
                       "subnet": {
-                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('bastionSubnetName'))]"
+                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vNetName'), parameters('bastionSubnetName'))]"
                       }
                     }
                   }
                 ]
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', variables('bastionIpAddressName'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', variables('vNetName'))]"
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('bastionIpAddressName'))]"
               ]
             }
-          ],
-          "outputs": {
-            "vNetName": {
-              "type": "string",
-              "value": "[variables('vNetName')]"
-            }
-          }
+          ]
         }
-      }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'vnet')]"
+      ]
     },
     {
       "type": "Microsoft.Resources/deployments",
@@ -222,7 +266,7 @@
             "value": "[parameters('vmSize')]"
           },
           "vNetName": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnet-with-bastion'), '2019-10-01').outputs.vNetName.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnet'), '2019-10-01').outputs.vNetName.value]"
           },
           "vmSubnetName": {
             "value": "[parameters('vmSubnetName')]"
@@ -330,7 +374,7 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'vnet-with-bastion')]"
+        "[resourceId('Microsoft.Resources/deployments', 'vnet')]"
       ]
     }
   ],
@@ -338,7 +382,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "1787663526760543454"
+      "templateHash": "6749669166426058954"
     }
   }
 }

@@ -194,7 +194,7 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-10-01",
-      "name": "vnet-with-bastion",
+      "name": "vnet",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -209,9 +209,6 @@
           },
           "vmSubnetName": {
             "value": "[parameters('vmSubnetName')]"
-          },
-          "bastionName": {
-            "value": "[parameters('bastionName')]"
           },
           "openWebPorts": {
             "value": true
@@ -233,10 +230,6 @@
               "type": "string",
               "defaultValue": "VMs"
             },
-            "bastionName": {
-              "type": "string",
-              "defaultValue": "BastionHost"
-            },
             "openWebPorts": {
               "type": "bool",
               "defaultValue": false
@@ -248,8 +241,6 @@
             "vNetAddressPrefix": "10.1.0.0/16",
             "bastionSubnetAddressPrefix": "10.1.0.0/24",
             "vmSubnetAddressPrefix": "10.1.1.0/24",
-            "bastionHostName": "[format('bas-{0}', parameters('bastionName'))]",
-            "bastionIpAddressName": "[format('pip-{0}', parameters('bastionName'))]",
             "nsgName": "[format('nsg-subnet-{0}', parameters('vmSubnetName'))]",
             "bastionSubnetName": "AzureBastionSubnet"
           },
@@ -297,7 +288,68 @@
               "dependsOn": [
                 "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
               ]
+            }
+          ],
+          "outputs": {
+            "vNetName": {
+              "type": "string",
+              "value": "[variables('vNetName')]"
             },
+            "bastionSubnetName": {
+              "type": "string",
+              "value": "[variables('bastionSubnetName')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
+      "name": "bastion",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "bastionName": {
+            "value": "[parameters('bastionName')]"
+          },
+          "vNetName": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnet'), '2019-10-01').outputs.vNetName.value]"
+          },
+          "bastionSubnetName": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnet'), '2019-10-01').outputs.bastionSubnetName.value]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]"
+            },
+            "bastionName": {
+              "type": "string"
+            },
+            "vNetName": {
+              "type": "string"
+            },
+            "bastionSubnetName": {
+              "type": "string"
+            }
+          },
+          "functions": [],
+          "variables": {
+            "bastionHostName": "[format('bas-{0}', parameters('bastionName'))]",
+            "bastionIpAddressName": "[format('pip-{0}', parameters('bastionName'))]"
+          },
+          "resources": [
             {
               "type": "Microsoft.Network/publicIPAddresses",
               "apiVersion": "2022-07-01",
@@ -330,26 +382,22 @@
                         "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('bastionIpAddressName'))]"
                       },
                       "subnet": {
-                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('bastionSubnetName'))]"
+                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vNetName'), parameters('bastionSubnetName'))]"
                       }
                     }
                   }
                 ]
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', variables('bastionIpAddressName'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', variables('vNetName'))]"
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('bastionIpAddressName'))]"
               ]
             }
-          ],
-          "outputs": {
-            "vNetName": {
-              "type": "string",
-              "value": "[variables('vNetName')]"
-            }
-          }
+          ]
         }
-      }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'vnet')]"
+      ]
     },
     {
       "type": "Microsoft.Resources/deployments",
@@ -644,7 +692,8 @@
               "name": "[guid(format('{0}-windows-vmcontributor', parameters('backupPolicyName')))]",
               "properties": {
                 "principalId": "[reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('backupPolicyName')), '2022-06-01', 'full').identity.principalId]",
-                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]"
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]",
+                "principalType": "ServicePrincipal"
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Authorization/policyAssignments', parameters('backupPolicyName'))]"
@@ -656,7 +705,8 @@
               "name": "[guid(format('{0}-windows-backupcontributor', parameters('backupPolicyName')))]",
               "properties": {
                 "principalId": "[reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('backupPolicyName')), '2022-06-01', 'full').identity.principalId]",
-                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]"
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
+                "principalType": "ServicePrincipal"
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Authorization/policyAssignments', parameters('backupPolicyName'))]"
@@ -704,7 +754,8 @@
               "name": "[guid(format('{0}-windows-monitoringcontributor', parameters('monitoringPolicyName')))]",
               "properties": {
                 "principalId": "[reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('monitoringPolicyName')), '2022-06-01', 'full').identity.principalId]",
-                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]"
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+                "principalType": "ServicePrincipal"
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Authorization/policyAssignments', parameters('monitoringPolicyName'))]"
@@ -716,7 +767,8 @@
               "name": "[guid(format('{0}-windows-loganalyticscontributor', parameters('monitoringPolicyName')))]",
               "properties": {
                 "principalId": "[reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('monitoringPolicyName')), '2022-06-01', 'full').identity.principalId]",
-                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]"
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+                "principalType": "ServicePrincipal"
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Authorization/policyAssignments', parameters('monitoringPolicyName'))]"
@@ -764,7 +816,7 @@
             "value": "[variables('vmScaleSetName')]"
           },
           "vNetName": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnet-with-bastion'), '2019-10-01').outputs.vNetName.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnet'), '2019-10-01').outputs.vNetName.value]"
           },
           "vmSubnetName": {
             "value": "[parameters('vmSubnetName')]"
@@ -1001,8 +1053,94 @@
       "dependsOn": [
         "[resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancerName'))]",
         "[resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure')]",
+        "[resourceId('Microsoft.Resources/deployments', 'vnet')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
+      "name": "policy-remediation",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "backupPolicyAssignmentId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies'), '2019-10-01').outputs.backupPolicyAssignmentId.value]"
+          },
+          "backupPolicyDefinitionId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies'), '2019-10-01').outputs.backupPolicyDefinitionId.value]"
+          },
+          "monitoringPolicyAssignmentId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies'), '2019-10-01').outputs.monitoringPolicyAssignmentId.value]"
+          },
+          "monitoringPolicyDefinitionId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies'), '2019-10-01').outputs.monitoringPolicyDefinitionId.value]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]"
+            },
+            "backupPolicyDefinitionId": {
+              "type": "string"
+            },
+            "backupPolicyAssignmentId": {
+              "type": "string"
+            },
+            "monitoringPolicyDefinitionId": {
+              "type": "string"
+            },
+            "monitoringPolicyAssignmentId": {
+              "type": "string"
+            }
+          },
+          "functions": [],
+          "resources": [
+            {
+              "type": "Microsoft.PolicyInsights/remediations",
+              "apiVersion": "2021-10-01",
+              "name": "backup-vmss-remediation",
+              "properties": {
+                "policyAssignmentId": "[parameters('backupPolicyAssignmentId')]",
+                "policyDefinitionReferenceId": "[parameters('backupPolicyDefinitionId')]",
+                "resourceDiscoveryMode": "ReEvaluateCompliance",
+                "filters": {
+                  "locations": [
+                    "[parameters('location')]"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "Microsoft.PolicyInsights/remediations",
+              "apiVersion": "2021-10-01",
+              "name": "monitoring-remediation",
+              "properties": {
+                "policyAssignmentId": "[parameters('monitoringPolicyAssignmentId')]",
+                "policyDefinitionReferenceId": "[parameters('monitoringPolicyDefinitionId')]",
+                "resourceDiscoveryMode": "ReEvaluateCompliance",
+                "filters": {
+                  "locations": [
+                    "[parameters('location')]"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies')]",
-        "[resourceId('Microsoft.Resources/deployments', 'vnet-with-bastion')]"
+        "[resourceId('Microsoft.Resources/deployments', 'vm-scale-set')]"
       ]
     }
   ],
@@ -1010,7 +1148,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "10681648232120125031"
+      "templateHash": "15937585852590651602"
     }
   }
 }

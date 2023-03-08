@@ -24,14 +24,23 @@ var loadBalancerProbeName443 = 'loadBalancerHealthProbePort443'
 
 var vmScaleSetName = 'vmss-VmStarterKit'
 
-module vNetModule 'modules/vnet-with-bastion.bicep' = {
-  name: 'vnet-with-bastion'
+module vNetModule 'modules/vnet.bicep' = {
+  name: 'vnet'
   params: {
     location: location
     networkName: networkName
     vmSubnetName: vmSubnetName
-    bastionName: bastionName
     openWebPorts: true
+  }
+}
+
+module bastionModule 'modules/bastion.bicep' = {
+  name: 'bastion'
+  params: {
+    location: location
+    bastionName: bastionName
+    vNetName: vNetModule.outputs.vNetName
+    bastionSubnetName: vNetModule.outputs.bastionSubnetName
   }
 }
 
@@ -203,9 +212,6 @@ module vmScaleSetModule 'modules/virtual-machine-scale-set.bicep' = {
     vmManagedIdentityResourceId: monitoringModule.outputs.vmManagedIdentityResourceId
     amaManagedIdentityResourceId: monitoringModule.outputs.amaManagedIdentityResourceId
   }
-  // dependsOn: [
-  //   policiesModule
-  // ]
 }
 
 module policyRemediationModule 'modules/policy-remediation.bicep' = {

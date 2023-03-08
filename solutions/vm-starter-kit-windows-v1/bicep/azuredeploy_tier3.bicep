@@ -1,6 +1,35 @@
 targetScope = 'resourceGroup'
 
-param location string = resourceGroup().location
+// This template distributes the scale set VMs across availability zones. Therefore it is limited to regions with AZ support.
+// The list of regions with AZ support is from: https://learn.microsoft.com/en-us/azure/reliability/availability-zones-service-support
+@allowed([
+  'brazilsouth'
+  'canadacentral'
+  'centralus'
+  'eastus'
+  'eastus2'
+  'southcentralus'
+  'westus2'
+  'westus3'
+  'francecentral'
+  'northeurope'
+  'norwayeast'
+  'uksouth'
+  'westeurope'
+  'swedencentral'
+  'switzerlandnorth'
+  'polandcentral'
+  'qatarcentral'
+  'uaenorth'
+  'southafricanorth'
+  'australiaeast'
+  'centralindia'
+  'japaneast'
+  'koreacentral'
+  'southeastasia'
+  'eastasia'
+])
+param location string
 
 param bastionName string = 'BastionHost'
 param networkName string = 'VmStarterKit'
@@ -8,9 +37,9 @@ param vmSubnetName string = 'VMs'
 
 param vmNamePrefix string = 'VM'
 param vmSize string = 'Standard_D2s_v5'
-param adminUsername string = 'azureadmin'
+param adminUsername string
 @secure()
-param adminPassword string = 'P@ssword4242'
+param adminPassword string
 
 param recoveryServicesVaultName string = 'rsv-VmBackupVault'
 var recoveryVaultPolicyName = 'DefaultPolicy'

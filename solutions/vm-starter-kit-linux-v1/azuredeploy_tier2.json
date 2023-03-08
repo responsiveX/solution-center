@@ -27,8 +27,7 @@
       "defaultValue": "Standard_D2s_v5"
     },
     "adminUsername": {
-      "type": "string",
-      "defaultValue": "azureadmin"
+      "type": "string"
     },
     "sshPublicKey": {
       "type": "secureString"
@@ -60,7 +59,7 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-10-01",
-      "name": "vnet-with-bastion",
+      "name": "vnet",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -183,10 +182,10 @@
             "value": "[parameters('bastionName')]"
           },
           "vNetName": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnet-with-bastion'), '2019-10-01').outputs.vNetName.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnet'), '2019-10-01').outputs.vNetName.value]"
           },
           "bastionSubnetName": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnet-with-bastion'), '2019-10-01').outputs.bastionSubnetName.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnet'), '2019-10-01').outputs.bastionSubnetName.value]"
           }
         },
         "template": {
@@ -259,7 +258,7 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'vnet-with-bastion')]"
+        "[resourceId('Microsoft.Resources/deployments', 'vnet')]"
       ]
     },
     {
@@ -497,7 +496,7 @@
             "value": "[parameters('osdiskSizeGB')]"
           },
           "vNetName": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnet-with-bastion'), '2019-10-01').outputs.vNetName.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnet'), '2019-10-01').outputs.vNetName.value]"
           },
           "vmSubnetName": {
             "value": "[parameters('vmSubnetName')]"
@@ -737,7 +736,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure')]",
         "[resourceId('Microsoft.RecoveryServices/vaults', parameters('recoveryServicesVaultName'))]",
-        "[resourceId('Microsoft.Resources/deployments', 'vnet-with-bastion')]"
+        "[resourceId('Microsoft.Resources/deployments', 'vnet')]"
       ]
     }
   ],
@@ -745,7 +744,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "5919814399729882038"
+      "templateHash": "16843552508851730063"
     }
   }
 }

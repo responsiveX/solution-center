@@ -1,6 +1,35 @@
 targetScope = 'resourceGroup'
 
-param location string = resourceGroup().location
+// This template distributes the scale set VMs across availability zones. Therefore it is limited to regions with AZ support.
+// The list of regions with AZ support is from: https://learn.microsoft.com/en-us/azure/reliability/availability-zones-service-support
+@allowed([
+  'brazilsouth'
+  'canadacentral'
+  'centralus'
+  'eastus'
+  'eastus2'
+  'southcentralus'
+  'westus2'
+  'westus3'
+  'francecentral'
+  'northeurope'
+  'norwayeast'
+  'uksouth'
+  'westeurope'
+  'swedencentral'
+  'switzerlandnorth'
+  'polandcentral'
+  'qatarcentral'
+  'uaenorth'
+  'southafricanorth'
+  'australiaeast'
+  'centralindia'
+  'japaneast'
+  'koreacentral'
+  'southeastasia'
+  'eastasia'
+])
+param location string
 
 param bastionName string = 'BastionHost'
 param networkName string = 'VmStarterKit'
@@ -8,9 +37,9 @@ param vmSubnetName string = 'VMs'
 
 param vmNamePrefix string = 'VM'
 param vmSize string = 'Standard_D2s_v5'
-param adminUsername string = 'azureadmin'
+param adminUsername string
 @secure()
-param sshPublicKey string = 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDkNiD0HIP68W2cW5hUBfgi7+7l+a9FWX+bSKmbRlEVXXwS+YBL/PfPM2+/InpSqZVCEthxyWQRUJj5zhr8glZQhoKMLA7PdCj4zQ1BhZMUBiEJRhQbjiHpnp+FpntZqIaSEPLhlK0lS0oS9gxZq1V0RUcNzCQmtRn5jnvTYmkBLakRk7sW+VJqHmwZy9C8tmdPRv/9mycG2zSAgEcZR2AB4PMKettfWjwmSgBZySHhlya55xd7YyDZHSJXMrrgneLyH+HdAWxTiODs5rA1YMi6VOfWk6mSF1ox0ssQPFIifXwxoPYTRjz2fBIWefZwqvb/ahyofnsnQFvoEFK+pTvOXTQ6hdMHUqo8AZO/YFcJjN0KsoGrYv2Zb6IzrZ7LLsfGTcMbOqaUk9uTbi5adlPRRf8lx2tRkMvQVInrjDKEmjWq6M4verXfR1gYA8xoTN1Hw/K2JT6v21bUaCFbeGqFkgJc6+INLS/BPGKeAQPHTNExo2dgwghWUwTS6yG6mek= generated-by-azure'
+param sshPublicKey string
 param osdiskSizeGB int = 30
 
 param recoveryServicesVaultName string = 'rsv-VmBackupVault'

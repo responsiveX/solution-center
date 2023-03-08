@@ -9,9 +9,9 @@ param vmSubnetName string = 'VMs'
 
 param vmName string = 'vm-01'
 param vmSize string = 'Standard_D2s_v5'
-param adminUsername string = 'azureadmin'
+param adminUsername string
 @secure()
-param adminPassword string = 'P@ssword4242'
+param adminPassword string
 
 param recoveryServicesVaultName string = 'rsv-VmBackupVault'
 

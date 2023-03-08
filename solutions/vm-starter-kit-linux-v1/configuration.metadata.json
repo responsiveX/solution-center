@@ -25,7 +25,7 @@
             "displayName": "Azure Backup",
             "icon": {
                 "iconType": "CustomIcon",
-                "iconFileName": "AzureBackupVault.svg"
+                "iconFileName": "AzureBackupVault"
             },
             "name": "AzureBackup"
         },
@@ -237,7 +237,7 @@
                     "displayName": "Azure Backup",
                     "icon": {
                         "iconType": "CustomIcon",
-                        "iconFileName": "AzureBackupVault.svg"
+                        "iconFileName": "AzureBackupVault"
                     }
                 }
             ]
@@ -372,7 +372,7 @@
                     "displayName": "Azure Backup",
                     "icon": {
                         "iconType": "CustomIcon",
-                        "iconFileName": "AzureBackupVault.svg"
+                        "iconFileName": "AzureBackupVault"
                     }
                 }
             ]

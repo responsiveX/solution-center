@@ -13,10 +13,49 @@
                             "name": "resourceScope",
                             "type": "Microsoft.Common.ResourceScope",
                             "location": {
+                                "allowedValues": [
+                                "brazilsouth",
+                                "canadacentral",
+                                "centralus",
+                                "eastus",
+                                "eastus2",
+                                "southcentralus",
+                                "westus2",
+                                "westus3",
+                                "francecentral",
+                                "northeurope",
+                                "norwayeast",
+                                "uksouth",
+                                "westeurope",
+                                "swedencentral",
+                                "switzerlandnorth",
+                                "polandcentral",
+                                "qatarcentral",
+                                "uaenorth",   
+                                "southafricanorth", 
+                                "australiaeast",
+                                "centralindia",
+                                "japaneast",
+                                "koreacentral",
+                                "southeastasia",
+                                "eastasia"
+                                ],
                                 "resourceTypes": [
                                     "microsoft.resources/resourcegroups"
                                 ]
                             }
+                        },
+                        {
+                            "name": "adminUsername",
+                            "type": "Microsoft.Compute.UserNameTextBox",
+                            "label": "Admin Username",
+                            "defaultValue": "azureadmin",
+                            "toolTip": "User name to use on the Virtual Machine. ",
+                            "constraints": {
+                                "required": true
+                            },
+                            "osPlatform": "Linux",
+                            "visible": true
                         },
                         {
                             "name": "sshPublicKey",
@@ -47,6 +86,7 @@
         },
         "outputs": {
             "parameters": {
+                "adminUsername": "[steps('basics').adminUsername.adminUsername]",
                 "sshPublicKey": "[steps('basics').sshPublicKey.sshPublicKey]"
             },
             "kind": "ResourceGroup",

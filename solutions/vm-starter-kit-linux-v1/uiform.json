@@ -59,6 +59,7 @@
         },
         "outputs": {
             "parameters": {
+                "location": "[steps('basics').resourceScope.location.name]",
                 "adminUsername": "[steps('basics').adminUsername.adminUsername]",
                 "sshPublicKey": "[steps('basics').sshPublicKey.sshPublicKey]"
             },

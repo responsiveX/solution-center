@@ -57,6 +57,7 @@
         },
         "outputs": {
             "parameters": {
+                "location": "[steps('basics').resourceScope.location.name]",
                 "adminUsername": "[steps('basics').adminUsername.adminUsername]",
                 "adminPassword": "[steps('basics').adminPassword.adminPassword]"
             },

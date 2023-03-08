@@ -52,7 +52,7 @@
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
             "templateFileName": "azuredeploy_tier1.json",
-            "uiDefinitionFileName": "minimal-Uiformdefinition.json",
+            "uiDefinitionFileName": "uiform.json",
             "pivotValues": [
                 {
                     "pivotName": "VirtualMachines",
@@ -130,7 +130,7 @@
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
             "templateFileName": "azuredeploy_tier2.json",
-            "uiDefinitionFileName": "minimal-Uiformdefinition.json",
+            "uiDefinitionFileName": "uiform.json",
             "pivotValues": [
                {
                     "pivotName": "VirtualMachines",
@@ -254,7 +254,7 @@
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
             "templateFileName": "azuredeploy_tier3.json",
-            "uiDefinitionFileName": "minimal-Uiformdefinition.json",
+            "uiDefinitionFileName": "uiform-locationrestriction.json",
             "pivotValues": [
                 {
                     "pivotName": "VirtualMachines",

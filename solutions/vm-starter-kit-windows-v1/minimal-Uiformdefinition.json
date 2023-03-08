@@ -23,7 +23,6 @@
                                 "westus2",
                                 "westus3",
                                 "francecentral",
-                                "germanywestcentral",
                                 "northeurope",
                                 "norwayeast",
                                 "uksouth",
@@ -39,8 +38,7 @@
                                 "japaneast",
                                 "koreacentral",
                                 "southeastasia",
-                                "eastasia",
-                                "chinanorth3"
+                                "eastasia"
                                 ],
                                 "resourceTypes": [
                                     "microsoft.resources/resourcegroups"
@@ -48,9 +46,9 @@
                             }
                         },
                         {
-                            "name": "adminUserName",
+                            "name": "adminUsername",
                             "type": "Microsoft.Compute.UserNameTextBox",
-                            "label": "Admin UserName",
+                            "label": "Admin Username",
                             "defaultValue": "azureadmin",
                             "toolTip": "User name to use on the Virtual Machine. ",
                             "constraints": {
@@ -86,7 +84,7 @@
         },
         "outputs": {
             "parameters": {
-                "adminUserName": "[steps('basics').adminUserName.adminUserName]",
+                "adminUserName": "[steps('basics').adminUsername.adminUsername]",
                 "adminPassword": "[steps('basics').adminPassword.adminPassword]"
             },
             "kind": "ResourceGroup",

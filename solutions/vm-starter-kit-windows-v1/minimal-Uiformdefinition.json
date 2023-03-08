@@ -14,8 +14,33 @@
                             "type": "Microsoft.Common.ResourceScope",
                             "location": {
                                 "allowedValues": [
+                                "brazilsouth",
+                                "canadacentral",
                                 "CentralUS",
-                                "EastUS"
+                                "EastUS",
+                                "EastUS2",
+                                "SouthCentralus",
+                                "WestUS2",
+                                "WestUS3",
+                                "francecentral",
+                                "germanywestcentral",
+                                "northeurope",
+                                "norwayeast",
+                                "uksouth",
+                                "westeurope",
+                                "swedencentral",
+                                "switzerlandnorth",
+                                "polandcentral",
+                                "qatarcentral",
+                                "uaenorth",   
+                                "southafricanorth", 
+                                "australiaeast",
+                                "centralindia",
+                                "japaneast",
+                                "koreacentral",
+                                "southeastasia",
+                                "eastasia",
+                                "chinanorth3"
                                 ],
                                 "resourceTypes": [
                                     "microsoft.resources/resourcegroups"

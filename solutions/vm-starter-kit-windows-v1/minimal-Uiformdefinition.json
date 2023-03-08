@@ -16,12 +16,12 @@
                                 "allowedValues": [
                                 "brazilsouth",
                                 "canadacentral",
-                                "CentralUS",
-                                "EastUS",
-                                "EastUS2",
-                                "SouthCentralus",
-                                "WestUS2",
-                                "WestUS3",
+                                "centralus",
+                                "eastus",
+                                "eastus2",
+                                "southcentralus",
+                                "westus2",
+                                "westus3",
                                 "francecentral",
                                 "germanywestcentral",
                                 "northeurope",
@@ -51,7 +51,7 @@
                             "name": "adminUserName",
                             "type": "Microsoft.Compute.UserNameTextBox",
                             "label": "Admin UserName",
-                            "defaultValue": "",
+                            "defaultValue": "azureadmin",
                             "toolTip": "User name to use on the Virtual Machine. ",
                             "constraints": {
                                 "required": true

@@ -165,7 +165,7 @@
                     "content": [
                         "Azure Monitor Agent",
                         "VM Insights",
-                        "Logs and Metrics"
+                        "VM Logs and Metrics"
                     ]
                 }
             ],
@@ -292,7 +292,7 @@
                     "content": [
                        "Azure Monitor Agent",
                        "VM Insights",
-                       "Logs and Metrics"
+                       "VM Logs and Metrics"
                     ]
                 }
             ],

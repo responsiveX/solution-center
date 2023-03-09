@@ -264,6 +264,7 @@ module policyRemediationModule 'modules/policy-remediation.bicep' = {
     monitoringPolicyDefinitionId: policiesModule.outputs.monitoringPolicyDefinitionId
   }
   dependsOn: [
+    policiesRoleAssignmentsModule
     vmScaleSetModule
   ]
 }

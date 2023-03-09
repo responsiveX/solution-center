@@ -682,7 +682,7 @@
             },
             "monitoringPolicyName": {
               "type": "string",
-              "defaultValue": "Monitor VMs"
+              "defaultValue": "Monitor VMSS"
             },
             "monitoringPolicyDefinitionId": {
               "type": "string",
@@ -1237,6 +1237,7 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies')]",
+        "[resourceId('Microsoft.Resources/deployments', 'policy-role-assignments')]",
         "[resourceId('Microsoft.Resources/deployments', 'vm-scale-set')]"
       ]
     }
@@ -1245,7 +1246,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "8352735220112649163"
+      "templateHash": "3048668564604867941"
     }
   }
 }

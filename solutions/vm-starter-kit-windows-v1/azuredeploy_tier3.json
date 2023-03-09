@@ -1203,6 +1203,7 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies')]",
+        "[resourceId('Microsoft.Resources/deployments', 'policy-role-assignments')]",
         "[resourceId('Microsoft.Resources/deployments', 'vm-scale-set')]"
       ]
     }
@@ -1211,7 +1212,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "15503096678838613857"
+      "templateHash": "5967452432787185193"
     }
   }
 }

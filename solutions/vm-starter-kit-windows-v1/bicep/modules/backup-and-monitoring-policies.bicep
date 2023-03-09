@@ -112,7 +112,7 @@ resource monitoringContributorRole 'Microsoft.Authorization/roleDefinitions@2022
 }
 
 resource monitoringContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('$${resourceGroup().name}-{monitoringPolicyName}-windows-monitoringcontributor')
+  name: guid('${resourceGroup().name}-${monitoringPolicyName}-windows-monitoringcontributor')
   properties: {
     principalId: monitoringPolicyAssignment.identity.principalId
     roleDefinitionId: monitoringContributorRole.id

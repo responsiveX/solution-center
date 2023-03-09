@@ -725,32 +725,6 @@
               }
             },
             {
-              "type": "Microsoft.Authorization/roleAssignments",
-              "apiVersion": "2022-04-01",
-              "name": "[guid(format('{0}-linux-vmcontributor', parameters('backupPolicyName')))]",
-              "properties": {
-                "principalId": "[reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('backupPolicyName')), '2022-06-01', 'full').identity.principalId]",
-                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]",
-                "principalType": "ServicePrincipal"
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Authorization/policyAssignments', parameters('backupPolicyName'))]"
-              ]
-            },
-            {
-              "type": "Microsoft.Authorization/roleAssignments",
-              "apiVersion": "2022-04-01",
-              "name": "[guid(format('{0}-linux-backupcontributor', parameters('backupPolicyName')))]",
-              "properties": {
-                "principalId": "[reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('backupPolicyName')), '2022-06-01', 'full').identity.principalId]",
-                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
-                "principalType": "ServicePrincipal"
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Authorization/policyAssignments', parameters('backupPolicyName'))]"
-              ]
-            },
-            {
               "type": "Microsoft.Authorization/policyAssignments",
               "apiVersion": "2022-06-01",
               "name": "[parameters('monitoringPolicyName')]",
@@ -785,32 +759,6 @@
                   }
                 ]
               }
-            },
-            {
-              "type": "Microsoft.Authorization/roleAssignments",
-              "apiVersion": "2022-04-01",
-              "name": "[guid(format('{0}-linux-monitoringcontributor', parameters('monitoringPolicyName')))]",
-              "properties": {
-                "principalId": "[reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('monitoringPolicyName')), '2022-06-01', 'full').identity.principalId]",
-                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
-                "principalType": "ServicePrincipal"
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Authorization/policyAssignments', parameters('monitoringPolicyName'))]"
-              ]
-            },
-            {
-              "type": "Microsoft.Authorization/roleAssignments",
-              "apiVersion": "2022-04-01",
-              "name": "[guid(format('{0}-linux-loganalyticscontributor', parameters('monitoringPolicyName')))]",
-              "properties": {
-                "principalId": "[reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('monitoringPolicyName')), '2022-06-01', 'full').identity.principalId]",
-                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
-                "principalType": "ServicePrincipal"
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Authorization/policyAssignments', parameters('monitoringPolicyName'))]"
-              ]
             }
           ],
           "outputs": {
@@ -822,6 +770,10 @@
               "type": "string",
               "value": "[resourceId('Microsoft.Authorization/policyAssignments', parameters('backupPolicyName'))]"
             },
+            "backupPolicyPrincipalId": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('backupPolicyName')), '2022-06-01', 'full').identity.principalId]"
+            },
             "monitoringPolicyDefinitionId": {
               "type": "string",
               "value": "[parameters('monitoringPolicyDefinitionId')]"
@@ -829,12 +781,97 @@
             "monitoringPolicyAssignmentId": {
               "type": "string",
               "value": "[resourceId('Microsoft.Authorization/policyAssignments', parameters('monitoringPolicyName'))]"
+            },
+            "monitoringPolicyPrincipalId": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('monitoringPolicyName')), '2022-06-01', 'full').identity.principalId]"
             }
           }
         }
       },
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
+      "name": "policy-role-assignments",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "backupPolicyPrincipalId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies'), '2019-10-01').outputs.backupPolicyPrincipalId.value]"
+          },
+          "monitoringPolicyPrincipalId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies'), '2019-10-01').outputs.monitoringPolicyPrincipalId.value]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "backupPolicyPrincipalId": {
+              "type": "string"
+            },
+            "monitoringPolicyPrincipalId": {
+              "type": "string"
+            }
+          },
+          "functions": [],
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(format('{0}-{1}-vmcontributor', resourceGroup().id, parameters('backupPolicyPrincipalId')))]",
+              "properties": {
+                "principalId": "[parameters('backupPolicyPrincipalId')]",
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": []
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(format('{0}-{1}-backupcontributor', resourceGroup().id, parameters('backupPolicyPrincipalId')))]",
+              "properties": {
+                "principalId": "[parameters('backupPolicyPrincipalId')]",
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": []
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(format('{0}-{1}-monitoringcontributor', resourceGroup().id, parameters('monitoringPolicyPrincipalId')))]",
+              "properties": {
+                "principalId": "[parameters('monitoringPolicyPrincipalId')]",
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": []
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(format('{0}-{1}-loganalyticscontributor', resourceGroup().id, parameters('monitoringPolicyPrincipalId')))]",
+              "properties": {
+                "principalId": "[parameters('monitoringPolicyPrincipalId')]",
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": []
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies')]"
       ]
     },
     {
@@ -1208,7 +1245,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "10381557280182679884"
+      "templateHash": "8352735220112649163"
     }
   }
 }

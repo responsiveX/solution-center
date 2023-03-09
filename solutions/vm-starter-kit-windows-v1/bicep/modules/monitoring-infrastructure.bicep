@@ -17,7 +17,8 @@ param logAnalyticsWorkspaceName string = 'log-VmInsights'
 ])
 param logAnalyticsSku string = 'PerGB2018'
 param logAnalyticsRetentionInDays int = 30
-param dataCollectionRuleName string = 'dcr-VmInsights'
+param createDataCollectionRule bool = true
+param dataCollectionRuleName string = 'MSVMI-ama-vmi-vmss-dcr'
 var vmInsightsName = 'VMInsights(${logAnalyticsWorkspaceName})'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
@@ -40,7 +41,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10
   }
 }
 
-resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2021-04-01' = {
+resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2021-04-01' = if (createDataCollectionRule) {
   name: dataCollectionRuleName
   location: location
   properties: {

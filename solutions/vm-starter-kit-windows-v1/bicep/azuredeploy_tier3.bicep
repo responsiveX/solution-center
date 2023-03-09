@@ -77,6 +77,7 @@ module monitoringModule 'modules/monitoring-infrastructure.bicep' = {
   name: 'monitoring-infrastructure'
   params: {
     location: location
+    createDataCollectionRule: false
   }
 }
 

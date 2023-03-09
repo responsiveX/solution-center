@@ -437,6 +437,9 @@
         "parameters": {
           "location": {
             "value": "[parameters('location')]"
+          },
+          "createDataCollectionRule": {
+            "value": false
           }
         },
         "template": {
@@ -473,9 +476,13 @@
               "type": "int",
               "defaultValue": 30
             },
+            "createDataCollectionRule": {
+              "type": "bool",
+              "defaultValue": true
+            },
             "dataCollectionRuleName": {
               "type": "string",
-              "defaultValue": "dcr-VmInsights"
+              "defaultValue": "MSVMI-ama-vmi-vmss-dcr"
             }
           },
           "functions": [],
@@ -506,6 +513,7 @@
               }
             },
             {
+              "condition": "[parameters('createDataCollectionRule')]",
               "type": "Microsoft.Insights/dataCollectionRules",
               "apiVersion": "2021-04-01",
               "name": "[parameters('dataCollectionRuleName')]",
@@ -1212,7 +1220,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "5967452432787185193"
+      "templateHash": "14608760975664500021"
     }
   }
 }

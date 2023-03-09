@@ -45,32 +45,6 @@ resource backupPolicyAssignment 'Microsoft.Authorization/policyAssignments@2022-
   }
 }
 
-resource virtualMachineContributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
-  name: '9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
-}
-
-resource vmContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('${resourceGroup().name}-${backupPolicyName}-windows-vmcontributor')
-  properties: {
-    principalId: backupPolicyAssignment.identity.principalId
-    roleDefinitionId: virtualMachineContributorRole.id
-    principalType: 'ServicePrincipal'
-  }
-}
-
-resource backupContributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
-  name: '5e467623-bb1f-42f4-a55d-6e525e11384b'
-}
-
-resource backupContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('${resourceGroup().name}-${backupPolicyName}-windows-backupcontributor')
-  properties: {
-    principalId: backupPolicyAssignment.identity.principalId
-    roleDefinitionId: backupContributorRole.id
-    principalType: 'ServicePrincipal'
-  }
-}
-
 resource monitoringPolicyAssignment 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
   name: monitoringPolicyName
   location: location
@@ -107,33 +81,9 @@ resource monitoringPolicyAssignment 'Microsoft.Authorization/policyAssignments@2
   }
 }
 
-resource monitoringContributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
-  name: '749f88d5-cbae-40b8-bcfc-e573ddc772fa'
-}
-
-resource monitoringContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('${resourceGroup().name}-${monitoringPolicyName}-windows-monitoringcontributor')
-  properties: {
-    principalId: monitoringPolicyAssignment.identity.principalId
-    roleDefinitionId: monitoringContributorRole.id
-    principalType: 'ServicePrincipal'
-  }
-}
-
-resource logAnalyticsContributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
-  name: '92aaf0da-9dab-42b6-94a3-d43ce8d16293'
-}
-
-resource logAnalyticsContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('${resourceGroup().name}-${monitoringPolicyName}-windows-loganalyticscontributor')
-  properties: {
-    principalId: monitoringPolicyAssignment.identity.principalId
-    roleDefinitionId: logAnalyticsContributorRole.id
-    principalType: 'ServicePrincipal'
-  }
-}
-
 output backupPolicyDefinitionId string = backupPolicyDefinitionId
 output backupPolicyAssignmentId string = backupPolicyAssignment.id
+output backupPolicyPrincipalId string = backupPolicyAssignment.identity.principalId
 output monitoringPolicyDefinitionId string = monitoringPolicyDefinitionId
 output monitoringPolicyAssignmentId string = monitoringPolicyAssignment.id
+output monitoringPolicyPrincipalId string = monitoringPolicyAssignment.identity.principalId

@@ -224,6 +224,14 @@ module policiesModule 'modules/backup-and-monitoring-policies.bicep' = {
   }
 }
 
+module policiesRoleAssignmentsModule 'modules/policy-role-assignments.bicep' = {
+  name: 'policy-role-assignments'
+  params: {
+    backupPolicyPrincipalId: policiesModule.outputs.backupPolicyPrincipalId
+    monitoringPolicyPrincipalId: policiesModule.outputs.monitoringPolicyPrincipalId
+  }
+}
+
 module vmScaleSetModule 'modules/virtual-machine-scale-set.bicep' = {
   name: 'vm-scale-set'
   params: {

@@ -50,7 +50,7 @@ resource virtualMachineContributorRole 'Microsoft.Authorization/roleDefinitions@
 }
 
 resource vmContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('${backupPolicyName}-linux-vmcontributor')
+  name: guid('${resourceGroup().name}-${backupPolicyName}-linux-vmcontributor')
   properties: {
     principalId: backupPolicyAssignment.identity.principalId
     roleDefinitionId: virtualMachineContributorRole.id
@@ -63,7 +63,7 @@ resource backupContributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-
 }
 
 resource backupContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('${backupPolicyName}-linux-backupcontributor')
+  name: guid('${resourceGroup().name}-${backupPolicyName}-linux-backupcontributor')
   properties: {
     principalId: backupPolicyAssignment.identity.principalId
     roleDefinitionId: backupContributorRole.id
@@ -112,7 +112,7 @@ resource monitoringContributorRole 'Microsoft.Authorization/roleDefinitions@2022
 }
 
 resource monitoringContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('${monitoringPolicyName}-linux-monitoringcontributor')
+  name: guid('${resourceGroup().name}-${monitoringPolicyName}-linux-monitoringcontributor')
   properties: {
     principalId: monitoringPolicyAssignment.identity.principalId
     roleDefinitionId: monitoringContributorRole.id
@@ -125,7 +125,7 @@ resource logAnalyticsContributorRole 'Microsoft.Authorization/roleDefinitions@20
 }
 
 resource logAnalyticsContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('${monitoringPolicyName}-linux-loganalyticscontributor')
+  name: guid('${resourceGroup().name}-${monitoringPolicyName}-linux-loganalyticscontributor')
   properties: {
     principalId: monitoringPolicyAssignment.identity.principalId
     roleDefinitionId: logAnalyticsContributorRole.id

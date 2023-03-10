@@ -1163,9 +1163,6 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "location": {
-            "value": "[parameters('location')]"
-          },
           "backupPolicyAssignmentId": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies'), '2019-10-01').outputs.backupPolicyAssignmentId.value]"
           },
@@ -1183,10 +1180,6 @@
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
           "parameters": {
-            "location": {
-              "type": "string",
-              "defaultValue": "[resourceGroup().location]"
-            },
             "backupPolicyDefinitionId": {
               "type": "string"
             },
@@ -1205,31 +1198,21 @@
             {
               "type": "Microsoft.PolicyInsights/remediations",
               "apiVersion": "2021-10-01",
-              "name": "backup-vmss-remediation",
+              "name": "[guid(format('{0}-{1}', resourceGroup().id, parameters('backupPolicyAssignmentId')))]",
               "properties": {
                 "policyAssignmentId": "[parameters('backupPolicyAssignmentId')]",
                 "policyDefinitionReferenceId": "[parameters('backupPolicyDefinitionId')]",
-                "resourceDiscoveryMode": "ReEvaluateCompliance",
-                "filters": {
-                  "locations": [
-                    "[parameters('location')]"
-                  ]
-                }
+                "resourceDiscoveryMode": "ReEvaluateCompliance"
               }
             },
             {
               "type": "Microsoft.PolicyInsights/remediations",
               "apiVersion": "2021-10-01",
-              "name": "monitoring-remediation",
+              "name": "[guid(format('{0}-{1}', resourceGroup().id, parameters('monitoringPolicyAssignmentId')))]",
               "properties": {
                 "policyAssignmentId": "[parameters('monitoringPolicyAssignmentId')]",
                 "policyDefinitionReferenceId": "[parameters('monitoringPolicyDefinitionId')]",
-                "resourceDiscoveryMode": "ReEvaluateCompliance",
-                "filters": {
-                  "locations": [
-                    "[parameters('location')]"
-                  ]
-                }
+                "resourceDiscoveryMode": "ReEvaluateCompliance"
               }
             }
           ]
@@ -1246,7 +1229,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "3048668564604867941"
+      "templateHash": "15566234073316472833"
     }
   }
 }

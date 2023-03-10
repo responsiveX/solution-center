@@ -2,10 +2,10 @@ targetScope = 'resourceGroup'
 
 //param location string = resourceGroup().location
 
-param backupPolicyDefinitionId string
+//param backupPolicyDefinitionId string
 param backupPolicyAssignmentId string
 
-param monitoringPolicyDefinitionId string
+//param monitoringPolicyDefinitionId string
 param monitoringPolicyAssignmentId string
 
 resource backupPolicyRemediation 'Microsoft.PolicyInsights/remediations@2021-10-01' = {
@@ -13,7 +13,7 @@ resource backupPolicyRemediation 'Microsoft.PolicyInsights/remediations@2021-10-
   scope: resourceGroup()
   properties: {
     policyAssignmentId: backupPolicyAssignmentId
-    policyDefinitionReferenceId: backupPolicyDefinitionId
+    //policyDefinitionReferenceId: backupPolicyDefinitionId
     resourceDiscoveryMode: 'ReEvaluateCompliance'
     // filters: {
     //   locations: [
@@ -28,7 +28,7 @@ resource monitoringPolicyRemediation 'Microsoft.PolicyInsights/remediations@2021
   scope: resourceGroup()
   properties: {
     policyAssignmentId: monitoringPolicyAssignmentId
-    policyDefinitionReferenceId: monitoringPolicyDefinitionId
+    //policyDefinitionReferenceId: monitoringPolicyDefinitionId
     resourceDiscoveryMode: 'ReEvaluateCompliance'
     // filters: {
     //   locations: [

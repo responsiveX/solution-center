@@ -694,12 +694,13 @@
             {
               "type": "Microsoft.Authorization/policyAssignments",
               "apiVersion": "2022-06-01",
-              "name": "[parameters('backupPolicyName')]",
+              "name": "[guid(format('{0}-{1}', resourceGroup().id, parameters('backupPolicyName')))]",
               "location": "[parameters('location')]",
               "identity": {
                 "type": "SystemAssigned"
               },
               "properties": {
+                "displayName": "[parameters('backupPolicyName')]",
                 "policyDefinitionId": "[parameters('backupPolicyDefinitionId')]",
                 "parameters": {
                   "vaultLocation": {
@@ -727,12 +728,13 @@
             {
               "type": "Microsoft.Authorization/policyAssignments",
               "apiVersion": "2022-06-01",
-              "name": "[parameters('monitoringPolicyName')]",
+              "name": "[guid(format('{0}-{1}', resourceGroup().id, parameters('monitoringPolicyName')))]",
               "location": "[parameters('location')]",
               "identity": {
                 "type": "SystemAssigned"
               },
               "properties": {
+                "displayName": "[parameters('monitoringPolicyName')]",
                 "policyDefinitionId": "[parameters('monitoringPolicyDefinitionId')]",
                 "parameters": {
                   "workspaceResourceId": {
@@ -762,29 +764,21 @@
             }
           ],
           "outputs": {
-            "backupPolicyDefinitionId": {
-              "type": "string",
-              "value": "[parameters('backupPolicyDefinitionId')]"
-            },
             "backupPolicyAssignmentId": {
               "type": "string",
-              "value": "[resourceId('Microsoft.Authorization/policyAssignments', parameters('backupPolicyName'))]"
+              "value": "[resourceId('Microsoft.Authorization/policyAssignments', guid(format('{0}-{1}', resourceGroup().id, parameters('backupPolicyName'))))]"
             },
             "backupPolicyPrincipalId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('backupPolicyName')), '2022-06-01', 'full').identity.principalId]"
-            },
-            "monitoringPolicyDefinitionId": {
-              "type": "string",
-              "value": "[parameters('monitoringPolicyDefinitionId')]"
+              "value": "[reference(resourceId('Microsoft.Authorization/policyAssignments', guid(format('{0}-{1}', resourceGroup().id, parameters('backupPolicyName')))), '2022-06-01', 'full').identity.principalId]"
             },
             "monitoringPolicyAssignmentId": {
               "type": "string",
-              "value": "[resourceId('Microsoft.Authorization/policyAssignments', parameters('monitoringPolicyName'))]"
+              "value": "[resourceId('Microsoft.Authorization/policyAssignments', guid(format('{0}-{1}', resourceGroup().id, parameters('monitoringPolicyName'))))]"
             },
             "monitoringPolicyPrincipalId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('monitoringPolicyName')), '2022-06-01', 'full').identity.principalId]"
+              "value": "[reference(resourceId('Microsoft.Authorization/policyAssignments', guid(format('{0}-{1}', resourceGroup().id, parameters('monitoringPolicyName')))), '2022-06-01', 'full').identity.principalId]"
             }
           }
         }
@@ -1166,27 +1160,15 @@
           "backupPolicyAssignmentId": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies'), '2019-10-01').outputs.backupPolicyAssignmentId.value]"
           },
-          "backupPolicyDefinitionId": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies'), '2019-10-01').outputs.backupPolicyDefinitionId.value]"
-          },
           "monitoringPolicyAssignmentId": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies'), '2019-10-01').outputs.monitoringPolicyAssignmentId.value]"
-          },
-          "monitoringPolicyDefinitionId": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies'), '2019-10-01').outputs.monitoringPolicyDefinitionId.value]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
           "parameters": {
-            "backupPolicyDefinitionId": {
-              "type": "string"
-            },
             "backupPolicyAssignmentId": {
-              "type": "string"
-            },
-            "monitoringPolicyDefinitionId": {
               "type": "string"
             },
             "monitoringPolicyAssignmentId": {
@@ -1201,7 +1183,6 @@
               "name": "[guid(format('{0}-{1}', resourceGroup().id, parameters('backupPolicyAssignmentId')))]",
               "properties": {
                 "policyAssignmentId": "[parameters('backupPolicyAssignmentId')]",
-                "policyDefinitionReferenceId": "[parameters('backupPolicyDefinitionId')]",
                 "resourceDiscoveryMode": "ReEvaluateCompliance"
               }
             },
@@ -1211,7 +1192,6 @@
               "name": "[guid(format('{0}-{1}', resourceGroup().id, parameters('monitoringPolicyAssignmentId')))]",
               "properties": {
                 "policyAssignmentId": "[parameters('monitoringPolicyAssignmentId')]",
-                "policyDefinitionReferenceId": "[parameters('monitoringPolicyDefinitionId')]",
                 "resourceDiscoveryMode": "ReEvaluateCompliance"
               }
             }
@@ -1229,7 +1209,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "15566234073316472833"
+      "templateHash": "14066534468356090399"
     }
   }
 }

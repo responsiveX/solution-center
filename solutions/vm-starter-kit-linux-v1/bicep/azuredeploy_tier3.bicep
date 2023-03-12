@@ -257,11 +257,8 @@ module vmScaleSetModule 'modules/virtual-machine-scale-set.bicep' = {
 module policyRemediationModule 'modules/policy-remediation.bicep' = {
   name: 'policy-remediation'
   params: {
-    //location: location
     backupPolicyAssignmentId: policiesModule.outputs.backupPolicyAssignmentId
-    //backupPolicyDefinitionId: policiesModule.outputs.backupPolicyDefinitionId
     monitoringPolicyAssignmentId: policiesModule.outputs.monitoringPolicyAssignmentId
-    //monitoringPolicyDefinitionId: policiesModule.outputs.monitoringPolicyDefinitionId
   }
   dependsOn: [
     policiesRoleAssignmentsModule

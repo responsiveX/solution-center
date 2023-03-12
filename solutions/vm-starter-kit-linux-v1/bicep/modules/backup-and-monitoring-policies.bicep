@@ -83,9 +83,7 @@ resource monitoringPolicyAssignment 'Microsoft.Authorization/policyAssignments@2
   }
 }
 
-//output backupPolicyDefinitionId string = backupPolicyDefinitionId
 output backupPolicyAssignmentId string = backupPolicyAssignment.id
 output backupPolicyPrincipalId string = backupPolicyAssignment.identity.principalId
-//output monitoringPolicyDefinitionId string = monitoringPolicyDefinitionId
 output monitoringPolicyAssignmentId string = monitoringPolicyAssignment.id
 output monitoringPolicyPrincipalId string = monitoringPolicyAssignment.identity.principalId

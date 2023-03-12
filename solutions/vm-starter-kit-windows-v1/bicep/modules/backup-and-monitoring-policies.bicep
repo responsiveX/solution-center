@@ -13,13 +13,14 @@ param monitoringPolicyName string = 'Monitor VMSS'
 param monitoringPolicyDefinitionId string = '/providers/Microsoft.Authorization/policyDefinitions/c7f3bf36-b807-4f18-82dc-f480ad713635'
 
 resource backupPolicyAssignment 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
-  name: backupPolicyName
+  name: guid('${resourceGroup().id}-${backupPolicyName}')
   location: location
   scope: resourceGroup()
   identity: {
     type: 'SystemAssigned'
   }
   properties: {
+    displayName: backupPolicyName
     policyDefinitionId: backupPolicyDefinitionId
     parameters: {
       vaultLocation: {
@@ -46,13 +47,14 @@ resource backupPolicyAssignment 'Microsoft.Authorization/policyAssignments@2022-
 }
 
 resource monitoringPolicyAssignment 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
-  name: monitoringPolicyName
+  name: guid('${resourceGroup().id}-${monitoringPolicyName}')
   location: location
   scope: resourceGroup()
   identity: {
     type: 'SystemAssigned'
   }
   properties: {
+    displayName: monitoringPolicyName
     policyDefinitionId: monitoringPolicyDefinitionId
     parameters: {
       workspaceResourceId: {
@@ -81,9 +83,7 @@ resource monitoringPolicyAssignment 'Microsoft.Authorization/policyAssignments@2
   }
 }
 
-output backupPolicyDefinitionId string = backupPolicyDefinitionId
 output backupPolicyAssignmentId string = backupPolicyAssignment.id
 output backupPolicyPrincipalId string = backupPolicyAssignment.identity.principalId
-output monitoringPolicyDefinitionId string = monitoringPolicyDefinitionId
 output monitoringPolicyAssignmentId string = monitoringPolicyAssignment.id
 output monitoringPolicyPrincipalId string = monitoringPolicyAssignment.identity.principalId

@@ -35,7 +35,7 @@
                             "type": "Microsoft.Compute.CredentialsCombo",
                             "label": {
                                 "authenticationType": "Authentication Type",
-                                "password": "Admin Password Or Key"
+                                "password": "Admin Password"
                             },
                             "toolTip": {
                                 "authenticationType": "Type of authentication to use on the Virtual Machine.",

@@ -10,6 +10,6 @@ Add Backup & Monitoring - Linux - $350.21 - https://azure.com/e/2603eb871ac24cad
 
 Add Backup & Monitoring - Windows - $411.89 - https://azure.com/e/29c05db7c7c74b9ba310953fc180ddfb
 
-Availability & Scale - Linux - $1010.38 - https://azure.com/e/06b4dd03b8b6431b8ed09ebc026987e8
+Availability & Scale - Linux - $513.25 - https://azure.com/e/d8ff1073eb774f7a8d32a52f99a8aa4c
 
-Availability & Scale - Windows - $1211.86 - https://azure.com/e/c1144eca5bba40219e76d6389657d717
+Availability & Scale - Windows - $714.73 - https://azure.com/e/12f2272be6aa4febb4402fbcfe391992

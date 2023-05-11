@@ -45,10 +45,10 @@
             "title": "Get Connected",
             "subTitle": "A starter solution to get setup quickly plus remote management",
             "cost": {
-                "value": 249,
+                "value": 8,
                 "currency": "USD",
                 "type": "absolute",
-                "cadence": "monthly",
+                "cadence": "daily",
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
             "templateFileName": "azuredeploy_tier1.json",
@@ -123,10 +123,10 @@
             "title": "Backup & Monitoring",
             "subTitle": "Builds on connecting to a Virtual Machine with Backup and Monitoring.",
             "cost": {
-                "value": 351,
+                "value": 12,
                 "currency": "USD",
                 "type": "absolute",
-                "cadence": "monthly",
+                "cadence": "daily",
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
             "templateFileName": "azuredeploy_tier2.json",
@@ -149,7 +149,7 @@
                     "pivotName": "BastionService",
                     "content": [
                         "Basic tier enabling RDP/SSH connectivity to",
-                        "virtual machines without exposing public IP's."
+                        "Virtual machines without exposing public IP's."
                     ]
                 },
                 {
@@ -247,10 +247,10 @@
             "title": "Availability & Scale",
             "subTitle": "Expands a connected solution with availability and scale for a robust solution. ",
             "cost": {
-                "value": 513,
+                "value": 17,
                 "currency": "USD",
                 "type": "absolute",
-                "cadence": "monthly",
+                "cadence": "daily",
                 "tooltip": "Example tooltip describing the pricing, customizable."
             },
             "templateFileName": "azuredeploy_tier3.json",
@@ -269,14 +269,15 @@
                     "content": [
                         "3 Standard_D2s_v5 VMSS nodes",
                         "30 GiB Premium SSD LRS",
-                        "Flexible orchestration mode"
+                        "Flexible orchestration mode",
+                        "NGINX web server"
                     ]
                 },
                 {
                     "pivotName": "BastionService",
                     "content": [
                         "Basic tier enabling RDP/SSH connectivity to",
-                        "virtual machines without exposing public IP's."
+                        "Virtual machines without exposing public IP's."
                     ]
                 },
                 {

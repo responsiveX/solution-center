@@ -28,11 +28,11 @@
     },
     "ubuntuOffer": {
       "type": "string",
-      "defaultValue": "0001-com-ubuntu-server-jammy"
+      "defaultValue": "0001-com-ubuntu-server-focal"
     },
     "ubuntuSku": {
       "type": "string",
-      "defaultValue": "22_04-lts-gen2"
+      "defaultValue": "20_04-lts-gen2"
     },
     "adminUsername": {
       "type": "string"
@@ -685,6 +685,24 @@
             {
               "type": "Microsoft.Compute/virtualMachines/extensions",
               "apiVersion": "2021-11-01",
+              "name": "[format('{0}/{1}', parameters('vmName'), 'DependencyAgentLinux')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "publisher": "Microsoft.Azure.Monitoring.DependencyAgent",
+                "type": "DependencyAgentLinux",
+                "typeHandlerVersion": "9.5",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                  "enableAMA": true
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Compute/virtualMachines/extensions",
+              "apiVersion": "2021-11-01",
               "name": "[format('{0}/{1}', parameters('vmName'), 'AzureMonitorLinuxAgent')]",
               "location": "[parameters('location')]",
               "properties": {
@@ -746,7 +764,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "15148632788335610219"
+      "templateHash": "17999515086844983890"
     }
   }
 }

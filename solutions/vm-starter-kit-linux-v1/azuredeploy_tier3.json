@@ -54,11 +54,11 @@
     },
     "ubuntuOffer": {
       "type": "string",
-      "defaultValue": "0001-com-ubuntu-server-jammy"
+      "defaultValue": "0001-com-ubuntu-server-focal"
     },
     "ubuntuSku": {
       "type": "string",
-      "defaultValue": "22_04-lts-gen2"
+      "defaultValue": "20_04-lts-gen2"
     },
     "adminUsername": {
       "type": "string"
@@ -1229,7 +1229,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "509085282881647457"
+      "templateHash": "14766709325822273456"
     }
   }
 }

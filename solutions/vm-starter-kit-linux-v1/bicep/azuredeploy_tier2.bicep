@@ -9,8 +9,8 @@ param vmSubnetName string = 'VMs'
 
 param vmName string = 'vm-01'
 param vmSize string = 'Standard_D2s_v5'
-param ubuntuOffer string = '0001-com-ubuntu-server-jammy'
-param ubuntuSku string = '22_04-lts-gen2'
+param ubuntuOffer string = '0001-com-ubuntu-server-focal'
+param ubuntuSku string = '20_04-lts-gen2'
 param adminUsername string
 @secure()
 param sshPublicKey string

@@ -685,24 +685,6 @@
             {
               "type": "Microsoft.Compute/virtualMachines/extensions",
               "apiVersion": "2021-11-01",
-              "name": "[format('{0}/{1}', parameters('vmName'), 'DependencyAgentWindows')]",
-              "location": "[parameters('location')]",
-              "properties": {
-                "publisher": "Microsoft.Azure.Monitoring.DependencyAgent",
-                "type": "DependencyAgentLinux",
-                "typeHandlerVersion": "9.5",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                  "enableAMA": true
-                }
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
-              ]
-            },
-            {
-              "type": "Microsoft.Compute/virtualMachines/extensions",
-              "apiVersion": "2021-11-01",
               "name": "[format('{0}/{1}', parameters('vmName'), 'AzureMonitorLinuxAgent')]",
               "location": "[parameters('location')]",
               "properties": {

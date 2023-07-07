@@ -113,20 +113,20 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
   }
 }
 
-resource dependencyAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {
-  name: 'DependencyAgentWindows'
-  parent: vm
-  location: location
-  properties: {
-    publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
-    type: 'DependencyAgentLinux'
-    typeHandlerVersion: '9.5'
-    autoUpgradeMinorVersion: true
-    settings: {
-      enableAMA: true
-    }
-  }
-}
+// resource dependencyAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {
+//   name: 'DependencyAgentLinux'
+//   parent: vm
+//   location: location
+//   properties: {
+//     publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
+//     type: 'DependencyAgentLinux'
+//     typeHandlerVersion: '9.5'
+//     autoUpgradeMinorVersion: true
+//     settings: {
+//       enableAMA: true
+//     }
+//   }
+// }
 
 resource linuxAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {
   name: 'AzureMonitorLinuxAgent'

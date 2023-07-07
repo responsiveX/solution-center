@@ -26,6 +26,10 @@
       "type": "string",
       "defaultValue": "Standard_D2s_v5"
     },
+    "ubuntuServerSku": {
+      "type": "string",
+      "defaultValue": "22.04-LTS"
+    },
     "adminUsername": {
       "type": "string"
     },
@@ -495,6 +499,9 @@
           "osdiskSizeGB": {
             "value": "[parameters('osdiskSizeGB')]"
           },
+          "ubuntuServerSku": {
+            "value": "[parameters('ubuntuServerSku')]"
+          },
           "vNetName": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnet'), '2019-10-01').outputs.vNetName.value]"
           },
@@ -539,6 +546,9 @@
             },
             "osdiskSizeGB": {
               "type": "int"
+            },
+            "ubuntuServerSku": {
+              "type": "string"
             },
             "adminUsername": {
               "type": "string"
@@ -631,7 +641,7 @@
                   "imageReference": {
                     "publisher": "Canonical",
                     "offer": "UbuntuServer",
-                    "sku": "18.04-LTS",
+                    "sku": "[parameters('ubuntuServerSku')]",
                     "version": "latest"
                   },
                   "osDisk": {
@@ -744,7 +754,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "16843552508851730063"
+      "templateHash": "8160214836800007401"
     }
   }
 }

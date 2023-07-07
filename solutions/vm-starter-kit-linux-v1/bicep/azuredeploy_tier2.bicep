@@ -9,6 +9,7 @@ param vmSubnetName string = 'VMs'
 
 param vmName string = 'vm-01'
 param vmSize string = 'Standard_D2s_v5'
+param ubuntuServerSku string = '22.04-LTS'
 param adminUsername string
 @secure()
 param sshPublicKey string
@@ -64,6 +65,7 @@ module vm 'modules/virtual-machine-with-backups-and-logging.bicep' = {
     sshPublicKey: sshPublicKey
     vmSize: vmSize
     osdiskSizeGB: osdiskSizeGB
+    ubuntuServerSku: ubuntuServerSku
     vNetName: vNetModule.outputs.vNetName
     vmSubnetName: vmSubnetName
     bootLogStorageAccountName: monitoringModule.outputs.storageAccountName

@@ -11,6 +11,7 @@ param loggingStorageUri string
 
 param vmNamePrefix string
 param vmSize string
+param ubuntuServerSku string
 param adminUsername string
 @secure()
 param sshPublicKey string
@@ -48,7 +49,7 @@ resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
         imageReference: {
           publisher: 'Canonical'
           offer: 'UbuntuServer'
-          sku: '18.04-LTS'
+          sku: ubuntuServerSku
           version: 'latest'
         }
         osDisk: {

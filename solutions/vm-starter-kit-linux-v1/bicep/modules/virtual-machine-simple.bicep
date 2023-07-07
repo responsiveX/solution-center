@@ -8,6 +8,7 @@ param vmSubnetName string
 param vmName string
 param vmSize string
 param osdiskSizeGB int
+param ubuntuServerSku string
 param adminUsername string
 @secure()
 param sshPublicKey string
@@ -62,7 +63,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
       imageReference: {
         publisher: 'Canonical'
         offer: 'UbuntuServer'
-        sku: '18.04-LTS'
+        sku: ubuntuServerSku
         version: 'latest'
       }
       osDisk: {

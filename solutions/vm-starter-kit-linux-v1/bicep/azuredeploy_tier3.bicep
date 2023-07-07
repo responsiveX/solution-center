@@ -37,6 +37,7 @@ param vmSubnetName string = 'VMs'
 
 param vmNamePrefix string = 'VM'
 param vmSize string = 'Standard_D2s_v5'
+param ubuntuServerSku string = '22.04-LTS'
 param adminUsername string
 @secure()
 param sshPublicKey string
@@ -244,6 +245,7 @@ module vmScaleSetModule 'modules/virtual-machine-scale-set.bicep' = {
     loggingStorageUri: monitoringModule.outputs.storageUri
     vmNamePrefix: vmNamePrefix
     vmSize: vmSize
+    ubuntuServerSku: ubuntuServerSku
     adminUsername: adminUsername
     sshPublicKey: sshPublicKey
     osdiskSizeGB: osdiskSizeGB

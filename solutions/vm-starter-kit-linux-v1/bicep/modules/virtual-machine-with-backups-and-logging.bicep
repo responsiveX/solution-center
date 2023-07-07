@@ -8,7 +8,8 @@ param vmSubnetName string
 param vmName string
 param vmSize string
 param osdiskSizeGB int
-param ubuntuServerSku string
+param ubuntuOffer string
+param ubuntuSku string
 param adminUsername string
 @secure()
 param sshPublicKey string
@@ -82,8 +83,8 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
     storageProfile: {
       imageReference: {
         publisher: 'Canonical'
-        offer: 'UbuntuServer'
-        sku: ubuntuServerSku
+        offer: ubuntuOffer
+        sku: ubuntuSku
         version: 'latest'
       }
       osDisk: {

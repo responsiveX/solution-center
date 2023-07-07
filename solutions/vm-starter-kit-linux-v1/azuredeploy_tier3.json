@@ -52,9 +52,13 @@
       "type": "string",
       "defaultValue": "Standard_D2s_v5"
     },
-    "ubuntuServerSku": {
+    "ubuntuOffer": {
       "type": "string",
-      "defaultValue": "22.04-LTS"
+      "defaultValue": "0001-com-ubuntu-server-jammy"
+    },
+    "ubuntuSku": {
+      "type": "string",
+      "defaultValue": "22_04-lts-gen2"
     },
     "adminUsername": {
       "type": "string"
@@ -903,8 +907,11 @@
           "vmSize": {
             "value": "[parameters('vmSize')]"
           },
-          "ubuntuServerSku": {
-            "value": "[parameters('ubuntuServerSku')]"
+          "ubuntuOffer": {
+            "value": "[parameters('ubuntuOffer')]"
+          },
+          "ubuntuSku": {
+            "value": "[parameters('ubuntuSku')]"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
@@ -954,7 +961,10 @@
             "vmSize": {
               "type": "string"
             },
-            "ubuntuServerSku": {
+            "ubuntuOffer": {
+              "type": "string"
+            },
+            "ubuntuSku": {
               "type": "string"
             },
             "adminUsername": {
@@ -1005,8 +1015,8 @@
                   "storageProfile": {
                     "imageReference": {
                       "publisher": "Canonical",
-                      "offer": "UbuntuServer",
-                      "sku": "[parameters('ubuntuServerSku')]",
+                      "offer": "[parameters('ubuntuOffer')]",
+                      "sku": "[parameters('ubuntuSku')]",
                       "version": "latest"
                     },
                     "osDisk": {
@@ -1219,7 +1229,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "16186443672150470076"
+      "templateHash": "509085282881647457"
     }
   }
 }

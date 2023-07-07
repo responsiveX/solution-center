@@ -26,9 +26,13 @@
       "type": "string",
       "defaultValue": "Standard_D2s_v5"
     },
-    "ubuntuServerSku": {
+    "ubuntuOffer": {
       "type": "string",
-      "defaultValue": "22.04-LTS"
+      "defaultValue": "0001-com-ubuntu-server-jammy"
+    },
+    "ubuntuSku": {
+      "type": "string",
+      "defaultValue": "22_04-lts-gen2"
     },
     "adminUsername": {
       "type": "string"
@@ -499,8 +503,11 @@
           "osdiskSizeGB": {
             "value": "[parameters('osdiskSizeGB')]"
           },
-          "ubuntuServerSku": {
-            "value": "[parameters('ubuntuServerSku')]"
+          "ubuntuOffer": {
+            "value": "[parameters('ubuntuOffer')]"
+          },
+          "ubuntuSku": {
+            "value": "[parameters('ubuntuSku')]"
           },
           "vNetName": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnet'), '2019-10-01').outputs.vNetName.value]"
@@ -547,7 +554,10 @@
             "osdiskSizeGB": {
               "type": "int"
             },
-            "ubuntuServerSku": {
+            "ubuntuOffer": {
+              "type": "string"
+            },
+            "ubuntuSku": {
               "type": "string"
             },
             "adminUsername": {
@@ -640,8 +650,8 @@
                 "storageProfile": {
                   "imageReference": {
                     "publisher": "Canonical",
-                    "offer": "UbuntuServer",
-                    "sku": "[parameters('ubuntuServerSku')]",
+                    "offer": "[parameters('ubuntuOffer')]",
+                    "sku": "[parameters('ubuntuSku')]",
                     "version": "latest"
                   },
                   "osDisk": {
@@ -754,7 +764,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "8160214836800007401"
+      "templateHash": "15148632788335610219"
     }
   }
 }

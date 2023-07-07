@@ -8,7 +8,8 @@ param vmSubnetName string = 'VMs'
 
 param vmName string = 'vm-01'
 param vmSize string = 'Standard_D2s_v5'
-param ubuntuServerSku string = '22.04-LTS'
+param ubuntuOffer string = '0001-com-ubuntu-server-jammy'
+param ubuntuSku string = '22_04-lts-gen2'
 param adminUsername string
 @secure()
 param sshPublicKey string
@@ -43,7 +44,8 @@ module VM 'modules/virtual-machine-simple.bicep' = {
     sshPublicKey: sshPublicKey
     vmSize: vmSize
     osdiskSizeGB: osdiskSizeGB
-    ubuntuServerSku: ubuntuServerSku
+    ubuntuOffer: ubuntuOffer
+    ubuntuSku: ubuntuSku
     vNetName: vNetModule.outputs.vNetName
     vmSubnetName: vmSubnetName
   }

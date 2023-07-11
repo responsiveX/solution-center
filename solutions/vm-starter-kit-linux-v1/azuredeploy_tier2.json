@@ -297,7 +297,7 @@
             },
             "logAnalyticsWorkspaceName": {
               "type": "string",
-              "defaultValue": "log-VmInsights"
+              "defaultValue": "log-VmStarterKit"
             },
             "logAnalyticsSku": {
               "type": "string",
@@ -685,6 +685,47 @@
             {
               "type": "Microsoft.Compute/virtualMachines/extensions",
               "apiVersion": "2021-11-01",
+              "name": "[format('{0}/{1}', parameters('vmName'), 'InstallNginx')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "publisher": "Microsoft.Azure.Extensions",
+                "type": "CustomScript",
+                "typeHandlerVersion": "2.1",
+                "autoUpgradeMinorVersion": true,
+                "protectedSettings": {
+                  "commandToExecute": "sudo apt-get update && sudo apt-get install nginx -y && sudo sed -i \"s/Welcome to nginx/Welcome to nginx from VM Starter Kit/g\" /var/www/html/index.nginx-debian.html"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Compute/virtualMachines/extensions",
+              "apiVersion": "2021-11-01",
+              "name": "[format('{0}/{1}', parameters('vmName'), 'HealthExtension')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "publisher": "Microsoft.ManagedServices",
+                "type": "ApplicationHealthLinux",
+                "typeHandlerVersion": "1.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                  "protocol": "http",
+                  "port": 80,
+                  "requestPath": "http://127.0.0.1",
+                  "intervalInSeconds": 5,
+                  "numberOfProbes": 1
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'), 'InstallNginx')]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Compute/virtualMachines/extensions",
+              "apiVersion": "2021-11-01",
               "name": "[format('{0}/{1}', parameters('vmName'), 'DependencyAgentLinux')]",
               "location": "[parameters('location')]",
               "properties": {
@@ -697,6 +738,7 @@
                 }
               },
               "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'), 'InstallNginx')]",
                 "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
               ]
             },
@@ -721,6 +763,7 @@
                 }
               },
               "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'), 'InstallNginx')]",
                 "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
               ]
             },
@@ -764,7 +807,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "17999515086844983890"
+      "templateHash": "13213942444855515652"
     }
   }
 }

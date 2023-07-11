@@ -140,7 +140,7 @@ resource healthExtension 'Microsoft.Compute/virtualMachines/extensions@2021-11-0
     settings: {
       protocol: 'http'
       port: 80
-      requestPath: 'http://127.0.0.1'
+      requestPath: '/'
       intervalInSeconds: 5
       numberOfProbes: 1
     }

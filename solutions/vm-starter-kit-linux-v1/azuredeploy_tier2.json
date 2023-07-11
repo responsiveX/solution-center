@@ -713,7 +713,7 @@
                 "settings": {
                   "protocol": "http",
                   "port": 80,
-                  "requestPath": "http://127.0.0.1",
+                  "requestPath": "/",
                   "intervalInSeconds": 5,
                   "numberOfProbes": 1
                 }
@@ -807,7 +807,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "13213942444855515652"
+      "templateHash": "6216606012629251207"
     }
   }
 }

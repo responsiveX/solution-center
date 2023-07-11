@@ -113,7 +113,44 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
   }
 }
 
-resource dependencyAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {
+resource nginxExtension 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {
+  name: 'InstallNginx'
+  parent: vm
+  location: location
+  properties:{
+    publisher: 'Microsoft.Azure.Extensions'
+    type:'CustomScript'
+    typeHandlerVersion: '2.1'
+    autoUpgradeMinorVersion: true
+    protectedSettings:{
+      commandToExecute: 'sudo apt-get update && sudo apt-get install nginx -y && sudo sed -i "s/Welcome to nginx/Welcome to nginx from VM Starter Kit/g" /var/www/html/index.nginx-debian.html'
+    }
+  }
+}
+
+resource healthExtension 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {
+  name: 'HealthExtension'
+  parent: vm
+  location: location
+  properties: {
+    publisher: 'Microsoft.ManagedServices'
+    type: 'ApplicationHealthLinux'
+    typeHandlerVersion: '1.0'
+    autoUpgradeMinorVersion: true
+    settings: {
+      protocol: 'http'
+      port: 80
+      requestPath: 'http://127.0.0.1'
+      intervalInSeconds: 5
+      numberOfProbes: 1
+    }
+  }
+  dependsOn: [
+    nginxExtension
+  ]
+}
+
+resource dependencyAgentExtension 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {
   name: 'DependencyAgentLinux'
   parent: vm
   location: location
@@ -126,9 +163,12 @@ resource dependencyAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11-0
       enableAMA: true
     }
   }
+  dependsOn: [
+    nginxExtension
+  ]
 }
 
-resource linuxAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {
+resource azureMonitorExtension 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {
   name: 'AzureMonitorLinuxAgent'
   parent: vm
   location: location
@@ -147,6 +187,9 @@ resource linuxAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = 
       }
     }
   }
+  dependsOn: [
+    nginxExtension
+  ]
 }
 
 resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2021-04-01' existing = {

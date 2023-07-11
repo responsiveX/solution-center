@@ -4,7 +4,7 @@ param location string = resourceGroup().location
 
 param storageAccountName string = 'stvmlogs${uniqueString(resourceGroup().id)}'
 
-param logAnalyticsWorkspaceName string = 'log-VmInsights'
+param logAnalyticsWorkspaceName string = 'log-VmStarterKit'
 @allowed([
   'CapacityReservation'
   'Free'

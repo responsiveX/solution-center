@@ -140,7 +140,7 @@ resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
               settings: {
                 protocol: 'http'
                 port: 80
-                requestPath: 'http://127.0.0.1'
+                requestPath: '/'
                 intervalInSeconds: 5
                 numberOfProbes: 1
               }

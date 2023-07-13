@@ -199,7 +199,8 @@ module policiesRoleAssignmentsModule 'modules/policy-role-assignments.bicep' = {
   name: 'policy-role-assignments'
   params: {
     backupPolicyPrincipalId: policiesModule.outputs.backupPolicyPrincipalId
-    monitoringPolicyPrincipalId: policiesModule.outputs.monitoringPolicyPrincipalId
+    monitorVmssPolicyPrincipalId: policiesModule.outputs.monitorVmssPolicyPrincipalId
+    monitorVmPolicyPrincipalId: policiesModule.outputs.monitorVmPolicyPrincipalId
   }
 }
 
@@ -226,7 +227,8 @@ module policyRemediationModule 'modules/policy-remediation.bicep' = {
   name: 'policy-remediation'
   params: {
     backupPolicyAssignmentId: policiesModule.outputs.backupPolicyAssignmentId
-    monitoringPolicyAssignmentId: policiesModule.outputs.monitoringPolicyAssignmentId
+    monitorVmssPolicyAssignmentId: policiesModule.outputs.monitorVmssPolicyAssignmentId
+    monitorVmPolicyAssignmentId: policiesModule.outputs.monitorVmPolicyAssignmentId
   }
   dependsOn: [
     policiesRoleAssignmentsModule

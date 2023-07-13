@@ -58,7 +58,7 @@ $411.89
 [Pricing Estimate](https://azure.com/e/29c05db7c7c74b9ba310953fc180ddfb)</td>
 </tr>
 <tr>
-<td>Availability & Scales</td>
+<td>Availability & Scale</td>
 <td>
 $528.57
 

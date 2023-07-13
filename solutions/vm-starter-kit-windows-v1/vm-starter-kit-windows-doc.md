@@ -58,7 +58,7 @@ $411.89
 [Pricing Estimate](https://azure.com/e/29c05db7c7c74b9ba310953fc180ddfb)</td>
 </tr>
 <tr>
-<td>Availability & Scales</td>
+<td>Availability & Scale</td>
 <td>
 $528.57
 
@@ -69,6 +69,8 @@ $730.05
 [Pricing Estimate](https://azure.com/e/e4f0d1aff6bc42f8a99df4755bfe8027)</td>
 </tr>
 </table>
+
+<img src='../vm-starter-kit-linux-v1/image1.jpg' />
 
 Some services, like Azure Bastion and Managed Disks, have a metered cost based on the amount of time the resources are provisioned. Other services, like Azure Virtual Machines, have a metered cost based on the amount of time the resources are running. One approach you can take to optimize the cost of your Azure virtual machines is to shut them down and deallocate them when you aren’t using them. When you want to use them again, you can simply start them, and they will resume where you left off.  
 

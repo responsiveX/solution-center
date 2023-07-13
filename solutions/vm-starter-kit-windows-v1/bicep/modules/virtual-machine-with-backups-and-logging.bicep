@@ -102,7 +102,41 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
   }
 }
 
+resource iisExtension 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {
+  name: 'InstallIIS'
+  parent: vm
+  location: location
+  properties: {
+    publisher: 'Microsoft.Compute'
+    type: 'CustomScriptExtension'
+    typeHandlerVersion: '1.7'
+    autoUpgradeMinorVersion: true
+    settings: {
+      commandToExecute: 'powershell.exe Install-WindowsFeature -name Web-Server -IncludeManagementTools && powershell.exe remove-item \'C:\\inetpub\\wwwroot\\iisstart.htm\' && powershell.exe Add-Content -Path \'C:\\inetpub\\wwwroot\\iisstart.htm\' -Value $(\'Hello World from \' + $env:computername)'
+    }
+  }
+}
+
 resource dependencyAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {
+  name: 'HealthExtension'
+  parent: vm
+  location: location
+  properties: {
+    publisher: 'Microsoft.ManagedServices'
+    type: 'ApplicationHealthWindows'
+    typeHandlerVersion: '1.0'
+    autoUpgradeMinorVersion: true
+    settings: {
+      protocol: 'http'
+      port: 80
+      requestPath: '/'
+      intervalInSeconds: 5
+      numberOfProbes: 1
+    }
+  }
+}
+
+resource dependencyAgentExtension 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {
   name: 'DependencyAgentWindows'
   parent: vm
   location: location
@@ -117,7 +151,7 @@ resource dependencyAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11-0
   }
 }
 
-resource windowsAgent 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {
+resource azureMonitorExtension 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = {
   name: 'AzureMonitorWindowsAgent'
   parent: vm
   location: location

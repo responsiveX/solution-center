@@ -121,7 +121,7 @@
               "name": "[variables('nsgName')]",
               "location": "[parameters('location')]",
               "properties": {
-                "securityRules": "[if(equals(parameters('openWebPorts'), false()), createArray(), createArray(createObject('name', 'AllowHttpInbound', 'properties', createObject('protocol', '*', 'sourcePortRange', '*', 'destinationPortRange', '80', 'sourceAddressPrefix', 'Internet', 'destinationAddressPrefix', '*', 'access', 'Allow', 'priority', 100, 'direction', 'Inbound')), createObject('name', 'AllowHttpsInbound', 'properties', createObject('protocol', '*', 'sourcePortRange', '*', 'destinationPortRange', '443', 'sourceAddressPrefix', 'Internet', 'destinationAddressPrefix', '*', 'access', 'Allow', 'priority', 101, 'direction', 'Inbound'))))]"
+                "securityRules": "[if(equals(parameters('openWebPorts'), false()), createArray(), createArray(createObject('name', 'AllowHttpInbound', 'properties', createObject('protocol', 'Tcp', 'sourcePortRange', '*', 'destinationPortRange', '80', 'sourceAddressPrefix', 'Internet', 'destinationAddressPrefix', '*', 'access', 'Allow', 'priority', 100, 'direction', 'Inbound'))))]"
               }
             },
             {
@@ -807,7 +807,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "6216606012629251207"
+      "templateHash": "2071384273012416909"
     }
   }
 }

@@ -25,26 +25,13 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
       {
         name: 'AllowHttpInbound'
         properties: {
-          protocol: '*'
+          protocol: 'Tcp'
           sourcePortRange: '*'
           destinationPortRange: '80'
           sourceAddressPrefix: 'Internet'
           destinationAddressPrefix: '*'
           access: 'Allow'
           priority: 100
-          direction: 'Inbound'
-        }
-      }
-      {
-        name: 'AllowHttpsInbound'
-        properties: {
-          protocol: '*'
-          sourcePortRange: '*'
-          destinationPortRange: '443'
-          sourceAddressPrefix: 'Internet'
-          destinationAddressPrefix: '*'
-          access: 'Allow'
-          priority: 101
           direction: 'Inbound'
         }
       }

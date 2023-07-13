@@ -49,7 +49,6 @@ param loadBalancerIpAddressName string = 'pip-LoadBalancer'
 var loadBalancerFrontEndName = 'LoadBalancerFrontEnd'
 var loadBalancerBackendPoolName = 'LoadBalancerBackEndPool'
 var loadBalancerProbeName80 = 'loadBalancerHealthProbePort80'
-var loadBalancerProbeName443 = 'loadBalancerHealthProbePort443'
 
 var vmScaleSetName = 'vmss-VmStarterKit'
 
@@ -153,26 +152,6 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2021-08-01' = {
           }
         }
       }
-      {
-        name: 'HTTPS'
-        properties: {
-          frontendIPConfiguration: {
-            id: resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', loadBalancerName, loadBalancerFrontEndName)
-          }
-          backendAddressPool: {
-            id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', loadBalancerName, loadBalancerBackendPoolName)
-          }
-          frontendPort: 443
-          backendPort: 443
-          enableFloatingIP: false
-          idleTimeoutInMinutes: 5
-          protocol: 'Tcp'
-          disableOutboundSnat: true
-          probe: {
-            id: resourceId('Microsoft.Network/loadBalancers/probes', loadBalancerName, loadBalancerProbeName443)
-          }
-        }
-      }
     ]
     probes: [
       {
@@ -180,15 +159,6 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2021-08-01' = {
         properties: {
           protocol: 'Tcp'
           port: 80
-          intervalInSeconds: 5
-          numberOfProbes: 3
-        }
-      }
-      {
-        name: loadBalancerProbeName443
-        properties: {
-          protocol: 'Tcp'
-          port: 443
           intervalInSeconds: 5
           numberOfProbes: 3
         }

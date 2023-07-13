@@ -1,7 +1,8 @@
 targetScope = 'resourceGroup'
 
 param backupPolicyAssignmentId string
-param monitoringPolicyAssignmentId string
+param monitorVmssPolicyAssignmentId string
+param monitorVmPolicyAssignmentId string
 
 resource backupPolicyRemediation 'Microsoft.PolicyInsights/remediations@2021-10-01' = {
   name: guid('${resourceGroup().id}-${backupPolicyAssignmentId}')
@@ -12,11 +13,20 @@ resource backupPolicyRemediation 'Microsoft.PolicyInsights/remediations@2021-10-
   }
 }
 
-resource monitoringPolicyRemediation 'Microsoft.PolicyInsights/remediations@2021-10-01' = {
-  name: guid('${resourceGroup().id}-${monitoringPolicyAssignmentId}')
+resource monitorVmssPolicyRemediation 'Microsoft.PolicyInsights/remediations@2021-10-01' = {
+  name: guid('${resourceGroup().id}-${monitorVmssPolicyAssignmentId}')
   scope: resourceGroup()
   properties: {
-    policyAssignmentId: monitoringPolicyAssignmentId
+    policyAssignmentId: monitorVmssPolicyAssignmentId
+    resourceDiscoveryMode: 'ReEvaluateCompliance'
+  }
+}
+
+resource monitorVmPolicyRemediation 'Microsoft.PolicyInsights/remediations@2021-10-01' = {
+  name: guid('${resourceGroup().id}-${monitorVmPolicyAssignmentId}')
+  scope: resourceGroup()
+  properties: {
+    policyAssignmentId: monitorVmPolicyAssignmentId
     resourceDiscoveryMode: 'ReEvaluateCompliance'
   }
 }

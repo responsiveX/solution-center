@@ -658,13 +658,21 @@
               "type": "string",
               "defaultValue": "/providers/Microsoft.Authorization/policyDefinitions/09ce66bc-1220-4153-8104-e3f51c936913"
             },
-            "monitoringPolicyName": {
+            "monitorVmssPolicyName": {
               "type": "string",
               "defaultValue": "Monitor VMSS"
             },
-            "monitoringPolicyDefinitionId": {
+            "monitorVmssPolicyDefinitionId": {
               "type": "string",
               "defaultValue": "/providers/Microsoft.Authorization/policyDefinitions/c7f3bf36-b807-4f18-82dc-f480ad713635"
+            },
+            "monitorVmPolicyName": {
+              "type": "string",
+              "defaultValue": "Monitor VMs"
+            },
+            "monitorVmPolicyDefinitionId": {
+              "type": "string",
+              "defaultValue": "/providers/Microsoft.Authorization/policyDefinitions/a0f27bdc-5b15-4810-b81d-7c4df9df1a37"
             }
           },
           "functions": [],
@@ -706,14 +714,14 @@
             {
               "type": "Microsoft.Authorization/policyAssignments",
               "apiVersion": "2022-06-01",
-              "name": "[guid(format('{0}-{1}', resourceGroup().id, parameters('monitoringPolicyName')))]",
+              "name": "[guid(format('{0}-{1}', resourceGroup().id, parameters('monitorVmssPolicyName')))]",
               "location": "[parameters('location')]",
               "identity": {
                 "type": "SystemAssigned"
               },
               "properties": {
-                "displayName": "[parameters('monitoringPolicyName')]",
-                "policyDefinitionId": "[parameters('monitoringPolicyDefinitionId')]",
+                "displayName": "[parameters('monitorVmssPolicyName')]",
+                "policyDefinitionId": "[parameters('monitorVmssPolicyDefinitionId')]",
                 "parameters": {
                   "workspaceResourceId": {
                     "value": "[parameters('logAnalyticsResourceId')]"
@@ -739,6 +747,43 @@
                   }
                 ]
               }
+            },
+            {
+              "type": "Microsoft.Authorization/policyAssignments",
+              "apiVersion": "2022-06-01",
+              "name": "[guid(format('{0}-{1}', resourceGroup().id, parameters('monitorVmPolicyName')))]",
+              "location": "[parameters('location')]",
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "properties": {
+                "displayName": "[parameters('monitorVmPolicyName')]",
+                "policyDefinitionId": "[parameters('monitorVmPolicyDefinitionId')]",
+                "parameters": {
+                  "workspaceResourceId": {
+                    "value": "[parameters('logAnalyticsResourceId')]"
+                  },
+                  "userGivenDcrName": {
+                    "value": "ama-vmi-vmss"
+                  },
+                  "enableProcessesAndDependencies": {
+                    "value": true
+                  }
+                },
+                "resourceSelectors": [
+                  {
+                    "name": "Resources to be monitored",
+                    "selectors": [
+                      {
+                        "kind": "resourceType",
+                        "in": [
+                          "Microsoft.Compute/virtualMachines"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
             }
           ],
           "outputs": {
@@ -750,13 +795,21 @@
               "type": "string",
               "value": "[reference(resourceId('Microsoft.Authorization/policyAssignments', guid(format('{0}-{1}', resourceGroup().id, parameters('backupPolicyName')))), '2022-06-01', 'full').identity.principalId]"
             },
-            "monitoringPolicyAssignmentId": {
+            "monitorVmssPolicyAssignmentId": {
               "type": "string",
-              "value": "[resourceId('Microsoft.Authorization/policyAssignments', guid(format('{0}-{1}', resourceGroup().id, parameters('monitoringPolicyName'))))]"
+              "value": "[resourceId('Microsoft.Authorization/policyAssignments', guid(format('{0}-{1}', resourceGroup().id, parameters('monitorVmssPolicyName'))))]"
             },
-            "monitoringPolicyPrincipalId": {
+            "monitorVmssPolicyPrincipalId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.Authorization/policyAssignments', guid(format('{0}-{1}', resourceGroup().id, parameters('monitoringPolicyName')))), '2022-06-01', 'full').identity.principalId]"
+              "value": "[reference(resourceId('Microsoft.Authorization/policyAssignments', guid(format('{0}-{1}', resourceGroup().id, parameters('monitorVmssPolicyName')))), '2022-06-01', 'full').identity.principalId]"
+            },
+            "monitorVmPolicyAssignmentId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Authorization/policyAssignments', guid(format('{0}-{1}', resourceGroup().id, parameters('monitorVmPolicyName'))))]"
+            },
+            "monitorVmPolicyPrincipalId": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.Authorization/policyAssignments', guid(format('{0}-{1}', resourceGroup().id, parameters('monitorVmPolicyName')))), '2022-06-01', 'full').identity.principalId]"
             }
           }
         }
@@ -778,8 +831,11 @@
           "backupPolicyPrincipalId": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies'), '2019-10-01').outputs.backupPolicyPrincipalId.value]"
           },
-          "monitoringPolicyPrincipalId": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies'), '2019-10-01').outputs.monitoringPolicyPrincipalId.value]"
+          "monitorVmssPolicyPrincipalId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies'), '2019-10-01').outputs.monitorVmssPolicyPrincipalId.value]"
+          },
+          "monitorVmPolicyPrincipalId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies'), '2019-10-01').outputs.monitorVmPolicyPrincipalId.value]"
           }
         },
         "template": {
@@ -789,7 +845,10 @@
             "backupPolicyPrincipalId": {
               "type": "string"
             },
-            "monitoringPolicyPrincipalId": {
+            "monitorVmssPolicyPrincipalId": {
+              "type": "string"
+            },
+            "monitorVmPolicyPrincipalId": {
               "type": "string"
             }
           },
@@ -820,9 +879,9 @@
             {
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "name": "[guid(format('{0}-{1}-monitoringcontributor', resourceGroup().id, parameters('monitoringPolicyPrincipalId')))]",
+              "name": "[guid(format('{0}-{1}-monitoringcontributor', resourceGroup().id, parameters('monitorVmssPolicyPrincipalId')))]",
               "properties": {
-                "principalId": "[parameters('monitoringPolicyPrincipalId')]",
+                "principalId": "[parameters('monitorVmssPolicyPrincipalId')]",
                 "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
                 "principalType": "ServicePrincipal"
               },
@@ -831,9 +890,31 @@
             {
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "name": "[guid(format('{0}-{1}-loganalyticscontributor', resourceGroup().id, parameters('monitoringPolicyPrincipalId')))]",
+              "name": "[guid(format('{0}-{1}-monitoringcontributor', resourceGroup().id, parameters('monitorVmPolicyPrincipalId')))]",
               "properties": {
-                "principalId": "[parameters('monitoringPolicyPrincipalId')]",
+                "principalId": "[parameters('monitorVmPolicyPrincipalId')]",
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": []
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(format('{0}-{1}-loganalyticscontributor', resourceGroup().id, parameters('monitorVmssPolicyPrincipalId')))]",
+              "properties": {
+                "principalId": "[parameters('monitorVmssPolicyPrincipalId')]",
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": []
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(format('{0}-{1}-loganalyticscontributor', resourceGroup().id, parameters('monitorVmPolicyPrincipalId')))]",
+              "properties": {
+                "principalId": "[parameters('monitorVmPolicyPrincipalId')]",
                 "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
                 "principalType": "ServicePrincipal"
               },
@@ -1150,8 +1231,11 @@
           "backupPolicyAssignmentId": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies'), '2019-10-01').outputs.backupPolicyAssignmentId.value]"
           },
-          "monitoringPolicyAssignmentId": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies'), '2019-10-01').outputs.monitoringPolicyAssignmentId.value]"
+          "monitorVmssPolicyAssignmentId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies'), '2019-10-01').outputs.monitorVmssPolicyAssignmentId.value]"
+          },
+          "monitorVmPolicyAssignmentId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'backup-and-monitoring-policies'), '2019-10-01').outputs.monitorVmPolicyAssignmentId.value]"
           }
         },
         "template": {
@@ -1161,7 +1245,10 @@
             "backupPolicyAssignmentId": {
               "type": "string"
             },
-            "monitoringPolicyAssignmentId": {
+            "monitorVmssPolicyAssignmentId": {
+              "type": "string"
+            },
+            "monitorVmPolicyAssignmentId": {
               "type": "string"
             }
           },
@@ -1179,9 +1266,18 @@
             {
               "type": "Microsoft.PolicyInsights/remediations",
               "apiVersion": "2021-10-01",
-              "name": "[guid(format('{0}-{1}', resourceGroup().id, parameters('monitoringPolicyAssignmentId')))]",
+              "name": "[guid(format('{0}-{1}', resourceGroup().id, parameters('monitorVmssPolicyAssignmentId')))]",
               "properties": {
-                "policyAssignmentId": "[parameters('monitoringPolicyAssignmentId')]",
+                "policyAssignmentId": "[parameters('monitorVmssPolicyAssignmentId')]",
+                "resourceDiscoveryMode": "ReEvaluateCompliance"
+              }
+            },
+            {
+              "type": "Microsoft.PolicyInsights/remediations",
+              "apiVersion": "2021-10-01",
+              "name": "[guid(format('{0}-{1}', resourceGroup().id, parameters('monitorVmPolicyAssignmentId')))]",
+              "properties": {
+                "policyAssignmentId": "[parameters('monitorVmPolicyAssignmentId')]",
                 "resourceDiscoveryMode": "ReEvaluateCompliance"
               }
             }
@@ -1199,7 +1295,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "7375114075952260539"
+      "templateHash": "10899305695206692599"
     }
   }
 }

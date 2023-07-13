@@ -122,6 +122,65 @@ resource amaManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@20
   location: location
 }
 
+resource logAnalyticsDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: '${logAnalyticsWorkspace.name}-blob-diagnosticsettings'
+  scope: logAnalyticsWorkspace
+  properties: {
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    workspaceId: logAnalyticsWorkspace.id
+  }
+}
+
+resource storageDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: '${storageAccount.name}-diagnosticsettings'
+  scope: storageAccount
+  properties: {
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    workspaceId: logAnalyticsWorkspace.id
+  }
+}
+
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' existing = {
+  name: 'default'
+  parent: storageAccount
+}
+
+resource blobDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: '${storageAccount.name}-blob-diagnosticsettings'
+  scope: blobService
+  properties: {
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    workspaceId: logAnalyticsWorkspace.id
+  }
+}
+
 output storageAccountName string = storageAccount.name
 output storageUri string = storageAccount.properties.primaryEndpoints.blob
 output dataCollectionRuleName string = dataCollectionRuleName

@@ -62,6 +62,7 @@ module vNetModule 'modules/vnet.bicep' = {
     networkName: networkName
     vmSubnetName: vmSubnetName
     openWebPorts: true
+    logAnalyticsWorkspaceId: monitoringModule.outputs.logAnalyticsWorkspaceId
   }
 }
 

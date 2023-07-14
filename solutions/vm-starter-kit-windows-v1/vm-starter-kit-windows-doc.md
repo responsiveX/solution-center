@@ -16,7 +16,7 @@ The third and final configuration, "Availability & Scale” focuses on optimizin
 
 In each of the configurations, an Azure Virtual Network is created. The Azure Virtual Network is the foundational building block for private networking and network communication. The network is named vnet-VmStarterKit, has an IP address space of 10.1.0.0/16, and has two subnets defined, AzureBastionSubnet and VMs. The VMs that are created as part of the VM Starter Kit aren’t exposed to the public internet with a public IP address attached to the NIC of the VM. Instead, the VMs only have private IP addresses internal to the virtual network.  
 
- 
+<img src='https://raw.githubusercontent.com/responsiveX/solution-center/vm-starter-kit-linux/solutions/vm-starter-kit-linux-v1/networkdiagram.jpg' /> 
 
 In each of the configurations, the Azure resources and the naming of the resources are pre-defined, however, you can deploy and run any workload of your choice in the VMs that are deployed as part of the VM Starter Kit. The resources get deployed into your subscription and are in your control to adapt and customize as you need for your workload. For example, if you want to create additional subnets in your virtual network, you can do that.  
 
@@ -34,13 +34,13 @@ All the VM Starter Kit configurations can be deployed in an Azure free trial, bu
 
 <td>Get Connected</td>
 <td>
-$248.55
+$8/day
 
 [Pricing Estimate](https://azure.com/e/682c697d6ccf43679b6b795bdb2a5326)
 
 </td>
 <td>
-$315.71
+$11/day
 
 [Pricing Estimate](https://azure.com/e/1d1109755b9947b6bdec32228827ccc1)
 </td>
@@ -48,30 +48,28 @@ $315.71
 <tr>
 <td>Backup & Monitoring</td>
 <td>
-$350.21
+$12/day
 
 [Pricing Estimate](https://azure.com/e/2603eb871ac24cad95b31f9727d195b6)
 </td>
 <td>
-$411.89
+$14/day
 
 [Pricing Estimate](https://azure.com/e/29c05db7c7c74b9ba310953fc180ddfb)</td>
 </tr>
 <tr>
 <td>Availability & Scale</td>
 <td>
-$528.57
+$18/day
 
 [Pricing Estimate](https://azure.com/e/c0bf3870b9914d458200e41fda886c36)</td>
 <td>
-$730.05
+$24/day
 
 [Pricing Estimate](https://azure.com/e/e4f0d1aff6bc42f8a99df4755bfe8027)</td>
 </tr>
 </table>
-
-<img src='https://raw.githubusercontent.com/responsiveX/solution-center/vm-starter-kit-linux/solutions/vm-starter-kit-linux-v1/image1.jpg' />
-
+ 
 
 Some services, like Azure Bastion and Managed Disks, have a metered cost based on the amount of time the resources are provisioned. Other services, like Azure Virtual Machines, have a metered cost based on the amount of time the resources are running. One approach you can take to optimize the cost of your Azure virtual machines is to shut them down and deallocate them when you aren’t using them. When you want to use them again, you can simply start them, and they will resume where you left off.  
 

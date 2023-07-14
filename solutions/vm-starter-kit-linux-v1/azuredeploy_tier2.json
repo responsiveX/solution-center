@@ -82,6 +82,9 @@
           },
           "vmSubnetName": {
             "value": "[parameters('vmSubnetName')]"
+          },
+          "logAnalyticsWorkspaceId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure'), '2019-10-01').outputs.logAnalyticsWorkspaceId.value]"
           }
         },
         "template": {
@@ -93,16 +96,17 @@
               "defaultValue": "[resourceGroup().location]"
             },
             "networkName": {
-              "type": "string",
-              "defaultValue": "VmStarterKit"
+              "type": "string"
             },
             "vmSubnetName": {
-              "type": "string",
-              "defaultValue": "VMs"
+              "type": "string"
             },
             "openWebPorts": {
               "type": "bool",
               "defaultValue": false
+            },
+            "logAnalyticsWorkspaceId": {
+              "type": "string"
             }
           },
           "functions": [],
@@ -158,6 +162,48 @@
               "dependsOn": [
                 "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
               ]
+            },
+            {
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.Network/virtualNetworks/{0}', variables('vNetName'))]",
+              "name": "[format('{0}-diagnosticsettings', variables('vNetName'))]",
+              "properties": {
+                "logs": [
+                  {
+                    "categoryGroup": "allLogs",
+                    "enabled": true
+                  }
+                ],
+                "metrics": [
+                  {
+                    "category": "AllMetrics",
+                    "enabled": true
+                  }
+                ],
+                "workspaceId": "[parameters('logAnalyticsWorkspaceId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('vNetName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.Network/networkSecurityGroups/{0}', variables('nsgName'))]",
+              "name": "[format('{0}-diagnosticsettings', variables('nsgName'))]",
+              "properties": {
+                "logs": [
+                  {
+                    "categoryGroup": "allLogs",
+                    "enabled": true
+                  }
+                ],
+                "workspaceId": "[parameters('logAnalyticsWorkspaceId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+              ]
             }
           ],
           "outputs": {
@@ -171,7 +217,10 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure')]"
+      ]
     },
     {
       "type": "Microsoft.Resources/deployments",
@@ -194,6 +243,9 @@
           },
           "bastionSubnetName": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnet'), '2019-10-01').outputs.bastionSubnetName.value]"
+          },
+          "logAnalyticsWorkspaceId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure'), '2019-10-01').outputs.logAnalyticsWorkspaceId.value]"
           }
         },
         "template": {
@@ -211,6 +263,9 @@
               "type": "string"
             },
             "bastionSubnetName": {
+              "type": "string"
+            },
+            "logAnalyticsWorkspaceId": {
               "type": "string"
             }
           },
@@ -261,11 +316,60 @@
               "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses', variables('bastionIpAddressName'))]"
               ]
+            },
+            {
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.Network/bastionHosts/{0}', variables('bastionHostName'))]",
+              "name": "[format('{0}-diagnosticsettings', variables('bastionHostName'))]",
+              "properties": {
+                "logs": [
+                  {
+                    "categoryGroup": "allLogs",
+                    "enabled": true
+                  }
+                ],
+                "metrics": [
+                  {
+                    "category": "AllMetrics",
+                    "enabled": true
+                  }
+                ],
+                "workspaceId": "[parameters('logAnalyticsWorkspaceId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/bastionHosts', variables('bastionHostName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', variables('bastionIpAddressName'))]",
+              "name": "[format('{0}-diagnosticsettings', variables('bastionIpAddressName'))]",
+              "properties": {
+                "logs": [
+                  {
+                    "categoryGroup": "allLogs",
+                    "enabled": true
+                  }
+                ],
+                "metrics": [
+                  {
+                    "category": "AllMetrics",
+                    "enabled": true
+                  }
+                ],
+                "workspaceId": "[parameters('logAnalyticsWorkspaceId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('bastionIpAddressName'))]"
+              ]
             }
           ]
         }
       },
       "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure')]",
         "[resourceId('Microsoft.Resources/deployments', 'vnet')]"
       ]
     },
@@ -444,6 +548,74 @@
               "apiVersion": "2022-01-31-preview",
               "name": "id-AzureMonitorAgent",
               "location": "[parameters('location')]"
+            },
+            {
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('logAnalyticsWorkspaceName'))]",
+              "name": "[format('{0}-blob-diagnosticsettings', parameters('logAnalyticsWorkspaceName'))]",
+              "properties": {
+                "logs": [
+                  {
+                    "categoryGroup": "allLogs",
+                    "enabled": true
+                  }
+                ],
+                "metrics": [
+                  {
+                    "category": "AllMetrics",
+                    "enabled": true
+                  }
+                ],
+                "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
+              "name": "[format('{0}-diagnosticsettings', parameters('storageAccountName'))]",
+              "properties": {
+                "metrics": [
+                  {
+                    "category": "AllMetrics",
+                    "enabled": true
+                  }
+                ],
+                "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.Storage/storageAccounts/{0}/blobServices/{1}', parameters('storageAccountName'), 'default')]",
+              "name": "[format('{0}-blob-diagnosticsettings', parameters('storageAccountName'))]",
+              "properties": {
+                "logs": [
+                  {
+                    "categoryGroup": "allLogs",
+                    "enabled": true
+                  }
+                ],
+                "metrics": [
+                  {
+                    "category": "AllMetrics",
+                    "enabled": true
+                  }
+                ],
+                "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+              ]
             }
           ],
           "outputs": {
@@ -529,6 +701,9 @@
           },
           "amaManagedIdentityResourceId": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure'), '2019-10-01').outputs.amaManagedIdentityResourceId.value]"
+          },
+          "logAnalyticsWorkspaceId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure'), '2019-10-01').outputs.logAnalyticsWorkspaceId.value]"
           }
         },
         "template": {
@@ -583,6 +758,9 @@
               "type": "string"
             },
             "amaManagedIdentityResourceId": {
+              "type": "string"
+            },
+            "logAnalyticsWorkspaceId": {
               "type": "string"
             }
           },
@@ -792,6 +970,30 @@
               "dependsOn": [
                 "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
               ]
+            },
+            {
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.Network/networkInterfaces/{0}', format('{0}-nic', parameters('vmName')))]",
+              "name": "[format('{0}-diagnosticsettings', format('{0}-nic', parameters('vmName')))]",
+              "properties": {
+                "logs": [
+                  {
+                    "categoryGroup": "allLogs",
+                    "enabled": true
+                  }
+                ],
+                "metrics": [
+                  {
+                    "category": "AllMetrics",
+                    "enabled": true
+                  }
+                ],
+                "workspaceId": "[parameters('logAnalyticsWorkspaceId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', format('{0}-nic', parameters('vmName')))]"
+              ]
             }
           ]
         }
@@ -807,7 +1009,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "2071384273012416909"
+      "templateHash": "6977471342375802255"
     }
   }
 }

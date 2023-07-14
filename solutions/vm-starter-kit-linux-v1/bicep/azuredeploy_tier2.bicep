@@ -25,6 +25,7 @@ module vNetModule 'modules/vnet.bicep' = {
     location: location
     networkName: networkName
     vmSubnetName: vmSubnetName
+    logAnalyticsWorkspaceId: monitoringModule.outputs.logAnalyticsWorkspaceId
   }
 }
 
@@ -35,6 +36,7 @@ module bastionModule 'modules/bastion.bicep' = {
     bastionName: bastionName
     vNetName: vNetModule.outputs.vNetName
     bastionSubnetName: vNetModule.outputs.bastionSubnetName
+    logAnalyticsWorkspaceId: monitoringModule.outputs.logAnalyticsWorkspaceId
   }
 }
 
@@ -75,5 +77,6 @@ module vm 'modules/virtual-machine-with-backups-and-logging.bicep' = {
     dataCollectionRuleName: monitoringModule.outputs.dataCollectionRuleName
     vmManagedIdentityResourceId: monitoringModule.outputs.vmManagedIdentityResourceId
     amaManagedIdentityResourceId: monitoringModule.outputs.amaManagedIdentityResourceId
+    logAnalyticsWorkspaceId: monitoringModule.outputs.logAnalyticsWorkspaceId
   }
 }

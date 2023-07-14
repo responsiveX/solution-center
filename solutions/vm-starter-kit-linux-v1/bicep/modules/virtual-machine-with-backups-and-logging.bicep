@@ -232,12 +232,6 @@ resource nicDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01
   name: '${nic.name}-diagnosticsettings'
   scope: nic
   properties: {
-    logs: [
-      {
-        categoryGroup: 'allLogs'
-        enabled: true
-      }
-    ]
     metrics: [
       {
         category: 'AllMetrics'

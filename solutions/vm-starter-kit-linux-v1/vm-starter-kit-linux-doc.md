@@ -34,13 +34,13 @@ All the VM Starter Kit configurations can be deployed in an Azure free trial, bu
 
 <td>Get Connected</td>
 <td>
-$248.55
+$8/day
 
 [Pricing Estimate](https://azure.com/e/682c697d6ccf43679b6b795bdb2a5326)
 
 </td>
 <td>
-$315.71
+$11/day
 
 [Pricing Estimate](https://azure.com/e/1d1109755b9947b6bdec32228827ccc1)
 </td>
@@ -48,23 +48,23 @@ $315.71
 <tr>
 <td>Backup & Monitoring</td>
 <td>
-$350.21
+$12/day
 
 [Pricing Estimate](https://azure.com/e/2603eb871ac24cad95b31f9727d195b6)
 </td>
 <td>
-$411.89
+$14/day
 
 [Pricing Estimate](https://azure.com/e/29c05db7c7c74b9ba310953fc180ddfb)</td>
 </tr>
 <tr>
 <td>Availability & Scale</td>
 <td>
-$528.57
+$18/day
 
 [Pricing Estimate](https://azure.com/e/c0bf3870b9914d458200e41fda886c36)</td>
 <td>
-$730.05
+$24/day
 
 [Pricing Estimate](https://azure.com/e/e4f0d1aff6bc42f8a99df4755bfe8027)</td>
 </tr>

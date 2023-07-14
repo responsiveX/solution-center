@@ -2,7 +2,7 @@
 <h2>VM Starter Kit Overview </h2>
  
 
-The Virtual Machine (VM) Starter Kit provides a way to evaluate Azure Virtual Machines and complimentary services by simplifying the deployment of Azure VMs configured with capabilities like remote management, monitoring, backup, availability, and scalability. 
+The Virtual Machine (VM) Starter Kit provides a way to evaluate Azure Virtual Machines and complementary services by simplifying the deployment of Azure VMs configured with capabilities like remote management, monitoring, backup, availability, and scalability. 
 
 You will find three deployment configurations in the VM Starter Kit that build upon each other and provide additional capabilities. The resources deployed by the starter kit are pre-defined and fixed, you just need to select the subscription you want to use, the resource group you want to deploy into, the region for your deployment, and provide the admin username and password you want to use to connect to your Virtual Machines if you are using Windows. If you are using Linux, provide the admin username and SSH key you want to use.  
  

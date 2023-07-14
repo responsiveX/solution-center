@@ -200,6 +200,75 @@
       ]
     },
     {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[format('Microsoft.Network/loadBalancers/{0}', parameters('loadBalancerName'))]",
+      "name": "[format('{0}-diagnosticsettings', parameters('loadBalancerName'))]",
+      "properties": {
+        "metrics": [
+          {
+            "category": "AllMetrics",
+            "enabled": true
+          }
+        ],
+        "workspaceId": "[reference(resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure'), '2019-10-01').outputs.logAnalyticsWorkspaceId.value]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancerName'))]",
+        "[resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', parameters('loadBalancerIpAddressName'))]",
+      "name": "[format('{0}-diagnosticsettings', parameters('loadBalancerIpAddressName'))]",
+      "properties": {
+        "logs": [
+          {
+            "categoryGroup": "allLogs",
+            "enabled": true
+          }
+        ],
+        "metrics": [
+          {
+            "category": "AllMetrics",
+            "enabled": true
+          }
+        ],
+        "workspaceId": "[reference(resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure'), '2019-10-01').outputs.logAnalyticsWorkspaceId.value]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', parameters('loadBalancerIpAddressName'))]",
+        "[resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[format('Microsoft.RecoveryServices/vaults/{0}', parameters('recoveryServicesVaultName'))]",
+      "name": "[format('{0}-diagnosticsettings', parameters('recoveryServicesVaultName'))]",
+      "properties": {
+        "logs": [
+          {
+            "categoryGroup": "allLogs",
+            "enabled": true
+          }
+        ],
+        "metrics": [
+          {
+            "category": "AllMetrics",
+            "enabled": true
+          }
+        ],
+        "workspaceId": "[reference(resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure'), '2019-10-01').outputs.logAnalyticsWorkspaceId.value]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure')]",
+        "[resourceId('Microsoft.RecoveryServices/vaults', parameters('recoveryServicesVaultName'))]"
+      ]
+    },
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-10-01",
       "name": "vnet",
@@ -381,6 +450,9 @@
           },
           "bastionSubnetName": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnet'), '2019-10-01').outputs.bastionSubnetName.value]"
+          },
+          "logAnalyticsWorkspaceId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure'), '2019-10-01').outputs.logAnalyticsWorkspaceId.value]"
           }
         },
         "template": {
@@ -398,6 +470,9 @@
               "type": "string"
             },
             "bastionSubnetName": {
+              "type": "string"
+            },
+            "logAnalyticsWorkspaceId": {
               "type": "string"
             }
           },
@@ -448,11 +523,60 @@
               "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses', variables('bastionIpAddressName'))]"
               ]
+            },
+            {
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.Network/bastionHosts/{0}', variables('bastionHostName'))]",
+              "name": "[format('{0}-diagnosticsettings', variables('bastionHostName'))]",
+              "properties": {
+                "logs": [
+                  {
+                    "categoryGroup": "allLogs",
+                    "enabled": true
+                  }
+                ],
+                "metrics": [
+                  {
+                    "category": "AllMetrics",
+                    "enabled": true
+                  }
+                ],
+                "workspaceId": "[parameters('logAnalyticsWorkspaceId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/bastionHosts', variables('bastionHostName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', variables('bastionIpAddressName'))]",
+              "name": "[format('{0}-diagnosticsettings', variables('bastionIpAddressName'))]",
+              "properties": {
+                "logs": [
+                  {
+                    "categoryGroup": "allLogs",
+                    "enabled": true
+                  }
+                ],
+                "metrics": [
+                  {
+                    "category": "AllMetrics",
+                    "enabled": true
+                  }
+                ],
+                "workspaceId": "[parameters('logAnalyticsWorkspaceId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('bastionIpAddressName'))]"
+              ]
             }
           ]
         }
       },
       "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure')]",
         "[resourceId('Microsoft.Resources/deployments', 'vnet')]"
       ]
     },
@@ -1412,7 +1536,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "17399325714461524766"
+      "templateHash": "8892930190670755092"
     }
   }
 }

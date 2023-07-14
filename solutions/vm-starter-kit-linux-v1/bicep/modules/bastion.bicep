@@ -1,11 +1,10 @@
 targetScope = 'resourceGroup'
 
 param location string = resourceGroup().location
-
 param bastionName string
-
 param vNetName string
 param bastionSubnetName string
+param logAnalyticsWorkspaceId string
 
 var bastionHostName = 'bas-${bastionName}'
 var bastionIpAddressName = 'pip-${bastionName}'
@@ -44,5 +43,45 @@ resource bastionHost 'Microsoft.Network/bastionHosts@2022-07-01' = {
         }
       }
     ]
+  }
+}
+
+resource bastianDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: '${bastionHost.name}-diagnosticsettings'
+  scope: bastionHost
+  properties: {
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    workspaceId: logAnalyticsWorkspaceId
+  }
+}
+
+resource bastionHostPublicIpDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: '${bastionHostPublicIp.name}-diagnosticsettings'
+  scope: bastionHostPublicIp
+  properties: {
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    workspaceId: logAnalyticsWorkspaceId
   }
 }

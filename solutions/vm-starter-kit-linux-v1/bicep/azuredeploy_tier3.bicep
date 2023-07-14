@@ -73,6 +73,7 @@ module bastionModule 'modules/bastion.bicep' = {
     bastionName: bastionName
     vNetName: vNetModule.outputs.vNetName
     bastionSubnetName: vNetModule.outputs.bastionSubnetName
+    logAnalyticsWorkspaceId: monitoringModule.outputs.logAnalyticsWorkspaceId
   }
 }
 
@@ -241,4 +242,58 @@ module policyRemediationModule 'modules/policy-remediation.bicep' = {
     policiesRoleAssignmentsModule
     vmScaleSetModule
   ]
+}
+
+resource loadBalancerDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: '${loadBalancer.name}-diagnosticsettings'
+  scope: loadBalancer
+  properties: {
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    workspaceId: monitoringModule.outputs.logAnalyticsWorkspaceId
+  }
+}
+
+resource loadBalancerPublicIpDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: '${loadBalancerPublicIp.name}-diagnosticsettings'
+  scope: loadBalancerPublicIp
+  properties: {
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    workspaceId: monitoringModule.outputs.logAnalyticsWorkspaceId
+  }
+}
+
+resource recoverySvcsVaultDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: '${recoveryVault.name}-diagnosticsettings'
+  scope: recoveryVault
+  properties: {
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    workspaceId: monitoringModule.outputs.logAnalyticsWorkspaceId
+  }
 }

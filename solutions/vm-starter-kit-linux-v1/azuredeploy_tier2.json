@@ -977,12 +977,6 @@
               "scope": "[format('Microsoft.Network/networkInterfaces/{0}', format('{0}-nic', parameters('vmName')))]",
               "name": "[format('{0}-diagnosticsettings', format('{0}-nic', parameters('vmName')))]",
               "properties": {
-                "logs": [
-                  {
-                    "categoryGroup": "allLogs",
-                    "enabled": true
-                  }
-                ],
                 "metrics": [
                   {
                     "category": "AllMetrics",
@@ -1009,7 +1003,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "6977471342375802255"
+      "templateHash": "5543343464166204085"
     }
   }
 }

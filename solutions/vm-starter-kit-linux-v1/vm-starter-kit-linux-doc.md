@@ -33,7 +33,7 @@ All the VM Starter Kit configurations can be deployed in an Azure free trial, bu
 </tr>
 
 <td>Get Connected</td>
-<td>
+<td> 
 $8/day
 
 [Pricing Estimate](https://azure.com/e/682c697d6ccf43679b6b795bdb2a5326)

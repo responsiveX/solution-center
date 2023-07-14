@@ -80,3 +80,23 @@ module vm 'modules/virtual-machine-with-backups-and-logging.bicep' = {
     logAnalyticsWorkspaceId: monitoringModule.outputs.logAnalyticsWorkspaceId
   }
 }
+
+resource recoverySvcsVaultDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: '${recoveryVault.name}-diagnosticsettings'
+  scope: recoveryVault
+  properties: {
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    workspaceId: monitoringModule.outputs.logAnalyticsWorkspaceId
+  }
+}

@@ -3,12 +3,13 @@ targetScope = 'resourceGroup'
 param location string = resourceGroup().location
 
 param bastionName string = 'BastionHost'
-
 param networkName string = 'VmStarterKit'
 param vmSubnetName string = 'VMs'
 
 param vmName string = 'vm-01'
 param vmSize string = 'Standard_D2s_v5'
+param windowsOffer string = 'WindowsServer'
+param windowsSku string = '2022-datacenter-azure-edition-core'
 param adminUsername string
 @secure()
 param adminPassword string
@@ -21,6 +22,7 @@ module vNetModule 'modules/vnet.bicep' = {
     location: location
     networkName: networkName
     vmSubnetName: vmSubnetName
+    logAnalyticsWorkspaceId: monitoringModule.outputs.logAnalyticsWorkspaceId
   }
 }
 
@@ -31,6 +33,7 @@ module bastionModule 'modules/bastion.bicep' = {
     bastionName: bastionName
     vNetName: vNetModule.outputs.vNetName
     bastionSubnetName: vNetModule.outputs.bastionSubnetName
+    logAnalyticsWorkspaceId: monitoringModule.outputs.logAnalyticsWorkspaceId
   }
 }
 
@@ -61,6 +64,8 @@ module vm 'modules/virtual-machine-with-backups-and-logging.bicep' = {
     adminUsername: adminUsername
     adminPassword: adminPassword
     vmSize: vmSize
+    windowsOffer: windowsOffer
+    windowsSku: windowsSku
     vNetName: vNetModule.outputs.vNetName
     vmSubnetName: vmSubnetName
     bootLogStorageAccountName: monitoringModule.outputs.storageAccountName
@@ -68,5 +73,26 @@ module vm 'modules/virtual-machine-with-backups-and-logging.bicep' = {
     dataCollectionRuleName: monitoringModule.outputs.dataCollectionRuleName
     vmManagedIdentityResourceId: monitoringModule.outputs.vmManagedIdentityResourceId
     amaManagedIdentityResourceId: monitoringModule.outputs.amaManagedIdentityResourceId
+    logAnalyticsWorkspaceId: monitoringModule.outputs.logAnalyticsWorkspaceId
+  }
+}
+
+resource recoverySvcsVaultDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: '${recoveryVault.name}-diagnosticsettings'
+  scope: recoveryVault
+  properties: {
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    workspaceId: monitoringModule.outputs.logAnalyticsWorkspaceId
   }
 }

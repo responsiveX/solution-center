@@ -26,6 +26,14 @@
       "type": "string",
       "defaultValue": "Standard_D2s_v5"
     },
+    "windowsOffer": {
+      "type": "string",
+      "defaultValue": "WindowsServer"
+    },
+    "windowsSku": {
+      "type": "string",
+      "defaultValue": "2022-datacenter-azure-edition-core"
+    },
     "adminUsername": {
       "type": "string"
     },
@@ -64,16 +72,18 @@
               "defaultValue": "[resourceGroup().location]"
             },
             "networkName": {
-              "type": "string",
-              "defaultValue": "VmStarterKit"
+              "type": "string"
             },
             "vmSubnetName": {
-              "type": "string",
-              "defaultValue": "VMs"
+              "type": "string"
             },
             "openWebPorts": {
               "type": "bool",
               "defaultValue": false
+            },
+            "logAnalyticsWorkspaceId": {
+              "type": "string",
+              "defaultValue": ""
             }
           },
           "functions": [],
@@ -92,7 +102,7 @@
               "name": "[variables('nsgName')]",
               "location": "[parameters('location')]",
               "properties": {
-                "securityRules": "[if(equals(parameters('openWebPorts'), false()), createArray(), createArray(createObject('name', 'AllowHttpInbound', 'properties', createObject('protocol', '*', 'sourcePortRange', '*', 'destinationPortRange', '80', 'sourceAddressPrefix', 'Internet', 'destinationAddressPrefix', '*', 'access', 'Allow', 'priority', 100, 'direction', 'Inbound')), createObject('name', 'AllowHttpsInbound', 'properties', createObject('protocol', '*', 'sourcePortRange', '*', 'destinationPortRange', '443', 'sourceAddressPrefix', 'Internet', 'destinationAddressPrefix', '*', 'access', 'Allow', 'priority', 101, 'direction', 'Inbound'))))]"
+                "securityRules": "[if(equals(parameters('openWebPorts'), false()), createArray(), createArray(createObject('name', 'AllowHttpInbound', 'properties', createObject('protocol', 'Tcp', 'sourcePortRange', '*', 'destinationPortRange', '80', 'sourceAddressPrefix', 'Internet', 'destinationAddressPrefix', '*', 'access', 'Allow', 'priority', 100, 'direction', 'Inbound'))))]"
               }
             },
             {
@@ -125,6 +135,50 @@
                     }
                   }
                 ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('logAnalyticsWorkspaceId')))]",
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.Network/virtualNetworks/{0}', variables('vNetName'))]",
+              "name": "[format('{0}-diagnosticsettings', variables('vNetName'))]",
+              "properties": {
+                "logs": [
+                  {
+                    "categoryGroup": "allLogs",
+                    "enabled": true
+                  }
+                ],
+                "metrics": [
+                  {
+                    "category": "AllMetrics",
+                    "enabled": true
+                  }
+                ],
+                "workspaceId": "[parameters('logAnalyticsWorkspaceId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('vNetName'))]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('logAnalyticsWorkspaceId')))]",
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.Network/networkSecurityGroups/{0}', variables('nsgName'))]",
+              "name": "[format('{0}-diagnosticsettings', variables('nsgName'))]",
+              "properties": {
+                "logs": [
+                  {
+                    "categoryGroup": "allLogs",
+                    "enabled": true
+                  }
+                ],
+                "workspaceId": "[parameters('logAnalyticsWorkspaceId')]"
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
@@ -183,6 +237,10 @@
             },
             "bastionSubnetName": {
               "type": "string"
+            },
+            "logAnalyticsWorkspaceId": {
+              "type": "string",
+              "defaultValue": ""
             }
           },
           "functions": [],
@@ -232,6 +290,55 @@
               "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses', variables('bastionIpAddressName'))]"
               ]
+            },
+            {
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.Network/bastionHosts/{0}', variables('bastionHostName'))]",
+              "name": "[format('{0}-diagnosticsettings', variables('bastionHostName'))]",
+              "properties": {
+                "logs": [
+                  {
+                    "categoryGroup": "allLogs",
+                    "enabled": true
+                  }
+                ],
+                "metrics": [
+                  {
+                    "category": "AllMetrics",
+                    "enabled": true
+                  }
+                ],
+                "workspaceId": "[parameters('logAnalyticsWorkspaceId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/bastionHosts', variables('bastionHostName'))]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('logAnalyticsWorkspaceId')))]",
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', variables('bastionIpAddressName'))]",
+              "name": "[format('{0}-diagnosticsettings', variables('bastionIpAddressName'))]",
+              "properties": {
+                "logs": [
+                  {
+                    "categoryGroup": "allLogs",
+                    "enabled": true
+                  }
+                ],
+                "metrics": [
+                  {
+                    "category": "AllMetrics",
+                    "enabled": true
+                  }
+                ],
+                "workspaceId": "[parameters('logAnalyticsWorkspaceId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('bastionIpAddressName'))]"
+              ]
             }
           ]
         }
@@ -265,6 +372,12 @@
           "vmSize": {
             "value": "[parameters('vmSize')]"
           },
+          "windowsOffer": {
+            "value": "[parameters('windowsOffer')]"
+          },
+          "windowsSku": {
+            "value": "[parameters('windowsSku')]"
+          },
           "vNetName": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnet'), '2019-10-01').outputs.vNetName.value]"
           },
@@ -290,6 +403,12 @@
               "type": "string"
             },
             "vmSize": {
+              "type": "string"
+            },
+            "windowsOffer": {
+              "type": "string"
+            },
+            "windowsSku": {
               "type": "string"
             },
             "adminUsername": {
@@ -345,8 +464,8 @@
                 "storageProfile": {
                   "imageReference": {
                     "publisher": "MicrosoftWindowsServer",
-                    "offer": "WindowsServer",
-                    "sku": "2022-datacenter-azure-edition-core",
+                    "offer": "[parameters('windowsOffer')]",
+                    "sku": "[parameters('windowsSku')]",
                     "version": "latest"
                   },
                   "osDisk": {
@@ -382,7 +501,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "3839244979021223896"
+      "templateHash": "5623463306143496920"
     }
   }
 }

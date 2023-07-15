@@ -1,12 +1,10 @@
 targetScope = 'resourceGroup'
 
 param location string = resourceGroup().location
-
-param networkName string = 'VmStarterKit'
-
-param vmSubnetName string = 'VMs'
-
+param networkName string
+param vmSubnetName string
 param openWebPorts bool = false
+param logAnalyticsWorkspaceId string = ''
 
 var vNetName = 'vnet-${networkName}'
 
@@ -67,6 +65,40 @@ resource vNet 'Microsoft.Network/virtualNetworks@2022-07-01' = {
         }
       }
     ]
+  }
+}
+
+resource vNetDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(logAnalyticsWorkspaceId)) {
+  name: '${vNet.name}-diagnosticsettings'
+  scope: vNet
+  properties: {
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    workspaceId: logAnalyticsWorkspaceId
+  }
+}
+
+resource nsgDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(logAnalyticsWorkspaceId)) {
+  name: '${nsg.name}-diagnosticsettings'
+  scope: nsg
+  properties: {
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    workspaceId: logAnalyticsWorkspaceId
   }
 }
 

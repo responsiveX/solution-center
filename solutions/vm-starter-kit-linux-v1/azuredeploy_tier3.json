@@ -313,7 +313,8 @@
               "defaultValue": false
             },
             "logAnalyticsWorkspaceId": {
-              "type": "string"
+              "type": "string",
+              "defaultValue": ""
             }
           },
           "functions": [],
@@ -371,6 +372,7 @@
               ]
             },
             {
+              "condition": "[not(empty(parameters('logAnalyticsWorkspaceId')))]",
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
               "scope": "[format('Microsoft.Network/virtualNetworks/{0}', variables('vNetName'))]",
@@ -395,6 +397,7 @@
               ]
             },
             {
+              "condition": "[not(empty(parameters('logAnalyticsWorkspaceId')))]",
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
               "scope": "[format('Microsoft.Network/networkSecurityGroups/{0}', variables('nsgName'))]",
@@ -473,7 +476,8 @@
               "type": "string"
             },
             "logAnalyticsWorkspaceId": {
-              "type": "string"
+              "type": "string",
+              "defaultValue": ""
             }
           },
           "functions": [],
@@ -549,6 +553,7 @@
               ]
             },
             {
+              "condition": "[not(empty(parameters('logAnalyticsWorkspaceId')))]",
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
               "scope": "[format('Microsoft.Network/publicIPAddresses/{0}', variables('bastionIpAddressName'))]",
@@ -1536,7 +1541,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "8892930190670755092"
+      "templateHash": "15883317109595807124"
     }
   }
 }

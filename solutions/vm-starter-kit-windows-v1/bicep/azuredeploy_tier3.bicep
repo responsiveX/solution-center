@@ -37,6 +37,8 @@ param vmSubnetName string = 'VMs'
 
 param vmNamePrefix string = 'VM'
 param vmSize string = 'Standard_D2s_v5'
+param windowsOffer string = 'WindowsServer'
+param windowsSku string = '2022-datacenter-azure-edition-core'
 param adminUsername string
 @secure()
 param adminPassword string
@@ -59,6 +61,7 @@ module vNetModule 'modules/vnet.bicep' = {
     networkName: networkName
     vmSubnetName: vmSubnetName
     openWebPorts: true
+    logAnalyticsWorkspaceId: monitoringModule.outputs.logAnalyticsWorkspaceId
   }
 }
 
@@ -69,6 +72,7 @@ module bastionModule 'modules/bastion.bicep' = {
     bastionName: bastionName
     vNetName: vNetModule.outputs.vNetName
     bastionSubnetName: vNetModule.outputs.bastionSubnetName
+    logAnalyticsWorkspaceId: monitoringModule.outputs.logAnalyticsWorkspaceId
   }
 }
 
@@ -214,6 +218,8 @@ module vmScaleSetModule 'modules/virtual-machine-scale-set.bicep' = {
     loggingStorageUri: monitoringModule.outputs.storageUri
     vmNamePrefix: vmNamePrefix
     vmSize: vmSize
+    windowsOffer: windowsOffer
+    windowsSku: windowsSku
     adminUsername: adminUsername
     adminPassword: adminPassword
     loadBalancerName: loadBalancer.name
@@ -234,4 +240,58 @@ module policyRemediationModule 'modules/policy-remediation.bicep' = {
     policiesRoleAssignmentsModule
     vmScaleSetModule
   ]
+}
+
+resource loadBalancerDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: '${loadBalancer.name}-diagnosticsettings'
+  scope: loadBalancer
+  properties: {
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    workspaceId: monitoringModule.outputs.logAnalyticsWorkspaceId
+  }
+}
+
+resource loadBalancerPublicIpDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: '${loadBalancerPublicIp.name}-diagnosticsettings'
+  scope: loadBalancerPublicIp
+  properties: {
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    workspaceId: monitoringModule.outputs.logAnalyticsWorkspaceId
+  }
+}
+
+resource recoverySvcsVaultDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: '${recoveryVault.name}-diagnosticsettings'
+  scope: recoveryVault
+  properties: {
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    workspaceId: monitoringModule.outputs.logAnalyticsWorkspaceId
+  }
 }

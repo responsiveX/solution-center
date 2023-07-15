@@ -11,6 +11,8 @@ param loggingStorageUri string
 
 param vmNamePrefix string
 param vmSize string
+param windowsOffer string
+param windowsSku string
 param adminUsername string
 @secure()
 param adminPassword string
@@ -43,8 +45,8 @@ resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
       storageProfile: {
         imageReference: {
           publisher: 'MicrosoftWindowsServer'
-          offer: 'WindowsServer'
-          sku: '2022-datacenter-azure-edition-core'
+          offer: windowsOffer
+          sku: windowsSku
           version: 'latest'
         }
         osDisk: {

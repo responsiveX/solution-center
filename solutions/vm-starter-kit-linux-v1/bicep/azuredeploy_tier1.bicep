@@ -1,9 +1,9 @@
 targetScope = 'resourceGroup'
+
 param location string = resourceGroup().location
 
 param bastionName string = 'BastionHost'
 param networkName string = 'VmStarterKit'
-
 param vmSubnetName string = 'VMs'
 
 param vmName string = 'vm-01'
@@ -14,7 +14,6 @@ param adminUsername string
 @secure()
 param sshPublicKey string
 param osdiskSizeGB int = 30
-
 
 module vNetModule 'modules/vnet.bicep' = {
   name: 'vnet'

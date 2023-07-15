@@ -7,6 +7,8 @@ param vmSubnetName string
 
 param vmName string
 param vmSize string
+param windowsOffer string
+param windowsSku string
 param adminUsername string
 @secure()
 param adminPassword string
@@ -20,6 +22,8 @@ var recoveryVaultPolicyName = 'DefaultPolicy'
 param dataCollectionRuleName string
 param vmManagedIdentityResourceId string
 param amaManagedIdentityResourceId string
+
+param logAnalyticsWorkspaceId string
 
 resource nic 'Microsoft.Network/networkInterfaces@2022-07-01' = {
   name: '${vmName}-nic'
@@ -73,8 +77,8 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
     storageProfile: {
       imageReference: {
         publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: '2022-datacenter-azure-edition-core'
+        offer: windowsOffer
+        sku: windowsSku
         version: 'latest'
       }
       osDisk: {
@@ -203,5 +207,19 @@ resource backupProtectedItem 'Microsoft.RecoveryServices/vaults/backupFabrics/pr
     policyId: recoveryVaultPolicy.id
     sourceResourceId: vm.id
     friendlyName: vm.name
+  }
+}
+
+resource nicDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: '${nic.name}-diagnosticsettings'
+  scope: nic
+  properties: {
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    workspaceId: logAnalyticsWorkspaceId
   }
 }

@@ -4,7 +4,7 @@ param location string = resourceGroup().location
 param bastionName string
 param vNetName string
 param bastionSubnetName string
-param logAnalyticsWorkspaceId string
+param logAnalyticsWorkspaceId string = ''
 
 var bastionHostName = 'bas-${bastionName}'
 var bastionIpAddressName = 'pip-${bastionName}'
@@ -66,7 +66,7 @@ resource bastianDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-0
   }
 }
 
-resource bastionHostPublicIpDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+resource bastionHostPublicIpDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(logAnalyticsWorkspaceId)) {
   name: '${bastionHostPublicIp.name}-diagnosticsettings'
   scope: bastionHostPublicIp
   properties: {

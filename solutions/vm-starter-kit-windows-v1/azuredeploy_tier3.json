@@ -525,6 +525,7 @@
               ]
             },
             {
+              "condition": "[not(empty(parameters('logAnalyticsWorkspaceId')))]",
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
               "scope": "[format('Microsoft.Network/bastionHosts/{0}', variables('bastionHostName'))]",
@@ -1280,7 +1281,7 @@
           "resources": [
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets",
-              "apiVersion": "2022-08-01",
+              "apiVersion": "2023-03-01",
               "name": "[parameters('vmScaleSetName')]",
               "location": "[parameters('location')]",
               "sku": {
@@ -1348,7 +1349,10 @@
                       "provisionVMAgent": true,
                       "patchSettings": {
                         "patchMode": "AutomaticByPlatform",
-                        "enableHotpatching": true
+                        "enableHotpatching": true,
+                        "automaticByPlatformSettings": {
+                          "bypassPlatformSafetyChecksOnUserSchedule": false
+                        }
                       },
                       "enableAutomaticUpdates": true
                     }
@@ -1515,7 +1519,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "10641261818062632922"
+      "templateHash": "7912164077208252376"
     }
   }
 }

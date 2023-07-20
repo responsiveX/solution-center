@@ -292,6 +292,7 @@
               ]
             },
             {
+              "condition": "[not(empty(parameters('logAnalyticsWorkspaceId')))]",
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
               "scope": "[format('Microsoft.Network/bastionHosts/{0}', variables('bastionHostName'))]",
@@ -501,7 +502,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "5623463306143496920"
+      "templateHash": "12897471974930090393"
     }
   }
 }

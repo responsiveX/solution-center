@@ -52,19 +52,23 @@
       "type": "string",
       "defaultValue": "Standard_D2s_v5"
     },
-    "windowsOffer": {
+    "ubuntuOffer": {
       "type": "string",
-      "defaultValue": "WindowsServer"
+      "defaultValue": "0001-com-ubuntu-server-focal"
     },
-    "windowsSku": {
+    "ubuntuSku": {
       "type": "string",
-      "defaultValue": "2022-datacenter-azure-edition-core"
+      "defaultValue": "20_04-lts-gen2"
     },
     "adminUsername": {
       "type": "string"
     },
-    "adminPassword": {
+    "sshPublicKey": {
       "type": "secureString"
+    },
+    "osdiskSizeGB": {
+      "type": "int",
+      "defaultValue": 30
     },
     "recoveryServicesVaultName": {
       "type": "string",
@@ -1201,17 +1205,20 @@
           "vmSize": {
             "value": "[parameters('vmSize')]"
           },
-          "windowsOffer": {
-            "value": "[parameters('windowsOffer')]"
+          "ubuntuOffer": {
+            "value": "[parameters('ubuntuOffer')]"
           },
-          "windowsSku": {
-            "value": "[parameters('windowsSku')]"
+          "ubuntuSku": {
+            "value": "[parameters('ubuntuSku')]"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
           },
-          "adminPassword": {
-            "value": "[parameters('adminPassword')]"
+          "sshPublicKey": {
+            "value": "[parameters('sshPublicKey')]"
+          },
+          "osdiskSizeGB": {
+            "value": "[parameters('osdiskSizeGB')]"
           },
           "loadBalancerName": {
             "value": "[parameters('loadBalancerName')]"
@@ -1252,17 +1259,20 @@
             "vmSize": {
               "type": "string"
             },
-            "windowsOffer": {
+            "ubuntuOffer": {
               "type": "string"
             },
-            "windowsSku": {
+            "ubuntuSku": {
               "type": "string"
             },
             "adminUsername": {
               "type": "string"
             },
-            "adminPassword": {
+            "sshPublicKey": {
               "type": "secureString"
+            },
+            "osdiskSizeGB": {
+              "type": "int"
             },
             "loadBalancerName": {
               "type": "string"
@@ -1281,7 +1291,7 @@
           "resources": [
             {
               "type": "Microsoft.Compute/virtualMachineScaleSets",
-              "apiVersion": "2023-03-01",
+              "apiVersion": "2022-08-01",
               "name": "[parameters('vmScaleSetName')]",
               "location": "[parameters('location')]",
               "sku": {
@@ -1302,9 +1312,9 @@
                 "virtualMachineProfile": {
                   "storageProfile": {
                     "imageReference": {
-                      "publisher": "MicrosoftWindowsServer",
-                      "offer": "[parameters('windowsOffer')]",
-                      "sku": "[parameters('windowsSku')]",
+                      "publisher": "Canonical",
+                      "offer": "[parameters('ubuntuOffer')]",
+                      "sku": "[parameters('ubuntuSku')]",
                       "version": "latest"
                     },
                     "osDisk": {
@@ -1312,7 +1322,8 @@
                         "storageAccountType": "Premium_LRS"
                       },
                       "caching": "ReadWrite",
-                      "createOption": "FromImage"
+                      "createOption": "FromImage",
+                      "diskSizeGB": "[parameters('osdiskSizeGB')]"
                     }
                   },
                   "networkProfile": {
@@ -1344,17 +1355,20 @@
                   "osProfile": {
                     "computerNamePrefix": "[parameters('vmNamePrefix')]",
                     "adminUsername": "[parameters('adminUsername')]",
-                    "adminPassword": "[parameters('adminPassword')]",
-                    "windowsConfiguration": {
+                    "linuxConfiguration": {
+                      "disablePasswordAuthentication": true,
+                      "ssh": {
+                        "publicKeys": [
+                          {
+                            "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]",
+                            "keyData": "[parameters('sshPublicKey')]"
+                          }
+                        ]
+                      },
                       "provisionVMAgent": true,
                       "patchSettings": {
-                        "patchMode": "AutomaticByPlatform",
-                        "enableHotpatching": true,
-                        "automaticByPlatformSettings": {
-                          "bypassPlatformSafetyChecksOnUserSchedule": false
-                        }
-                      },
-                      "enableAutomaticUpdates": true
+                        "patchMode": "AutomaticByPlatform"
+                      }
                     }
                   },
                   "diagnosticsProfile": {
@@ -1366,22 +1380,25 @@
                   "extensionProfile": {
                     "extensions": [
                       {
-                        "name": "InstallIIS",
+                        "name": "InstallNginx",
                         "properties": {
-                          "publisher": "Microsoft.Compute",
-                          "type": "CustomScriptExtension",
-                          "typeHandlerVersion": "1.7",
+                          "publisher": "Microsoft.Azure.Extensions",
+                          "type": "CustomScript",
+                          "typeHandlerVersion": "2.1",
                           "autoUpgradeMinorVersion": true,
-                          "settings": {
-                            "commandToExecute": "powershell.exe Install-WindowsFeature -name Web-Server -IncludeManagementTools && powershell.exe remove-item 'C:\\inetpub\\wwwroot\\iisstart.htm' && powershell.exe Add-Content -Path 'C:\\inetpub\\wwwroot\\iisstart.htm' -Value $('Hello World from ' + $env:computername)"
+                          "protectedSettings": {
+                            "commandToExecute": "sudo apt-get update && sudo apt-get install nginx -y && sudo sed -i \"s/Welcome to nginx/Welcome to nginx from $HOSTNAME/g\" /var/www/html/index.nginx-debian.html"
                           }
                         }
                       },
                       {
                         "name": "HealthExtension",
                         "properties": {
+                          "provisionAfterExtensions": [
+                            "InstallNginx"
+                          ],
                           "publisher": "Microsoft.ManagedServices",
-                          "type": "ApplicationHealthWindows",
+                          "type": "ApplicationHealthLinux",
                           "typeHandlerVersion": "1.0",
                           "autoUpgradeMinorVersion": true,
                           "settings": {
@@ -1394,10 +1411,13 @@
                         }
                       },
                       {
-                        "name": "DependencyAgentWindows",
+                        "name": "DependencyAgentLinux",
                         "properties": {
+                          "provisionAfterExtensions": [
+                            "InstallNginx"
+                          ],
                           "publisher": "Microsoft.Azure.Monitoring.DependencyAgent",
-                          "type": "DependencyAgentWindows",
+                          "type": "DependencyAgentLinux",
                           "typeHandlerVersion": "9.5",
                           "autoUpgradeMinorVersion": true,
                           "settings": {
@@ -1406,11 +1426,14 @@
                         }
                       },
                       {
-                        "name": "AzureMonitorWindowsAgent",
+                        "name": "AzureMonitorLinuxAgent",
                         "properties": {
+                          "provisionAfterExtensions": [
+                            "InstallNginx"
+                          ],
                           "publisher": "Microsoft.Azure.Monitor",
-                          "type": "AzureMonitorWindowsAgent",
-                          "typeHandlerVersion": "1.0",
+                          "type": "AzureMonitorLinuxAgent",
+                          "typeHandlerVersion": "1.21",
                           "autoUpgradeMinorVersion": true,
                           "enableAutomaticUpgrade": true,
                           "settings": {
@@ -1519,7 +1542,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "7410512548233186025"
+      "templateHash": "5668563466672187589"
     }
   }
 }

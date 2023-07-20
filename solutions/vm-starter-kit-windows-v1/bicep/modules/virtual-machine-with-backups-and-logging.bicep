@@ -168,7 +168,7 @@ resource azureMonitorExtension 'Microsoft.Compute/virtualMachines/extensions@202
     settings: {
       authentication: {
         managedIdentity: {
-          'identifier-name': 'msi_res_id'
+          'identifier-name': 'client_id'
           'identifier-value': amaManagedIdentityResourceId
         }
       }

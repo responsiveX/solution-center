@@ -347,6 +347,7 @@
               ]
             },
             {
+              "condition": "[not(empty(parameters('logAnalyticsWorkspaceId')))]",
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
               "scope": "[format('Microsoft.Network/bastionHosts/{0}', variables('bastionHostName'))]",
@@ -901,7 +902,7 @@
                 "typeHandlerVersion": "2.1",
                 "autoUpgradeMinorVersion": true,
                 "protectedSettings": {
-                  "commandToExecute": "sudo apt-get update && sudo apt-get install nginx -y && sudo sed -i \"s/Welcome to nginx/Welcome to nginx from VM Starter Kit/g\" /var/www/html/index.nginx-debian.html"
+                  "commandToExecute": "sudo apt-get update && sudo apt-get install nginx -y && sudo sed -i \"s/Welcome to nginx/Welcome to nginx from $HOSTNAME/g\" /var/www/html/index.nginx-debian.html"
                 }
               },
               "dependsOn": [
@@ -1033,7 +1034,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "9705494422598358496"
+      "templateHash": "12453071772241755347"
     }
   }
 }

@@ -35,7 +35,7 @@ param bastionName string = 'BastionHost'
 param networkName string = 'VmStarterKit'
 param vmSubnetName string = 'VMs'
 
-param vmNamePrefix string = 'VM'
+param vmNamePrefix string = 'VM-'
 param vmSize string = 'Standard_D2s_v5'
 param windowsOffer string = 'WindowsServer'
 param windowsSku string = '2022-datacenter-azure-edition-core'

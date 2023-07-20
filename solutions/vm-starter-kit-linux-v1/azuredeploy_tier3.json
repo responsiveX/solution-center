@@ -46,7 +46,7 @@
     },
     "vmNamePrefix": {
       "type": "string",
-      "defaultValue": "VM"
+      "defaultValue": "VM-"
     },
     "vmSize": {
       "type": "string",
@@ -1542,7 +1542,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "2590205239571904476"
+      "templateHash": "12555558354733472397"
     }
   }
 }

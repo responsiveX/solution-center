@@ -175,7 +175,7 @@ resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
               settings: {
                 authentication: {
                   managedIdentity: {
-                    'identifier-name': 'mi_res_id'
+                    'identifier-name': 'msi_res_id'
                     'identifier-value': amaManagedIdentityResourceId
                   }
                 }

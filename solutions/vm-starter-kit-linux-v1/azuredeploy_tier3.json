@@ -1439,7 +1439,7 @@
                           "settings": {
                             "authentication": {
                               "managedIdentity": {
-                                "identifier-name": "mi_res_id",
+                                "identifier-name": "msi_res_id",
                                 "identifier-value": "[parameters('amaManagedIdentityResourceId')]"
                               }
                             }
@@ -1542,7 +1542,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "12555558354733472397"
+      "templateHash": "2629655997730705911"
     }
   }
 }

@@ -343,6 +343,7 @@
               ]
             },
             {
+              "condition": "[not(empty(parameters('logAnalyticsWorkspaceId')))]",
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
               "scope": "[format('Microsoft.Network/bastionHosts/{0}', variables('bastionHostName'))]",
@@ -944,7 +945,7 @@
                 "settings": {
                   "authentication": {
                     "managedIdentity": {
-                      "identifier-name": "mi_res_id",
+                      "identifier-name": "msi_res_id",
                       "identifier-value": "[parameters('amaManagedIdentityResourceId')]"
                     }
                   }
@@ -1012,7 +1013,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "16274630437920200386"
+      "templateHash": "4939989472978582910"
     }
   }
 }

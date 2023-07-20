@@ -23,7 +23,7 @@ param loadBalancerBackendPoolName string
 param vmManagedIdentityResourceId string
 param amaManagedIdentityResourceId string
 
-resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
+resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2023-03-01' = {
   name: vmScaleSetName
   location: location
   sku: {
@@ -92,6 +92,9 @@ resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
           patchSettings: {
             patchMode: 'AutomaticByPlatform'
             enableHotpatching: true
+            automaticByPlatformSettings: {
+               bypassPlatformSafetyChecksOnUserSchedule: false
+            }
           }
           enableAutomaticUpdates: true
         }

@@ -125,7 +125,7 @@ resource nginxExtension 'Microsoft.Compute/virtualMachines/extensions@2021-11-01
     typeHandlerVersion: '2.1'
     autoUpgradeMinorVersion: true
     protectedSettings:{
-      commandToExecute: 'sudo apt-get update && sudo apt-get install nginx -y && sudo sed -i "s/Welcome to nginx/Welcome to nginx from $HOSTNAME/g" /var/www/html/index.nginx-debian.html'
+      commandToExecute: 'sudo apt-get update && sudo apt-get install nginx -y && sudo sed -i "s/Welcome to nginx/Welcome to nginx from $(hostname)/g" /var/www/html/index.nginx-debian.html'
     }
   }
 }

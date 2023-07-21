@@ -20,8 +20,8 @@ param adminPassword string
 param loadBalancerName string
 param loadBalancerBackendPoolName string
 
-param vmManagedIdentityResourceId string
-param amaManagedIdentityResourceId string
+param managedIdentityResourceId string
+param managedIdentityClientId string
 
 resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2023-03-01' = {
   name: vmScaleSetName
@@ -34,7 +34,7 @@ resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2023-03-01' = {
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
-      '${vmManagedIdentityResourceId}': {}
+      '${managedIdentityResourceId}': {}
     }
   }
   properties: {
@@ -159,7 +159,7 @@ resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2023-03-01' = {
                 authentication: {
                   managedIdentity: {
                     'identifier-name': 'client_id'
-                    'identifier-value': amaManagedIdentityResourceId
+                    'identifier-value': managedIdentityClientId
                   }
                 }
               }

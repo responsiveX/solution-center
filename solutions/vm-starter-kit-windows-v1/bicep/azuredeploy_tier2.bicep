@@ -71,8 +71,8 @@ module vm 'modules/virtual-machine-with-backups-and-logging.bicep' = {
     bootLogStorageAccountName: monitoringModule.outputs.storageAccountName
     recoveryServicesVaultName: recoveryVault.name
     dataCollectionRuleName: monitoringModule.outputs.dataCollectionRuleName
-    vmManagedIdentityResourceId: monitoringModule.outputs.vmManagedIdentityResourceId
-    amaManagedIdentityResourceId: monitoringModule.outputs.amaManagedIdentityResourceId
+    managedIdentityResourceId: monitoringModule.outputs.managedIdentityResourceId
+    managedIdentityClientId: monitoringModule.outputs.managedIdentityClientId
     logAnalyticsWorkspaceId: monitoringModule.outputs.logAnalyticsWorkspaceId
   }
 }

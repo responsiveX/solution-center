@@ -668,7 +668,7 @@
             },
             "amaManagedIdentityResourceId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-AzureMonitorAgent')).clientId]"
+              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-StarterKitVMs')).clientId]"
             },
             "logAnalyticsWorkspaceId": {
               "type": "string",
@@ -1034,7 +1034,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "2591197716913370150"
+      "templateHash": "8586871851943412315"
     }
   }
 }

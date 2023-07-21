@@ -185,5 +185,5 @@ output storageAccountName string = storageAccount.name
 output storageUri string = storageAccount.properties.primaryEndpoints.blob
 output dataCollectionRuleName string = dataCollectionRuleName
 output vmManagedIdentityResourceId string = vmManagedIdentity.id
-output amaManagedIdentityResourceId string = amaManagedIdentity.properties.clientId
+output amaManagedIdentityResourceId string = vmManagedIdentity.properties.clientId
 output logAnalyticsWorkspaceId string = logAnalyticsWorkspace.id

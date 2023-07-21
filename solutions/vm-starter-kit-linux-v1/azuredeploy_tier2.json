@@ -575,12 +575,6 @@
               "location": "[parameters('location')]"
             },
             {
-              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-              "apiVersion": "2022-01-31-preview",
-              "name": "id-AzureMonitorAgent",
-              "location": "[parameters('location')]"
-            },
-            {
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
               "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('logAnalyticsWorkspaceName'))]",
@@ -662,11 +656,11 @@
               "type": "string",
               "value": "[parameters('dataCollectionRuleName')]"
             },
-            "vmManagedIdentityResourceId": {
+            "managedIdentityResourceId": {
               "type": "string",
               "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-StarterKitVMs')]"
             },
-            "amaManagedIdentityResourceId": {
+            "managedIdentityClientId": {
               "type": "string",
               "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-StarterKitVMs')).clientId]"
             },
@@ -727,11 +721,11 @@
           "dataCollectionRuleName": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure'), '2019-10-01').outputs.dataCollectionRuleName.value]"
           },
-          "vmManagedIdentityResourceId": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure'), '2019-10-01').outputs.vmManagedIdentityResourceId.value]"
+          "managedIdentityResourceId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure'), '2019-10-01').outputs.managedIdentityResourceId.value]"
           },
-          "amaManagedIdentityResourceId": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure'), '2019-10-01').outputs.amaManagedIdentityResourceId.value]"
+          "managedIdentityClientId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure'), '2019-10-01').outputs.managedIdentityClientId.value]"
           },
           "logAnalyticsWorkspaceId": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'monitoring-infrastructure'), '2019-10-01').outputs.logAnalyticsWorkspaceId.value]"
@@ -785,10 +779,10 @@
             "dataCollectionRuleName": {
               "type": "string"
             },
-            "vmManagedIdentityResourceId": {
+            "managedIdentityResourceId": {
               "type": "string"
             },
-            "amaManagedIdentityResourceId": {
+            "managedIdentityClientId": {
               "type": "string"
             },
             "logAnalyticsWorkspaceId": {
@@ -831,7 +825,7 @@
               "identity": {
                 "type": "UserAssigned",
                 "userAssignedIdentities": {
-                  "[parameters('vmManagedIdentityResourceId')]": {}
+                  "[parameters('managedIdentityResourceId')]": {}
                 }
               },
               "properties": {
@@ -966,7 +960,7 @@
                   "authentication": {
                     "managedIdentity": {
                       "identifier-name": "client_id",
-                      "identifier-value": "[parameters('amaManagedIdentityResourceId')]"
+                      "identifier-value": "[parameters('managedIdentityClientId')]"
                     }
                   }
                 }
@@ -1034,7 +1028,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.3.126.58533",
-      "templateHash": "8586871851943412315"
+      "templateHash": "737873939754768397"
     }
   }
 }

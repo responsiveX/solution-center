@@ -226,8 +226,8 @@ module vmScaleSetModule 'modules/virtual-machine-scale-set.bicep' = {
     osdiskSizeGB: osdiskSizeGB
     loadBalancerName: loadBalancer.name
     loadBalancerBackendPoolName: loadBalancerBackendPoolName
-    vmManagedIdentityResourceId: monitoringModule.outputs.vmManagedIdentityResourceId
-    amaManagedIdentityResourceId: monitoringModule.outputs.amaManagedIdentityResourceId
+    managedIdentityResourceId: monitoringModule.outputs.managedIdentityResourceId
+    managedIdentityClientId: monitoringModule.outputs.managedIdentityClientId
   }
 }
 

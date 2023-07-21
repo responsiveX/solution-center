@@ -21,8 +21,8 @@ param recoveryServicesVaultName string
 var recoveryVaultPolicyName = 'DefaultPolicy'
 
 param dataCollectionRuleName string
-param vmManagedIdentityResourceId string
-param amaManagedIdentityResourceId string
+param managedIdentityResourceId string
+param managedIdentityClientId string
 
 param logAnalyticsWorkspaceId string
 
@@ -57,7 +57,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-08-01' = {
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
-      '${vmManagedIdentityResourceId}': {}
+      '${managedIdentityResourceId}': {}
     }
   }
   properties: {
@@ -184,7 +184,7 @@ resource azureMonitorExtension 'Microsoft.Compute/virtualMachines/extensions@202
       authentication: {
         managedIdentity: {
           'identifier-name': 'client_id'
-          'identifier-value': amaManagedIdentityResourceId
+          'identifier-value': managedIdentityClientId
         }
       }
     }
